@@ -1,4 +1,14 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import ArcadeShell, { ARCADE_STYLE } from './ArcadeShell.jsx';
+
+const THEME_KEY = 'pspo-theme';
+function loadTheme() {
+  try {
+    const t = localStorage.getItem(THEME_KEY);
+    return t === 'classic' || t === 'arcade' ? t : 'arcade';
+  } catch { return 'arcade'; }
+}
+function saveTheme(t) { try { localStorage.setItem(THEME_KEY, t); } catch {} }
 
 /* ──────────────────────────────────────────────────────────────────────────
    PSPO I Trainer — grounded in the 2020 Scrum Guide
@@ -6,7 +16,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
    Personalized wrong-answer feedback via Anthropic API in artifacts.
    ────────────────────────────────────────────────────────────────────────── */
 
-const CONCEPTS = [
+export const CONCEPTS = [
   { id: 'scrum_theory',         label: 'Scrum Theory',            subtitle: 'Empiricism, values, pillars' },
   { id: 'scrum_team',           label: 'Scrum Team',              subtitle: 'Composition & self-management' },
   { id: 'product_owner',        label: 'Product Owner',           subtitle: 'Accountabilities & authority' },
@@ -19,7 +29,7 @@ const CONCEPTS = [
   { id: 'scaling',              label: 'Scaling & Scenarios',     subtitle: 'Multi-team patterns' },
 ];
 
-const LESSONS = {
+export const LESSONS = {
   scrum_theory: {
     intro: `Before you learn what a Product Owner does or how Sprint Planning works, you need to understand why Scrum exists. Every rule in Scrum — the tiny timeboxes, the fixed events, the stubborn refusal to plan far ahead — comes from one belief: product development is complex, and complexity doesn't yield to detailed upfront plans. Plan too far and reality embarrasses you. Plan too little and you wander. Scrum is the minimum viable structure for learning your way through complexity.`,
     sections: [
@@ -778,7 +788,7 @@ Normalizing breaks the purpose of estimation (helping the team forecast) and int
    explanation (general), and optional distractors (why each wrong option is wrong).
    ────────────────────────────────────────────────────────────────────────── */
 
-const QUESTIONS = [
+export const QUESTIONS = [
   // ═══════════ SCRUM THEORY ═══════════
   {
     id: 'st1', concept: 'scrum_theory', type: 'single',
@@ -4134,7 +4144,7 @@ function saveProgress(p) {
   } catch {}
 }
 
-function masteryForConcept(progress, conceptId) {
+export function masteryForConcept(progress, conceptId) {
   const qs = QUESTIONS.filter((q) => q.concept === conceptId);
   let weightedAnswered = 0;
   let weightedCorrect = 0;
@@ -4180,7 +4190,7 @@ function masteryForConcept(progress, conceptId) {
   return { level, coverage, accuracy, totalAnswered, totalCorrect, uniqueCorrect, questionCount: qs.length, brutalCount: hardCount, brutalAnswered: hardAnswered, brutalAccuracy: hardAccuracy };
 }
 
-function arraysEqualAsSet(a, b) {
+export function arraysEqualAsSet(a, b) {
   if (a.length !== b.length) return false;
   const as = new Set(a);
   for (const x of b) if (!as.has(x)) return false;
@@ -4192,7 +4202,7 @@ function arraysEqualAsSet(a, b) {
    ────────────────────────────────────────────────────────────────────────── */
 
 const STYLE = `
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Press+Start+2P&display=swap');
 
 .pspo-root {
   --bg: #0e0c0a;
@@ -4371,6 +4381,54 @@ const STYLE = `
 
 .pspo-root .container-max { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
 
+/* Theme toggle — styled to match the arcade theme it switches to */
+.pspo-root .theme-toggle-classic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 10px;
+  padding: 9px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #00ff41;
+  background: #000;
+  border: 2px solid #00ff41;
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.12s, color 0.12s;
+  animation: themePulseArcade 2s ease-in-out infinite;
+  box-shadow:
+    0 0 0 0 rgba(0,255,65,0.6),
+    inset 0 0 8px rgba(0,255,65,0.2);
+}
+.pspo-root .theme-toggle-classic:hover {
+  background: #00ff41;
+  color: #000;
+  transform: translateY(-1px);
+}
+.pspo-root .theme-toggle-classic:active { transform: translateY(1px); }
+.pspo-root .theme-toggle-classic .theme-toggle-icon {
+  display: inline-block;
+  animation: themeSpin 4s linear infinite, themeGlitchIcon 11s infinite;
+}
+@keyframes themePulseArcade {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.6), inset 0 0 8px rgba(0,255,65,0.2); }
+  50%      { box-shadow: 0 0 0 10px rgba(0,255,65,0), inset 0 0 8px rgba(0,255,65,0.2); }
+}
+@keyframes themeSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+/* Brief, rare glitch — about 250ms every 11s */
+@keyframes themeGlitchIcon {
+  0%, 97%, 100% { text-shadow: none; filter: none; }
+  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
+  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
+  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+}
+
 @media (max-width: 640px) {
   .pspo-root { font-size: 14px; }
   .pspo-root .container-max { padding: 20px 16px 60px; }
@@ -4488,7 +4546,7 @@ function PhaseProgressBar({ phases, phaseIdx, questionIdx, onJump, answered, boo
   );
 }
 
-function Header({ stats, onNav, currentView }) {
+function Header({ stats, onNav, currentView, onToggleTheme }) {
   return (
     <header style={{ borderBottom: '1px solid var(--border)', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
       <button onClick={() => onNav('home')} style={{ display: 'flex', alignItems: 'baseline', gap: 12, textAlign: 'left' }}>
@@ -4518,6 +4576,15 @@ function Header({ stats, onNav, currentView }) {
             {label}
           </button>
         ))}
+        <button
+          onClick={onToggleTheme}
+          className="theme-toggle-classic"
+          title="Switch to arcade theme"
+          aria-label="Switch to arcade theme"
+        >
+          <span className="theme-toggle-icon">◉</span>
+          <span>ARCADE</span>
+        </button>
       </nav>
     </header>
   );
@@ -4542,8 +4609,7 @@ function HomeView({ progress, onPickConcept, onStartReview, onStartQuick, onStar
           2020 Scrum Guide · {QUESTIONS.length} questions · {CONCEPTS.length} concepts
         </div>
         <h1 className="display" style={{ fontSize: 'clamp(34px, 6vw, 52px)', lineHeight: 1.05, margin: '0 0 20px', fontWeight: 500, letterSpacing: '-0.02em' }}>
-          Learn the framework.<br />
-          <span style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Master</span> the traps.
+          Master PSPO I
         </h1>
         <p className="dim" style={{ fontSize: 17, maxWidth: 560, margin: 0, lineHeight: 1.55 }}>
           A focused study engine for the PSPO I exam. Concept lessons, distractor-level feedback on wrong answers, and spaced review of what you miss.
@@ -4769,7 +4835,7 @@ function LessonView({ conceptId, onStart, onBack }) {
   );
 }
 
-function defangBrutalQuestion(text) {
+export function defangBrutalQuestion(text) {
   return text.replace(/\b[A-Z]{3,}\b/g, (w) => w.toLowerCase());
 }
 
@@ -5424,12 +5490,22 @@ export default function App() {
   const [quizMode, setQuizMode] = useState('mixed');
   const [progress, setProgress] = useState(DEFAULT_PROGRESS);
   const [loaded, setLoaded] = useState(false);
+  const [theme, setTheme] = useState('arcade');
 
   useEffect(() => {
     const p = loadProgress();
     setProgress(p);
+    setTheme(loadTheme());
     setLoaded(true);
   }, []);
+
+  function switchTheme() {
+    setTheme((t) => {
+      const next = t === 'arcade' ? 'classic' : 'arcade';
+      saveTheme(next);
+      return next;
+    });
+  }
 
   function updateAnswer(qid, correct) {
     setProgress((prev) => {
@@ -5566,10 +5642,29 @@ export default function App() {
     );
   }
 
+  if (theme === 'arcade') {
+    return (
+      <>
+        <style>{ARCADE_STYLE}</style>
+        <ArcadeShell
+          progress={progress}
+          onAnswer={updateAnswer}
+          onToggleBookmark={toggleBookmark}
+          onSwitchTheme={switchTheme}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="pspo-root grainy">
       <style>{STYLE}</style>
-      <Header stats={progress} onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }} currentView={view} />
+      <Header
+        stats={progress}
+        onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
+        currentView={view}
+        onToggleTheme={switchTheme}
+      />
 
       {view === 'home' && (
         <HomeView

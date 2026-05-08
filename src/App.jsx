@@ -5505,6 +5505,9 @@ export default function App() {
       saveTheme(next);
       return next;
     });
+    // Remap views that only exist in one theme so the user lands on a sensible screen
+    if (view === 'title') setView('home');     // arcade-only → classic equivalent
+    if (view === 'results') setView('home');   // arcade-only → quiz already finalized
   }
 
   function updateAnswer(qid, correct) {
@@ -5647,10 +5650,22 @@ export default function App() {
       <>
         <style>{ARCADE_STYLE}</style>
         <ArcadeShell
+          view={view}
+          activeConcept={activeConcept}
+          quizPhases={quizPhases}
+          quizQuestions={quizSet}
+          quizMode={quizMode}
           progress={progress}
           onAnswer={updateAnswer}
           onToggleBookmark={toggleBookmark}
           onSwitchTheme={switchTheme}
+          onPickConcept={pickConcept}
+          onStartConceptQuiz={startQuizForConcept}
+          onStartQuickQuiz={startQuickQuiz}
+          onStartMockExam={startMockExam}
+          onStartReview={startReview}
+          onSetView={setView}
+          onExitQuiz={exitQuiz}
         />
       </>
     );

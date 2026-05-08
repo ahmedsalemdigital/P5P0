@@ -227,19 +227,6 @@ export const ARCADE_STYLE = `
 `;
 
 /* ──────────────────────────────────────────────────────────────────────────
-   HELPERS
-   ────────────────────────────────────────────────────────────────────────── */
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-/* ──────────────────────────────────────────────────────────────────────────
    MASCOT
    ────────────────────────────────────────────────────────────────────────── */
 
@@ -1333,56 +1320,26 @@ function AchievementBadge({ icon, title, desc, hint, unlocked = false, isNew = f
    ARCADE SHELL — internal screen routing
    ────────────────────────────────────────────────────────────────────────── */
 
-export default function ArcadeShell({ progress, onAnswer, onToggleBookmark, onSwitchTheme }) {
-  const [screen, setScreen] = useState('title');
-  const [conceptId, setConceptId] = useState(null);
-  const [quizPhases, setQuizPhases] = useState(null);
-  const [quizQuestions, setQuizQuestions] = useState(null);
-  const [quizMode, setQuizMode] = useState('concept');
+export default function ArcadeShell({
+  view,
+  activeConcept,
+  quizPhases,
+  quizQuestions,
+  quizMode,
+  progress,
+  onAnswer,
+  onToggleBookmark,
+  onSwitchTheme,
+  onPickConcept,
+  onStartConceptQuiz,
+  onStartQuickQuiz,
+  onStartMockExam,
+  onStartReview,
+  onSetView,
+  onExitQuiz,
+}) {
+  // Results are local — finished a quiz, but if user toggles theme, results are lost (acceptable)
   const [quizResult, setQuizResult] = useState(null);
-
-  function startConceptLesson(cid) {
-    setConceptId(cid);
-    setScreen('lesson');
-  }
-
-  function startConceptQuiz() {
-    const qs = QUESTIONS.filter((q) => q.concept === conceptId);
-    const phases = [
-      { name: 'Core Questions', subtitle: 'Recall and comprehension', questions: shuffle(qs.filter((q) => !q.difficulty)) },
-      { name: 'Scenario Questions', subtitle: 'Applied judgment in context', questions: shuffle(qs.filter((q) => q.difficulty === 'scenario')) },
-      { name: 'Brutal Questions', subtitle: 'Adversarial phrasing', questions: shuffle(qs.filter((q) => q.difficulty === 'brutal')) },
-    ].filter((p) => p.questions.length > 0);
-    setQuizPhases(phases);
-    setQuizQuestions(null);
-    setQuizMode('concept');
-    setScreen('quiz');
-  }
-
-  function startQuickQuiz() {
-    const picked = shuffle(QUESTIONS).slice(0, 10);
-    setQuizPhases(null);
-    setQuizQuestions(picked);
-    setConceptId(null);
-    setQuizMode('mixed');
-    setScreen('quiz');
-  }
-
-  function startMockExam() {
-    const standards = QUESTIONS.filter((q) => !q.difficulty);
-    const brutals = QUESTIONS.filter((q) => q.difficulty === 'brutal');
-    const scenarios = QUESTIONS.filter((q) => q.difficulty === 'scenario');
-    const picked = shuffle([
-      ...shuffle(standards).slice(0, 55),
-      ...shuffle(brutals).slice(0, 15),
-      ...shuffle(scenarios).slice(0, 10),
-    ]);
-    setQuizPhases(null);
-    setQuizQuestions(picked);
-    setConceptId(null);
-    setQuizMode('mock');
-    setScreen('quiz');
-  }
 
   const reviewQueue = useMemo(() => {
     return Object.entries(progress.questions || {})
@@ -1395,34 +1352,23 @@ export default function ArcadeShell({ progress, onAnswer, onToggleBookmark, onSw
       .filter(Boolean);
   }, [progress]);
 
-  function startReview() {
-    if (reviewQueue.length === 0) return;
-    setQuizPhases(null);
-    setQuizQuestions(shuffle(reviewQueue));
-    setConceptId(null);
-    setQuizMode('review');
-    setScreen('quiz');
-  }
-
   function finishQuiz(result) {
     setQuizResult(result);
-    setScreen('results');
-  }
-
-  function exitQuiz() {
-    setQuizPhases(null);
-    setQuizQuestions(null);
-    setScreen('conceptSelect');
+    onSetView('results');
   }
 
   function playAgain() {
-    if (quizMode === 'concept' && conceptId) startConceptQuiz();
-    else if (quizMode === 'mixed') startQuickQuiz();
-    else if (quizMode === 'mock') startMockExam();
-    else if (quizMode === 'review') startReview();
-    else setScreen('title');
+    setQuizResult(null);
+    if (quizMode === 'concept' && activeConcept) onStartConceptQuiz(activeConcept);
+    else if (quizMode === 'mixed') onStartQuickQuiz();
+    else if (quizMode === 'mock') onStartMockExam();
+    else if (quizMode === 'review') onStartReview();
+    else onSetView('home');
   }
 
+  // Map shared `view` to which arcade screen renders
+  // 'title' → TitleScreen | 'home' → ConceptSelect | 'lesson' → LessonScreen
+  // 'quiz' → QuizScreen | 'results' → ResultsScreen | 'review' / 'stats' → ConceptSelect
   return (
     <div className="arcade-root">
       <div className="arcade-scanline" />
@@ -1431,48 +1377,48 @@ export default function ArcadeShell({ progress, onAnswer, onToggleBookmark, onSw
         <span>CLASSIC</span>
       </button>
       <div className="arcade-stage">
-        {screen === 'title' && (
-          <TitleScreen progress={progress} onStart={() => setScreen('conceptSelect')} />
+        {view === 'title' && (
+          <TitleScreen progress={progress} onStart={() => onSetView('home')} />
         )}
-        {screen === 'conceptSelect' && (
+        {(view === 'home' || view === 'review' || view === 'stats') && (
           <ConceptSelect
             progress={progress}
-            onSelect={startConceptLesson}
-            onBack={() => setScreen('title')}
-            onStartQuick={startQuickQuiz}
-            onStartMock={startMockExam}
-            onStartReview={startReview}
+            onSelect={(cid) => onPickConcept(cid)}
+            onBack={() => onSetView('title')}
+            onStartQuick={onStartQuickQuiz}
+            onStartMock={onStartMockExam}
+            onStartReview={onStartReview}
             reviewQueueSize={reviewQueue.length}
           />
         )}
-        {screen === 'lesson' && (
+        {view === 'lesson' && activeConcept && (
           <LessonScreen
-            conceptId={conceptId}
-            onStartQuiz={startConceptQuiz}
-            onBack={() => setScreen('conceptSelect')}
+            conceptId={activeConcept}
+            onStartQuiz={() => onStartConceptQuiz(activeConcept)}
+            onBack={() => onSetView('home')}
           />
         )}
-        {screen === 'quiz' && (quizPhases || quizQuestions) && (
+        {view === 'quiz' && (quizPhases || quizQuestions) && (
           <QuizScreen
             mode={quizMode}
-            conceptId={conceptId}
+            conceptId={activeConcept}
             phases={quizPhases}
             questions={quizQuestions}
             progress={progress}
             onComplete={onAnswer}
             onToggleBookmark={onToggleBookmark}
             onFinish={finishQuiz}
-            onExit={() => setScreen('conceptSelect')}
+            onExit={onExitQuiz}
           />
         )}
-        {screen === 'results' && quizResult && (
+        {view === 'results' && quizResult && (
           <ResultsScreen
             result={quizResult}
-            conceptId={conceptId}
+            conceptId={activeConcept}
             progress={progress}
             onPlayAgain={playAgain}
-            onBack={() => setScreen('conceptSelect')}
-            onHome={() => setScreen('title')}
+            onBack={() => { setQuizResult(null); onSetView('home'); }}
+            onHome={() => { setQuizResult(null); onSetView('title'); }}
           />
         )}
       </div>

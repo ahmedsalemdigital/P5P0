@@ -885,34 +885,40 @@ function LessonScreen({ conceptId, onStartQuiz, onBack }) {
    QUIZ SCREEN — handles concept (phased), mixed (quick), mock, review
    ────────────────────────────────────────────────────────────────────────── */
 
-function QuizScreen({ mode, conceptId, phases, questions, progress, onComplete, onToggleBookmark, onFinish, onExit }) {
+function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess, progress, onComplete, onToggleBookmark, onFinish, onExit }) {
   const isMock = mode === 'mock';
   const isPhased = !!phases;
   const allQuestions = useMemo(() => isPhased ? phases.flatMap((p) => p.questions) : (questions || []), [isPhased, phases, questions]);
   const total = allQuestions.length;
 
-  // Phased index → flat
-  const [phaseIdx, setPhaseIdx] = useState(0);
-  const [idx, setIdx] = useState(0);
+  // Persistent state lives in qsess (lifted to App so theme toggle preserves progress)
+  const phaseIdx = qsess.phaseIdx;
+  const idx = qsess.idx;
+  const mockAnswers = qsess.mockAnswers;       // qid -> selected[]
+  const sessionAnswers = qsess.sessionAnswers; // qid -> { selected, wasCorrect }
+  const phaseTransition = qsess.phaseTransition;
+  const timeLeft = qsess.mockTimeLeft;
+  const setPhaseIdx = (v) => setQsess((s) => ({ ...s, phaseIdx: typeof v === 'function' ? v(s.phaseIdx) : v }));
+  const setIdx = (v) => setQsess((s) => ({ ...s, idx: typeof v === 'function' ? v(s.idx) : v }));
+  const setPhaseTransition = (v) => setQsess((s) => ({ ...s, phaseTransition: typeof v === 'function' ? v(s.phaseTransition) : v }));
+
   const phaseOffset = isPhased ? phases.slice(0, phaseIdx).reduce((s, p) => s + p.questions.length, 0) : 0;
   const globalIdx = isPhased ? phaseOffset + idx : idx;
   const q = isPhased ? phases[phaseIdx]?.questions[idx] : questions[idx];
 
+  // Ephemeral per-question UI state — local; resets on theme toggle, which is fine
   const [selected, setSelected] = useState([]);
   const [submitted, setSubmitted] = useState(false);
-  const [answered, setAnswered] = useState(new Map()); // globalIdx → boolean correct
-  const [results, setResults] = useState([]); // {qid, correct}
-  const [score, setScore] = useState(0);
   const [flash, setFlash] = useState(null);
-  const [phaseTransition, setPhaseTransition] = useState(false);
 
-  // Mock timer
-  const [timeLeft, setTimeLeft] = useState(60 * 60);
+  // Mock timer ticks against shared qsess
   useEffect(() => {
     if (!isMock) return;
-    const iv = setInterval(() => setTimeLeft((t) => Math.max(0, t - 1)), 1000);
+    const iv = setInterval(() => {
+      setQsess((s) => ({ ...s, mockTimeLeft: Math.max(0, s.mockTimeLeft - 1) }));
+    }, 1000);
     return () => clearInterval(iv);
-  }, [isMock]);
+  }, [isMock, setQsess]);
   useEffect(() => {
     if (isMock && timeLeft === 0) finalize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -936,24 +942,34 @@ function QuizScreen({ mode, conceptId, phases, questions, progress, onComplete, 
   function submit() {
     if (selected.length === 0) return;
     const correct = arraysEqualAsSet(selected, correctAnswers);
+    const alreadyAnswered = isMock ? !!mockAnswers[q.id] : !!sessionAnswers[q.id];
 
     if (isMock) {
-      // Deferred: don't reveal feedback, just record and advance
-      if (!answered.has(globalIdx)) {
-        setAnswered((prev) => { const n = new Map(prev); n.set(globalIdx, correct); return n; });
-        setResults((p) => [...p, { qid: q.id, correct }]);
-        if (correct) setScore((s) => s + 10);
-      }
-      onComplete(q.id, correct);
+      // Deferred: don't reveal feedback, just record selection and advance
+      setQsess((s) => alreadyAnswered ? ({
+        ...s,
+        mockAnswers: { ...s.mockAnswers, [q.id]: selected },
+      }) : ({
+        ...s,
+        mockAnswers: { ...s.mockAnswers, [q.id]: selected },
+        score: correct ? s.score + 10 : s.score,
+        sessionCorrect: correct ? s.sessionCorrect + 1 : s.sessionCorrect,
+        sessionWrong: correct ? s.sessionWrong : s.sessionWrong + 1,
+      }));
+      if (!alreadyAnswered) onComplete(q.id, correct);
       advanceImmediate();
     } else {
       // Immediate feedback
       setSubmitted(true);
       setFlash(correct ? 'correct' : 'wrong');
-      if (!answered.has(globalIdx)) {
-        setAnswered((prev) => { const n = new Map(prev); n.set(globalIdx, correct); return n; });
-        setResults((p) => [...p, { qid: q.id, correct }]);
-        if (correct) setScore((s) => s + 10);
+      if (!alreadyAnswered) {
+        setQsess((s) => ({
+          ...s,
+          sessionAnswers: { ...s.sessionAnswers, [q.id]: { selected, wasCorrect: correct } },
+          score: correct ? s.score + 10 : s.score,
+          sessionCorrect: correct ? s.sessionCorrect + 1 : s.sessionCorrect,
+          sessionWrong: correct ? s.sessionWrong : s.sessionWrong + 1,
+        }));
         onComplete(q.id, correct);
       }
     }
@@ -986,16 +1002,37 @@ function QuizScreen({ mode, conceptId, phases, questions, progress, onComplete, 
   }
 
   function finalize() {
-    const correctCount = (results.length === total) ? results.filter((r) => r.correct).length : results.filter((r) => r.correct).length;
-    const finalCorrect = correctCount;
+    // Compute final score from the appropriate answer source
+    let finalCorrect = 0;
+    const finalResults = [];
+    for (const qq of allQuestions) {
+      let isRight = false;
+      if (isMock) {
+        const ans = mockAnswers[qq.id];
+        isRight = !!ans && arraysEqualAsSet(ans, qq.correct);
+      } else {
+        const sa = sessionAnswers[qq.id];
+        isRight = !!sa && sa.wasCorrect;
+      }
+      if (isRight) finalCorrect++;
+      finalResults.push({ qid: qq.id, correct: isRight });
+    }
     const finalTotal = total;
-    // flawless achievement
+    // Mark mock answers as graded — onComplete updates progress storage
+    if (isMock) {
+      for (const r of finalResults) onComplete(r.qid, r.correct);
+    }
     if (finalCorrect === finalTotal && finalTotal > 0) {
       try { localStorage.setItem('pspo_flawless', 'true'); } catch {}
     }
     onFinish({
-      score, results, total: finalTotal, correctCount: finalCorrect,
-      wrongCount: finalTotal - finalCorrect, conceptId, mode,
+      score: finalCorrect * 10,
+      results: finalResults,
+      total: finalTotal,
+      correctCount: finalCorrect,
+      wrongCount: finalTotal - finalCorrect,
+      conceptId,
+      mode,
       timeUsed: isMock ? (60 * 60 - timeLeft) : null,
     });
   }
@@ -1020,8 +1057,12 @@ function QuizScreen({ mode, conceptId, phases, questions, progress, onComplete, 
 
   if (!q) return null;
 
-  const progressPct = total > 0 ? (answered.size / total) * 100 : 0;
-  const accuracy = answered.size > 0 ? Math.round(([...answered.values()].filter((v) => v).length / answered.size) * 100) : 0;
+  const answersMap = isMock ? mockAnswers : sessionAnswers;
+  const answeredCount = Object.keys(answersMap).length;
+  const progressPct = total > 0 ? (answeredCount / total) * 100 : 0;
+  // Accuracy only meaningful in non-mock (mock has deferred scoring)
+  const correctSoFar = isMock ? 0 : Object.values(sessionAnswers).filter((a) => a.wasCorrect).length;
+  const accuracy = (!isMock && answeredCount > 0) ? Math.round((correctSoFar / answeredCount) * 100) : 0;
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
@@ -1057,7 +1098,7 @@ function QuizScreen({ mode, conceptId, phases, questions, progress, onComplete, 
             <>
               <div style={{ fontSize: 7, color: 'var(--g3)' }}>ACCURACY</div>
               <div style={{ color: 'var(--gold)', fontSize: 14 }}>
-                {answered.size === 0 ? '—' : `${accuracy}%`}
+                {answeredCount === 0 ? '—' : `${accuracy}%`}
               </div>
             </>
           )}
@@ -1326,6 +1367,8 @@ export default function ArcadeShell({
   quizPhases,
   quizQuestions,
   quizMode,
+  qsess,
+  setQsess,
   progress,
   onAnswer,
   onToggleBookmark,
@@ -1404,6 +1447,8 @@ export default function ArcadeShell({
             conceptId={activeConcept}
             phases={quizPhases}
             questions={quizQuestions}
+            qsess={qsess}
+            setQsess={setQsess}
             progress={progress}
             onComplete={onAnswer}
             onToggleBookmark={onToggleBookmark}

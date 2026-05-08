@@ -4839,28 +4839,37 @@ export function defangBrutalQuestion(text) {
   return text.replace(/\b[A-Z]{3,}\b/g, (w) => w.toLowerCase());
 }
 
-function QuizView({ questions: questionsProp, phases, progress, onComplete, onBack, mode, conceptId, onToggleBookmark }) {
-  const [phaseIdx, setPhaseIdx] = useState(0);
+function QuizView({ questions: questionsProp, phases, progress, onComplete, onBack, mode, conceptId, onToggleBookmark, qsess, setQsess }) {
+  // Persistent state lives in qsess (lifted to App so theme toggle preserves quiz progress).
+  // Wrapper setters keep the rest of the component's call sites unchanged.
+  const phaseIdx = qsess.phaseIdx;
+  const idx = qsess.idx;
+  const sessionCorrect = qsess.sessionCorrect;
+  const sessionWrong = qsess.sessionWrong;
+  const finished = qsess.finished;
+  const mockAnswers = qsess.mockAnswers;
+  const sessionAnswers = qsess.sessionAnswers;
+  const mockBookmarks = qsess.mockBookmarks;
+  const mockTimeLeft = qsess.mockTimeLeft;
+  const setPhaseIdx = (v) => setQsess((s) => ({ ...s, phaseIdx: typeof v === 'function' ? v(s.phaseIdx) : v }));
+  const setIdx = (v) => setQsess((s) => ({ ...s, idx: typeof v === 'function' ? v(s.idx) : v }));
+  const setSessionCorrect = (v) => setQsess((s) => ({ ...s, sessionCorrect: typeof v === 'function' ? v(s.sessionCorrect) : v }));
+  const setSessionWrong = (v) => setQsess((s) => ({ ...s, sessionWrong: typeof v === 'function' ? v(s.sessionWrong) : v }));
+  const setFinished = (v) => setQsess((s) => ({ ...s, finished: typeof v === 'function' ? v(s.finished) : v }));
+  const setMockAnswers = (v) => setQsess((s) => ({ ...s, mockAnswers: typeof v === 'function' ? v(s.mockAnswers) : v }));
+  const setSessionAnswers = (v) => setQsess((s) => ({ ...s, sessionAnswers: typeof v === 'function' ? v(s.sessionAnswers) : v }));
+  const setMockBookmarks = (v) => setQsess((s) => ({ ...s, mockBookmarks: typeof v === 'function' ? v(s.mockBookmarks) : v }));
 
   // Derive active question list from phases or direct prop
   const questions = phases ? phases[phaseIdx].questions : (questionsProp || []);
 
-  const [idx, setIdx] = useState(0);
+  // Ephemeral per-question UI state — local; resets on theme toggle, which is fine
   const [selected, setSelected] = useState([]);
   const [revealed, setRevealed] = useState(false);
   const [wasCorrect, setWasCorrect] = useState(null);
-  const [sessionCorrect, setSessionCorrect] = useState(0);
-  const [sessionWrong, setSessionWrong] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
 
-  // Mock-exam-only state: answers recorded but not scored until submission, plus a timer
   const isMock = mode === 'mock';
-  const [mockAnswers, setMockAnswers] = useState({}); // qid -> selected[]
-  // Non-mock session answer memory so navigation can revisit revealed questions without re-recording
-  const [sessionAnswers, setSessionAnswers] = useState({}); // qid -> { selected, wasCorrect }
-  // Mock-only ephemeral bookmarks — real-exam style flags scoped to this attempt only
-  const [mockBookmarks, setMockBookmarks] = useState({});
-
   const effectiveBookmarks = isMock ? mockBookmarks : (progress.bookmarks || {});
 
   function handleToggleBookmark(qid) {
@@ -4874,24 +4883,22 @@ function QuizView({ questions: questionsProp, phases, progress, onComplete, onBa
       onToggleBookmark(qid);
     }
   }
-  const [mockTimeLeft, setMockTimeLeft] = useState(60 * 60); // 60 min in seconds
-  const [mockStartedAt] = useState(() => Date.now());
-  const [confirmSubmit, setConfirmSubmit] = useState(false);
 
-  // Timer tick for mock exam
+  // Timer tick — decrements shared mockTimeLeft so it survives theme toggles
   useEffect(() => {
     if (!isMock || finished) return;
     const interval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - mockStartedAt) / 1000);
-      const remaining = Math.max(0, 60 * 60 - elapsed);
-      setMockTimeLeft(remaining);
-      if (remaining <= 0) {
-        finalizeMockExam();
-      }
-    }, 500);
+      setQsess((s) => ({ ...s, mockTimeLeft: Math.max(0, s.mockTimeLeft - 1) }));
+    }, 1000);
     return () => clearInterval(interval);
+  }, [isMock, finished, setQsess]);
+
+  useEffect(() => {
+    if (isMock && mockTimeLeft === 0 && !finished) {
+      finalizeMockExam();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMock, finished, mockStartedAt]);
+  }, [mockTimeLeft, isMock, finished]);
 
   function finalizeMockExam() {
     // Score every question
@@ -5482,15 +5489,36 @@ function StatsView({ progress, onBack, onReset }) {
    APP ROOT
    ────────────────────────────────────────────────────────────────────────── */
 
+// Default quiz-session shape used by both QuizView (classic) and QuizScreen (arcade).
+// Lifted into App so theme toggles preserve mid-quiz progress.
+const FRESH_QSESS = {
+  idx: 0,
+  phaseIdx: 0,
+  finished: false,
+  sessionCorrect: 0,
+  sessionWrong: 0,
+  score: 0,                // arcade displays this; 10pts/correct
+  mockAnswers: {},         // qid -> selected[] (mock — deferred scoring)
+  sessionAnswers: {},      // qid -> { selected, wasCorrect } (non-mock — immediate feedback)
+  mockBookmarks: {},       // qid -> bool (mock-attempt scoped)
+  mockTimeLeft: 60 * 60,   // mock exam timer (seconds)
+  phaseTransition: false,  // concept-quiz inter-phase splash (arcade)
+};
+
 export default function App() {
   const [view, setView] = useState('home');
   const [activeConcept, setActiveConcept] = useState(null);
   const [quizSet, setQuizSet] = useState(null);
   const [quizPhases, setQuizPhases] = useState(null);
   const [quizMode, setQuizMode] = useState('mixed');
+  const [qsess, setQsess] = useState(FRESH_QSESS);
   const [progress, setProgress] = useState(DEFAULT_PROGRESS);
   const [loaded, setLoaded] = useState(false);
   const [theme, setTheme] = useState('arcade');
+
+  function resetQsess(extra = {}) {
+    setQsess({ ...FRESH_QSESS, ...extra });
+  }
 
   useEffect(() => {
     const p = loadProgress();
@@ -5576,6 +5604,7 @@ export default function App() {
     setQuizSet(null);
     setQuizPhases(phases);
     setQuizMode('concept');
+    resetQsess();
     setView('quiz');
   }
 
@@ -5584,6 +5613,7 @@ export default function App() {
     setQuizSet(shuffled);
     setActiveConcept(null);
     setQuizMode('mixed');
+    resetQsess();
     setView('quiz');
   }
 
@@ -5605,6 +5635,7 @@ export default function App() {
     setQuizSet(picked);
     setActiveConcept(null);
     setQuizMode('mock');
+    resetQsess();
     setView('quiz');
   }
 
@@ -5625,6 +5656,7 @@ export default function App() {
     setQuizSet(queue.sort(() => Math.random() - 0.5));
     setActiveConcept(null);
     setQuizMode('review');
+    resetQsess();
     setView('quiz');
   }
 
@@ -5634,6 +5666,7 @@ export default function App() {
     setQuizPhases(null);
     setActiveConcept(null);
     setQuizMode('mixed');
+    resetQsess();
   }
 
   if (!loaded) {
@@ -5655,6 +5688,8 @@ export default function App() {
           quizPhases={quizPhases}
           quizQuestions={quizSet}
           quizMode={quizMode}
+          qsess={qsess}
+          setQsess={setQsess}
           progress={progress}
           onAnswer={updateAnswer}
           onToggleBookmark={toggleBookmark}
@@ -5709,6 +5744,8 @@ export default function App() {
           mode={quizMode}
           conceptId={activeConcept}
           onToggleBookmark={toggleBookmark}
+          qsess={qsess}
+          setQsess={setQsess}
         />
       )}
 

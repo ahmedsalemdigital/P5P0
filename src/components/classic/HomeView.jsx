@@ -71,14 +71,21 @@ export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick,
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
                   <span className="mono faint" style={{ fontSize: 10, letterSpacing: '0.16em' }}>
-                    {String(i + 1).padStart(2, '0')}
+                    {c.optional ? '+ EXTRA' : String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="mono" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: masteryColor }}>
                     {m.level}
                   </span>
                 </div>
-                <div className="display" style={{ fontSize: 20, fontWeight: 500, marginBottom: 4, letterSpacing: '-0.01em' }}>
-                  {c.label}
+                <div className="display" style={{ fontSize: 20, fontWeight: 500, marginBottom: 4, letterSpacing: '-0.01em', display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
+                  <span>{c.label}</span>
+                  {c.optional && (
+                    <span className="mono" style={{
+                      fontSize: 9, fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase',
+                      color: 'var(--accent)', padding: '2px 6px',
+                      border: '1px solid var(--accent-dim)', borderRadius: 3,
+                    }}>Optional</span>
+                  )}
                 </div>
                 <div className="dim" style={{ fontSize: 13, marginBottom: 14 }}>
                   {c.subtitle}

@@ -90,19 +90,28 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
               onMouseEnter={() => setHover(c.id)}
               onMouseLeave={() => setHover(null)}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ fontSize: 18, color: 'var(--gold)', letterSpacing: 1, flexShrink: 0, minWidth: 28, textAlign: 'center' }}>
-                  {String(i + 1).padStart(2, '0')}
+                <div style={{ fontSize: 18, color: c.optional ? 'var(--magenta)' : 'var(--gold)', letterSpacing: 1, flexShrink: 0, minWidth: 28, textAlign: 'center' }}>
+                  {c.optional ? '+' : String(i + 1).padStart(2, '0')}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4, gap: 6 }}>
-                    <div style={{ fontSize: 10, color: 'var(--g5)', letterSpacing: 1 }}>{c.label.toUpperCase()}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4, gap: 6, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, minWidth: 0 }}>
+                      <div style={{ fontSize: 10, color: 'var(--g5)', letterSpacing: 1 }}>{c.label.toUpperCase()}</div>
+                      {c.optional && (
+                        <span style={{
+                          fontSize: 6, color: 'var(--magenta)', letterSpacing: 1,
+                          padding: '1px 5px', border: '1px solid var(--magenta)',
+                          textShadow: '0 0 4px rgba(255,68,170,0.4)',
+                        }}>OPTIONAL · +EXTRA</span>
+                      )}
+                    </div>
                     <div style={{ fontSize: 7, color: cleared ? 'var(--gold)' : 'var(--g3)', letterSpacing: 1, flexShrink: 0 }}>
                       {cleared ? '★ CLEARED' : 'LEARNING'}
                     </div>
                   </div>
                   <div style={{ fontSize: 8, color: 'var(--g3)', marginBottom: 10, lineHeight: 1.6 }}>{c.subtitle}</div>
                   <div className="pbar-wrap" style={{ height: 5, marginBottom: 5 }}>
-                    <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%' }} />
+                    <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%', background: c.optional ? 'var(--magenta)' : 'var(--g4)' }} />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 7, color: 'var(--g3)' }}>
                     <span>{m.uniqueCorrect} / {m.questionCount} CORRECT</span>

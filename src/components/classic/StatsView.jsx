@@ -55,7 +55,16 @@ export function StatsView({ progress, onBack, onReset }) {
           return (
             <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', border: '1px solid var(--border)', background: 'var(--surface)' }}>
               <div style={{ flex: 1 }}>
-                <div className="display" style={{ fontSize: 17, fontWeight: 500 }}>{c.label}</div>
+                <div className="display" style={{ fontSize: 17, fontWeight: 500, display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
+                  <span>{c.label}</span>
+                  {c.optional && (
+                    <span className="mono" style={{
+                      fontSize: 9, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase',
+                      color: 'var(--accent)', padding: '2px 6px',
+                      border: '1px solid var(--accent-dim)', borderRadius: 3,
+                    }}>Optional</span>
+                  )}
+                </div>
                 <div className="mono faint" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.14em' }}>
                   {m.level} · {m.totalAnswered} answered
                 </div>

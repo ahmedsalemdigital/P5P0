@@ -1,4 +1,9 @@
 import { QUESTIONS } from '../data/questions.js';
+import { CONCEPTS } from '../data/concepts.js';
+
+const OPTIONAL_CONCEPT_IDS = new Set(CONCEPTS.filter((c) => c.optional).map((c) => c.id));
+export const isOptionalConcept = (conceptId) => OPTIONAL_CONCEPT_IDS.has(conceptId);
+const isOptionalQuestion = (q) => OPTIONAL_CONCEPT_IDS.has(q.concept);
 
 // Initial state for an in-flight quiz attempt. Lifted into App so theme toggles
 // preserve mid-quiz progress across the two component trees.
@@ -41,11 +46,13 @@ export function pickQuickQuiz() {
 }
 
 // Mock exam mix reflects real PSPO I difficulty distribution.
+// Optional concepts (e.g. EBM extra material) are excluded — the mock is the exam, not the extras.
 const MOCK_MIX = { standard: 55, brutal: 15, scenario: 10 };
 export function pickMockExam() {
-  const standards = QUESTIONS.filter((q) => !q.difficulty);
-  const brutals   = QUESTIONS.filter((q) => q.difficulty === 'brutal');
-  const scenarios = QUESTIONS.filter((q) => q.difficulty === 'scenario');
+  const pool = QUESTIONS.filter((q) => !isOptionalQuestion(q));
+  const standards = pool.filter((q) => !q.difficulty);
+  const brutals   = pool.filter((q) => q.difficulty === 'brutal');
+  const scenarios = pool.filter((q) => q.difficulty === 'scenario');
   return shuffle([
     ...shuffle(standards).slice(0, MOCK_MIX.standard),
     ...shuffle(brutals).slice(0, MOCK_MIX.brutal),
@@ -75,4 +82,39 @@ export function verdictFor(pct) {
   if (pct >= PASS_BAR)     return 'pass';
   if (pct >= PASS_CLOSE)   return 'close';
   return 'fail';
+}
+
+// Overall progress: required concepts give 0–100%, optional concepts add a bonus
+// (each optional concept worth OPTIONAL_BONUS_PER_CONCEPT). Total caps at 100 + total bonus.
+export const OPTIONAL_BONUS_PER_CONCEPT = 10;
+
+export function overallProgress(progress) {
+  const required = QUESTIONS.filter((q) => !isOptionalQuestion(q));
+  const optional = QUESTIONS.filter((q) =>  isOptionalQuestion(q));
+
+  const uniqueCorrect = (pool) => pool.filter((q) => {
+    const p = progress.questions[q.id];
+    return p && (p.correctCount || 0) > 0;
+  }).length;
+
+  const baseline = required.length > 0
+    ? Math.round((uniqueCorrect(required) / required.length) * 100)
+    : 0;
+
+  // Per-optional-concept bonus, proportional to that concept's completion
+  const optionalConceptIds = [...OPTIONAL_CONCEPT_IDS];
+  const bonus = optionalConceptIds.reduce((sum, cid) => {
+    const conceptQs = optional.filter((q) => q.concept === cid);
+    if (conceptQs.length === 0) return sum;
+    const correct = uniqueCorrect(conceptQs);
+    return sum + (correct / conceptQs.length) * OPTIONAL_BONUS_PER_CONCEPT;
+  }, 0);
+
+  const maxBonus = optionalConceptIds.length * OPTIONAL_BONUS_PER_CONCEPT;
+  return {
+    baseline,                      // 0–100, based on required concepts only
+    bonus: Math.round(bonus),      // 0–maxBonus, from completing optional content
+    total: baseline + Math.round(bonus),
+    maxTotal: 100 + maxBonus,
+  };
 }

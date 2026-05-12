@@ -9,5 +9,5 @@ export const CONCEPTS = [
   { id: 'events',               label: 'Events',                  subtitle: 'Sprint, Planning, Daily, Review, Retro' },
   { id: 'artifacts_commitments',label: 'Artifacts & Commitments', subtitle: 'Product Goal, Sprint Goal, DoD' },
   { id: 'scaling',              label: 'Scaling & Scenarios',     subtitle: 'Multi-team patterns' },
-  { id: 'evidence_based_management', label: 'Evidence-Based Management', subtitle: 'Measuring value with KVAs and KVMs' },
+  { id: 'evidence_based_management', label: 'Evidence-Based Management', subtitle: 'Measuring value with KVAs and KVMs', optional: true },
 ];

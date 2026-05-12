@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { CONCEPTS } from '../../data/concepts.js';
-import { QUESTIONS } from '../../data/questions.js';
 import { masteryForConcept } from '../../lib/progress.js';
+import { overallProgress } from '../../lib/quiz.js';
 import { Mascot } from './Mascot.jsx';
 import { AchievementIcon } from './AchievementIcon.jsx';
 
 export function TitleScreen({ progress, onStart }) {
-  const totalQuestions = QUESTIONS.length;
-  const conceptStats = CONCEPTS.map((c) => ({ id: c.id, m: masteryForConcept(progress, c.id) }));
-  const totalAsked = conceptStats.reduce((s, c) => s + Math.min(c.m.questionCount, c.m.uniqueCorrect), 0);
-  const totalPct = totalQuestions ? Math.round((totalAsked / totalQuestions) * 100) : 0;
-  const totalCleared = conceptStats.filter((c) => c.m.level === 'mastered').length;
+  const conceptStats = CONCEPTS.map((c) => ({ id: c.id, optional: !!c.optional, m: masteryForConcept(progress, c.id) }));
+  const { total: totalPct, maxTotal } = overallProgress(progress);
+  // Required-only count for the "STAGES" tile
+  const requiredStats = conceptStats.filter((c) => !c.optional);
+  const totalCleared = requiredStats.filter((c) => c.m.level === 'mastered').length;
 
-  const allCleared = conceptStats.every((c) => c.m.level === 'mastered');
+  const allCleared = requiredStats.every((c) => c.m.level === 'mastered');
   const flawless = (() => {
     try { return JSON.parse(localStorage.getItem('pspo_flawless') || 'false'); } catch { return false; }
   })();
@@ -103,7 +103,7 @@ export function TitleScreen({ progress, onStart }) {
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 6, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>STAGES</div>
-            <div style={{ fontSize: 14, color: 'var(--gold)' }}>{totalCleared}<span style={{ color: 'var(--g2)', fontSize: 9 }}>/{CONCEPTS.length}</span></div>
+            <div style={{ fontSize: 14, color: 'var(--gold)' }}>{totalCleared}<span style={{ color: 'var(--g2)', fontSize: 9 }}>/{requiredStats.length}</span></div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 6, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>PROGRESS</div>
@@ -118,21 +118,26 @@ export function TitleScreen({ progress, onStart }) {
           </div>
         </div>
 
-        <div style={{ fontSize: 6, color: 'var(--g3)', letterSpacing: 1, marginBottom: 8 }}>STAGE PROGRESS</div>
+        <div style={{ fontSize: 6, color: 'var(--g3)', letterSpacing: 1, marginBottom: 8 }}>
+          STAGE PROGRESS · {totalPct}% / {maxTotal}%
+        </div>
         {CONCEPTS.map((c) => {
           const m = masteryForConcept(progress, c.id);
           const pct = m.questionCount > 0 ? Math.round((m.uniqueCorrect / m.questionCount) * 100) : 0;
           const cleared = m.level === 'mastered';
           return (
             <div key={c.id} style={{ marginBottom: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3 }}>
-                <div style={{ fontSize: 7, color: cleared ? 'var(--g4)' : 'var(--g3)', letterSpacing: 0.5 }}>
-                  {cleared ? '★ ' : '• '}{c.label.toUpperCase()}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3, gap: 6 }}>
+                <div style={{ fontSize: 7, color: cleared ? 'var(--g4)' : 'var(--g3)', letterSpacing: 0.5, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                  <span>{cleared ? '★ ' : '• '}{c.label.toUpperCase()}</span>
+                  {c.optional && (
+                    <span style={{ fontSize: 5, color: 'var(--magenta)', letterSpacing: 1, padding: '1px 4px', border: '1px solid var(--magenta)' }}>+EXTRA</span>
+                  )}
                 </div>
                 <div style={{ fontSize: 6, color: 'var(--g2)' }}>{pct}%</div>
               </div>
               <div className="pbar-wrap" style={{ height: 5 }}>
-                <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%' }} />
+                <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%', background: c.optional ? 'var(--magenta)' : 'var(--g4)' }} />
               </div>
             </div>
           );

@@ -78,41 +78,44 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
         </div>
       </div>
 
-      {/* Primary CTAs — Start + Switch Style. Sized as the dominant element on the screen. */}
+      {/* Primary CTAs — Start + Switch Style. Sized as the dominant element on the screen.
+          minmax(220px,1fr) is wide enough for both labels to fit on one line at the chosen
+          font size, so no awkward wrapping. */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
         gap: 10,
         marginBottom: 8,
         marginTop: 4,
       }}>
         <button className="arc-btn" style={{
-          fontSize: 16, padding: '22px 16px', letterSpacing: 5,
+          fontFamily: 'Press Start 2P, monospace',
+          fontSize: 14, padding: '22px 18px', letterSpacing: 4,
           background: 'var(--g4)', color: '#000',
           boxShadow: '0 0 22px rgba(0,255,65,0.7), inset 0 0 0 3px #00ff41',
           minHeight: 72,
-          display: 'flex',
-          flexDirection: 'column',
+          display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 4,
-          lineHeight: 1.2,
+          gap: 12,
+          whiteSpace: 'nowrap',
+          textTransform: 'uppercase',
         }} onClick={onStart}>
-          <span style={{ paddingLeft: 5 }}>▶ PRESS</span>
-          <span style={{ paddingLeft: 5 }}>START</span>
+          <span style={{ fontSize: 16 }}>▶</span>
+          <span>START</span>
         </button>
         <button
           onClick={onToggleTheme}
           title="Switch to classic theme"
           style={{
             fontFamily: 'Press Start 2P, monospace',
-            fontSize: 14, padding: '22px 22px', letterSpacing: 4,
+            fontSize: 14, padding: '22px 18px', letterSpacing: 4,
             background: '#000', color: 'var(--gold)',
             border: '3px solid var(--gold)',
             cursor: 'pointer',
             boxShadow: '0 0 18px rgba(255,176,0,0.5), inset 0 0 12px rgba(255,176,0,0.2)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-            textTransform: 'uppercase',
+            textTransform: 'uppercase', whiteSpace: 'nowrap',
             minHeight: 72,
           }}>
           <span style={{ fontSize: 16 }}>◐</span>

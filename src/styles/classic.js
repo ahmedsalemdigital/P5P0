@@ -227,43 +227,89 @@ export const STYLE = `
 }
 
 /* Arcade-style pixel button used inside the classic theme (e.g. "Try P5P0" CTA).
-   Chamfered corners simulate a stepped pixel-game shape; CRT phosphor green on black. */
+   Pixel-stepped capsule shape — stepped quarter-circle caps on left and right,
+   approximating an oval while keeping a retro pixel-art feel. */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
   font-size: 18px;
   letter-spacing: 0.18em;
   color: #00ff41;
-  background: #000;
-  border: 3px solid #00ff41;
-  padding: 22px 36px;
+  background: #00ff41;          /* the border color fills the whole shape */
+  padding: 4px;                  /* 4px = visible "border" thickness, since clip-path eats real borders */
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
   text-transform: uppercase;
-  min-height: 72px;
-  /* Pixel-cut "oval" — 6px chamfer at each corner so it reads as a stepped retro button */
+  min-height: 80px;
+  min-width: 220px;
+  /* Stepped pixel capsule — 36px end-cap radius, 4 stepped tiers of 9px each.
+     Right end traced clockwise from top, then mirrored for bottom + left end. */
   clip-path: polygon(
-    6px 0,    calc(100% - 6px) 0,
-    100% 6px, 100% calc(100% - 6px),
-    calc(100% - 6px) 100%, 6px 100%,
-    0 calc(100% - 6px), 0 6px
+    36px 0, calc(100% - 36px) 0,
+    calc(100% - 36px) 9px,  calc(100% - 27px) 9px,
+    calc(100% - 27px) 18px, calc(100% - 18px) 18px,
+    calc(100% - 18px) 27px, calc(100% - 9px)  27px,
+    calc(100% - 9px)  36px, 100% 36px,
+    100% calc(100% - 36px),
+    calc(100% - 9px)  calc(100% - 36px), calc(100% - 9px)  calc(100% - 27px),
+    calc(100% - 18px) calc(100% - 27px), calc(100% - 18px) calc(100% - 18px),
+    calc(100% - 27px) calc(100% - 18px), calc(100% - 27px) calc(100% - 9px),
+    calc(100% - 36px) calc(100% - 9px),  calc(100% - 36px) 100%,
+    36px 100%,
+    36px calc(100% - 9px),  27px calc(100% - 9px),
+    27px calc(100% - 18px), 18px calc(100% - 18px),
+    18px calc(100% - 27px), 9px  calc(100% - 27px),
+    9px  calc(100% - 36px), 0 calc(100% - 36px),
+    0 36px,
+    9px  36px, 9px  27px,
+    18px 27px, 18px 18px,
+    27px 18px, 27px 9px,
+    36px 9px
   );
-  box-shadow:
-    0 0 14px rgba(0,255,65,0.45),
-    inset 0 0 12px rgba(0,255,65,0.18);
+  /* Outer glow must use drop-shadow so it follows the clip-path edge, not the rectangle */
+  filter: drop-shadow(0 0 10px rgba(0,255,65,0.6));
   text-shadow: 0 0 6px rgba(0,255,65,0.6);
-  transition: transform 0.08s, color 0.12s, background 0.12s, box-shadow 0.12s;
+  transition: transform 0.08s, filter 0.12s, padding 0.12s;
   position: relative;
+  border: none;
 }
+/* The actual visible face is a pseudo-element inset by 'padding', giving the border illusion */
+.pspo-root .pixel-cta::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: #000;
+  z-index: 0;
+  clip-path: polygon(
+    32px 0, calc(100% - 32px) 0,
+    calc(100% - 32px) 5px, calc(100% - 23px) 5px,
+    calc(100% - 23px) 14px, calc(100% - 14px) 14px,
+    calc(100% - 14px) 23px, calc(100% - 5px)  23px,
+    calc(100% - 5px)  32px, 100% 32px,
+    100% calc(100% - 32px),
+    calc(100% - 5px)  calc(100% - 32px), calc(100% - 5px)  calc(100% - 23px),
+    calc(100% - 14px) calc(100% - 23px), calc(100% - 14px) calc(100% - 14px),
+    calc(100% - 23px) calc(100% - 14px), calc(100% - 23px) calc(100% - 5px),
+    calc(100% - 32px) calc(100% - 5px), calc(100% - 32px) 100%,
+    32px 100%,
+    32px calc(100% - 5px), 23px calc(100% - 5px),
+    23px calc(100% - 14px), 14px calc(100% - 14px),
+    14px calc(100% - 23px), 5px  calc(100% - 23px),
+    5px  calc(100% - 32px), 0 calc(100% - 32px),
+    0 32px,
+    5px 32px,  5px 23px,
+    14px 23px, 14px 14px,
+    23px 14px, 23px 5px,
+    32px 5px
+  );
+  box-shadow: inset 0 0 16px rgba(0,255,65,0.25);
+}
+.pspo-root .pixel-cta > * { position: relative; z-index: 1; }
 .pspo-root .pixel-cta:active { transform: translateY(1px); }
 .pspo-root .pixel-cta:hover {
+  filter: drop-shadow(0 0 16px rgba(0,255,65,0.85));
   color: #ccffdd;
-  background: #001a08;
-  box-shadow:
-    0 0 22px rgba(0,255,65,0.7),
-    inset 0 0 18px rgba(0,255,65,0.3);
   animation: pixelCtaGlitch 0.9s steps(1) infinite;
 }
 @keyframes pixelCtaGlitch {

@@ -227,88 +227,110 @@ export const STYLE = `
 }
 
 /* Arcade-style pixel button used inside the classic theme (e.g. "Try P5P0" CTA).
-   Pixel-stepped capsule shape — stepped quarter-circle caps on left and right,
-   approximating an oval while keeping a retro pixel-art feel. */
+   Pixel-stepped capsule with stepped quarter-circle caps on left and right.
+   The steps are NON-uniform — wide flat tip, narrowing toward the side — so
+   the staircase actually traces a circle instead of a 45° diagonal. */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
   font-size: 18px;
   letter-spacing: 0.18em;
   color: #00ff41;
-  background: #00ff41;          /* the border color fills the whole shape */
-  padding: 4px;                  /* 4px = visible "border" thickness, since clip-path eats real borders */
+  background: #000;
+  padding: 22px 40px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
   min-height: 80px;
-  min-width: 220px;
-  /* Stepped pixel capsule — 36px end-cap radius, 4 stepped tiers of 9px each.
-     Right end traced clockwise from top, then mirrored for bottom + left end. */
+  min-width: 240px;
+  /* Stepped quarter-circle, R=36, 4 steps per corner, sized to follow a true arc:
+       top tip:  4px tall × 15px wide   (curve almost tangent to top edge)
+       step 2:   8px tall × 12px wide
+       step 3:  12px tall × 6px wide
+       step 4:  12px tall × 3px wide    (curve almost tangent to right edge) */
   clip-path: polygon(
+    /* top edge */
     36px 0, calc(100% - 36px) 0,
-    calc(100% - 36px) 9px,  calc(100% - 27px) 9px,
-    calc(100% - 27px) 18px, calc(100% - 18px) 18px,
-    calc(100% - 18px) 27px, calc(100% - 9px)  27px,
-    calc(100% - 9px)  36px, 100% 36px,
+    /* top-right curve */
+    calc(100% - 36px) 4px,  calc(100% - 21px) 4px,
+    calc(100% - 21px) 12px, calc(100% - 9px)  12px,
+    calc(100% - 9px)  24px, calc(100% - 3px)  24px,
+    calc(100% - 3px)  36px, 100% 36px,
+    /* right straight edge */
     100% calc(100% - 36px),
-    calc(100% - 9px)  calc(100% - 36px), calc(100% - 9px)  calc(100% - 27px),
-    calc(100% - 18px) calc(100% - 27px), calc(100% - 18px) calc(100% - 18px),
-    calc(100% - 27px) calc(100% - 18px), calc(100% - 27px) calc(100% - 9px),
-    calc(100% - 36px) calc(100% - 9px),  calc(100% - 36px) 100%,
+    /* bottom-right curve (mirror) */
+    calc(100% - 3px)  calc(100% - 36px), calc(100% - 3px)  calc(100% - 24px),
+    calc(100% - 9px)  calc(100% - 24px), calc(100% - 9px)  calc(100% - 12px),
+    calc(100% - 21px) calc(100% - 12px), calc(100% - 21px) calc(100% - 4px),
+    calc(100% - 36px) calc(100% - 4px), calc(100% - 36px) 100%,
+    /* bottom edge */
     36px 100%,
-    36px calc(100% - 9px),  27px calc(100% - 9px),
-    27px calc(100% - 18px), 18px calc(100% - 18px),
-    18px calc(100% - 27px), 9px  calc(100% - 27px),
-    9px  calc(100% - 36px), 0 calc(100% - 36px),
+    /* bottom-left curve (mirror) */
+    36px calc(100% - 4px), 21px calc(100% - 4px),
+    21px calc(100% - 12px), 9px calc(100% - 12px),
+    9px  calc(100% - 24px), 3px calc(100% - 24px),
+    3px  calc(100% - 36px), 0 calc(100% - 36px),
+    /* left straight edge */
     0 36px,
-    9px  36px, 9px  27px,
-    18px 27px, 18px 18px,
-    27px 18px, 27px 9px,
-    36px 9px
+    /* top-left curve (mirror) */
+    3px 36px,  3px 24px,
+    9px 24px,  9px 12px,
+    21px 12px, 21px 4px,
+    36px 4px
   );
-  /* Outer glow must use drop-shadow so it follows the clip-path edge, not the rectangle */
-  filter: drop-shadow(0 0 10px rgba(0,255,65,0.6));
+  /* Outer phosphor glow follows the clipped silhouette */
+  filter: drop-shadow(0 0 10px rgba(0,255,65,0.55));
   text-shadow: 0 0 6px rgba(0,255,65,0.6);
-  transition: transform 0.08s, filter 0.12s, padding 0.12s;
+  transition: transform 0.08s, filter 0.12s, color 0.12s;
   position: relative;
   border: none;
 }
-/* The actual visible face is a pseudo-element inset by 'padding', giving the border illusion */
+/* Border = a slightly larger sibling shape rendered behind, in green.
+   We use box-shadow with negative spread + clip-path is identical, but offset is 0,
+   which would just be the same shape. Instead we draw the green outline via a 2nd
+   clip-path on ::before with a SHRUNK polygon — the contrast between the parent
+   (green background) and ::before (black face) is the visible border. */
+.pspo-root .pixel-cta {
+  background: #00ff41;           /* the border color */
+}
 .pspo-root .pixel-cta::before {
   content: '';
   position: absolute;
-  inset: 4px;
+  inset: 0;
   background: #000;
-  z-index: 0;
+  /* Inner polygon — same shape inset by ~3px on every edge. The vertical step
+     coordinates are shifted by +3 (top) / -3 (bottom); the horizontal step
+     coordinates are shifted by +3 (left) / -3 (right). */
   clip-path: polygon(
-    32px 0, calc(100% - 32px) 0,
-    calc(100% - 32px) 5px, calc(100% - 23px) 5px,
-    calc(100% - 23px) 14px, calc(100% - 14px) 14px,
-    calc(100% - 14px) 23px, calc(100% - 5px)  23px,
-    calc(100% - 5px)  32px, 100% 32px,
-    100% calc(100% - 32px),
-    calc(100% - 5px)  calc(100% - 32px), calc(100% - 5px)  calc(100% - 23px),
-    calc(100% - 14px) calc(100% - 23px), calc(100% - 14px) calc(100% - 14px),
-    calc(100% - 23px) calc(100% - 14px), calc(100% - 23px) calc(100% - 5px),
-    calc(100% - 32px) calc(100% - 5px), calc(100% - 32px) 100%,
-    32px 100%,
-    32px calc(100% - 5px), 23px calc(100% - 5px),
-    23px calc(100% - 14px), 14px calc(100% - 14px),
-    14px calc(100% - 23px), 5px  calc(100% - 23px),
-    5px  calc(100% - 32px), 0 calc(100% - 32px),
-    0 32px,
-    5px 32px,  5px 23px,
-    14px 23px, 14px 14px,
-    23px 14px, 23px 5px,
-    32px 5px
+    36px 3px, calc(100% - 36px) 3px,
+    calc(100% - 36px) 6px,  calc(100% - 23px) 6px,
+    calc(100% - 23px) 14px, calc(100% - 11px) 14px,
+    calc(100% - 11px) 25px, calc(100% - 5px)  25px,
+    calc(100% - 5px)  36px, calc(100% - 3px)  36px,
+    calc(100% - 3px)  calc(100% - 36px),
+    calc(100% - 5px)  calc(100% - 36px), calc(100% - 5px)  calc(100% - 25px),
+    calc(100% - 11px) calc(100% - 25px), calc(100% - 11px) calc(100% - 14px),
+    calc(100% - 23px) calc(100% - 14px), calc(100% - 23px) calc(100% - 6px),
+    calc(100% - 36px) calc(100% - 6px), calc(100% - 36px) calc(100% - 3px),
+    36px calc(100% - 3px),
+    36px calc(100% - 6px), 23px calc(100% - 6px),
+    23px calc(100% - 14px), 11px calc(100% - 14px),
+    11px calc(100% - 25px), 5px calc(100% - 25px),
+    5px  calc(100% - 36px), 3px calc(100% - 36px),
+    3px 36px,
+    5px 36px,  5px 25px,
+    11px 25px, 11px 14px,
+    23px 14px, 23px 6px,
+    36px 6px
   );
   box-shadow: inset 0 0 16px rgba(0,255,65,0.25);
+  z-index: 0;
 }
 .pspo-root .pixel-cta > * { position: relative; z-index: 1; }
 .pspo-root .pixel-cta:active { transform: translateY(1px); }
 .pspo-root .pixel-cta:hover {
-  filter: drop-shadow(0 0 16px rgba(0,255,65,0.85));
+  filter: drop-shadow(0 0 18px rgba(0,255,65,0.9));
   color: #ccffdd;
   animation: pixelCtaGlitch 0.9s steps(1) infinite;
 }

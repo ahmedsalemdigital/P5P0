@@ -23,12 +23,24 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           what you miss.
         </p>
 
-        {/* Primary action row — Start + Switch Style */}
-        <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap' }}>
+        {/* Primary action row — Start + Switch Style. Sized as the dominant element on the screen. */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: 14,
+          marginTop: 44,
+          maxWidth: 640,
+        }}>
           <button
             className="btn primary"
             onClick={onStart}
-            style={{ fontSize: 14, padding: '14px 28px', letterSpacing: '0.04em' }}
+            style={{
+              fontSize: 20,
+              padding: '24px 36px',
+              letterSpacing: '0.04em',
+              fontWeight: 600,
+              minHeight: 72,
+            }}
           >
             Start studying →
           </button>
@@ -36,22 +48,24 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
             onClick={onToggleTheme}
             className="mono"
             style={{
-              fontSize: 12,
-              padding: '14px 24px',
+              fontSize: 15,
+              padding: '24px 28px',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
               color: 'var(--accent)',
               background: 'transparent',
-              border: '1px solid var(--accent)',
+              border: '2px solid var(--accent)',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 10,
+              justifyContent: 'center',
+              gap: 12,
               fontWeight: 600,
+              minHeight: 72,
             }}
             title="Switch to arcade theme"
           >
-            <span style={{ fontSize: 14 }}>◉</span>
+            <span style={{ fontSize: 20 }}>◉</span>
             <span>Try arcade theme</span>
           </button>
         </div>

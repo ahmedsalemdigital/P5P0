@@ -226,6 +226,58 @@ export const STYLE = `
   98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
 }
 
+/* Arcade-style pixel button used inside the classic theme (e.g. "Try P5P0" CTA).
+   Chamfered corners simulate a stepped pixel-game shape; CRT phosphor green on black. */
+.pspo-root .pixel-cta {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  color: #00ff41;
+  background: #000;
+  border: 3px solid #00ff41;
+  padding: 22px 36px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-transform: uppercase;
+  min-height: 72px;
+  /* Pixel-cut "oval" — 6px chamfer at each corner so it reads as a stepped retro button */
+  clip-path: polygon(
+    6px 0,    calc(100% - 6px) 0,
+    100% 6px, 100% calc(100% - 6px),
+    calc(100% - 6px) 100%, 6px 100%,
+    0 calc(100% - 6px), 0 6px
+  );
+  box-shadow:
+    0 0 14px rgba(0,255,65,0.45),
+    inset 0 0 12px rgba(0,255,65,0.18);
+  text-shadow: 0 0 6px rgba(0,255,65,0.6);
+  transition: transform 0.08s, color 0.12s, background 0.12s, box-shadow 0.12s;
+  position: relative;
+}
+.pspo-root .pixel-cta:active { transform: translateY(1px); }
+.pspo-root .pixel-cta:hover {
+  color: #ccffdd;
+  background: #001a08;
+  box-shadow:
+    0 0 22px rgba(0,255,65,0.7),
+    inset 0 0 18px rgba(0,255,65,0.3);
+  animation: pixelCtaGlitch 0.9s steps(1) infinite;
+}
+@keyframes pixelCtaGlitch {
+  0%   { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  18%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.6), -2px 0 rgba(68,221,255,0.6); }
+  22%  { transform: translate(1px, 0);   text-shadow: -2px 0 rgba(255,68,170,0.6), 2px 0 rgba(68,221,255,0.6); }
+  26%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  60%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  64%  { transform: translate(2px, -1px); text-shadow: -2px 0 rgba(68,221,255,0.5); filter: hue-rotate(-10deg); }
+  68%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.5); }
+  72%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); filter: none; }
+  100% { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+}
+
 @media (max-width: 640px) {
   .pspo-root { font-size: 14px; }
   .pspo-root .container-max { padding: 20px 16px 60px; }

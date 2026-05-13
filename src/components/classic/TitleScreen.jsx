@@ -46,27 +46,11 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           </button>
           <button
             onClick={onToggleTheme}
-            className="mono"
-            style={{
-              fontSize: 15,
-              padding: '24px 28px',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'var(--accent)',
-              background: 'transparent',
-              border: '2px solid var(--accent)',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 12,
-              fontWeight: 600,
-              minHeight: 72,
-            }}
+            className="pixel-cta"
             title="Switch to arcade theme"
+            aria-label="Try the P5P0 arcade theme"
           >
-            <span style={{ fontSize: 20 }}>◉</span>
-            <span>Try arcade theme</span>
+            <span>TRY P5P0</span>
           </button>
         </div>
       </section>

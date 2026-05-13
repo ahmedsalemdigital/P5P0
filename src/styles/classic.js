@@ -226,109 +226,70 @@ export const STYLE = `
   98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
 }
 
-/* Arcade-style pixel button used inside the classic theme (e.g. "Try P5P0" CTA).
-   Pixel-stepped capsule with stepped quarter-circle caps on left and right.
-   The steps are NON-uniform — wide flat tip, narrowing toward the side — so
-   the staircase actually traces a circle instead of a 45° diagonal. */
+/* Chunky pixel-art button (e.g. "Try P5P0" CTA on the classic title screen).
+   Modeled after retro mobile-game UI buttons: rectangular with small corner cuts,
+   a clear 3D bevel (lighter top edge + darker bottom edge), and chunky borders.
+   Green/black phosphor palette retained. */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
   font-size: 18px;
   letter-spacing: 0.18em;
   color: #00ff41;
-  background: #000;
-  padding: 22px 40px;
+  background: #00ff41;             /* the green "shell" of the button */
+  padding: 8px;                     /* visible green frame thickness */
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  min-height: 80px;
-  min-width: 240px;
-  /* Stepped quarter-circle, R=36, 4 steps per corner, sized to follow a true arc:
-       top tip:  4px tall × 15px wide   (curve almost tangent to top edge)
-       step 2:   8px tall × 12px wide
-       step 3:  12px tall × 6px wide
-       step 4:  12px tall × 3px wide    (curve almost tangent to right edge) */
-  clip-path: polygon(
-    /* top edge */
-    36px 0, calc(100% - 36px) 0,
-    /* top-right curve */
-    calc(100% - 36px) 4px,  calc(100% - 21px) 4px,
-    calc(100% - 21px) 12px, calc(100% - 9px)  12px,
-    calc(100% - 9px)  24px, calc(100% - 3px)  24px,
-    calc(100% - 3px)  36px, 100% 36px,
-    /* right straight edge */
-    100% calc(100% - 36px),
-    /* bottom-right curve (mirror) */
-    calc(100% - 3px)  calc(100% - 36px), calc(100% - 3px)  calc(100% - 24px),
-    calc(100% - 9px)  calc(100% - 24px), calc(100% - 9px)  calc(100% - 12px),
-    calc(100% - 21px) calc(100% - 12px), calc(100% - 21px) calc(100% - 4px),
-    calc(100% - 36px) calc(100% - 4px), calc(100% - 36px) 100%,
-    /* bottom edge */
-    36px 100%,
-    /* bottom-left curve (mirror) */
-    36px calc(100% - 4px), 21px calc(100% - 4px),
-    21px calc(100% - 12px), 9px calc(100% - 12px),
-    9px  calc(100% - 24px), 3px calc(100% - 24px),
-    3px  calc(100% - 36px), 0 calc(100% - 36px),
-    /* left straight edge */
-    0 36px,
-    /* top-left curve (mirror) */
-    3px 36px,  3px 24px,
-    9px 24px,  9px 12px,
-    21px 12px, 21px 4px,
-    36px 4px
-  );
-  /* Outer phosphor glow follows the clipped silhouette */
-  filter: drop-shadow(0 0 10px rgba(0,255,65,0.55));
-  text-shadow: 0 0 6px rgba(0,255,65,0.6);
-  transition: transform 0.08s, filter 0.12s, color 0.12s;
+  min-height: 68px;
+  min-width: 220px;
   position: relative;
   border: none;
+  /* Small chunky pixel chamfer at each corner (3px diagonal cut) — gives the
+     retro rounded-rectangle silhouette without the oval feel of large radii. */
+  clip-path: polygon(
+    3px 0, calc(100% - 3px) 0,
+    100% 3px, 100% calc(100% - 3px),
+    calc(100% - 3px) 100%, 3px 100%,
+    0 calc(100% - 3px), 0 3px
+  );
+  /* 3D bevel via stacked inset box-shadows:
+       brighter green band along the top    = "highlight"
+       darker green band along the bottom   = "shadow" */
+  box-shadow:
+    inset 0  4px 0 #ccffdd,
+    inset 0 -5px 0 #007a1f;
+  /* Phosphor outer glow follows the clipped silhouette */
+  filter: drop-shadow(0 0 10px rgba(0,255,65,0.6));
+  text-shadow: 0 0 5px rgba(0,255,65,0.55);
+  transition: transform 0.08s, filter 0.12s, color 0.12s;
 }
-/* Border = a slightly larger sibling shape rendered behind, in green.
-   We use box-shadow with negative spread + clip-path is identical, but offset is 0,
-   which would just be the same shape. Instead we draw the green outline via a 2nd
-   clip-path on ::before with a SHRUNK polygon — the contrast between the parent
-   (green background) and ::before (black face) is the visible border. */
-.pspo-root .pixel-cta {
-  background: #00ff41;           /* the border color */
-}
+/* Inner black face — sits inside the green frame, with its own tiny chamfer
+   so the rounded-rect silhouette reads through the layers. */
 .pspo-root .pixel-cta::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 8px;
   background: #000;
-  /* Inner polygon — same shape inset by ~3px on every edge. The vertical step
-     coordinates are shifted by +3 (top) / -3 (bottom); the horizontal step
-     coordinates are shifted by +3 (left) / -3 (right). */
-  clip-path: polygon(
-    36px 3px, calc(100% - 36px) 3px,
-    calc(100% - 36px) 6px,  calc(100% - 23px) 6px,
-    calc(100% - 23px) 14px, calc(100% - 11px) 14px,
-    calc(100% - 11px) 25px, calc(100% - 5px)  25px,
-    calc(100% - 5px)  36px, calc(100% - 3px)  36px,
-    calc(100% - 3px)  calc(100% - 36px),
-    calc(100% - 5px)  calc(100% - 36px), calc(100% - 5px)  calc(100% - 25px),
-    calc(100% - 11px) calc(100% - 25px), calc(100% - 11px) calc(100% - 14px),
-    calc(100% - 23px) calc(100% - 14px), calc(100% - 23px) calc(100% - 6px),
-    calc(100% - 36px) calc(100% - 6px), calc(100% - 36px) calc(100% - 3px),
-    36px calc(100% - 3px),
-    36px calc(100% - 6px), 23px calc(100% - 6px),
-    23px calc(100% - 14px), 11px calc(100% - 14px),
-    11px calc(100% - 25px), 5px calc(100% - 25px),
-    5px  calc(100% - 36px), 3px calc(100% - 36px),
-    3px 36px,
-    5px 36px,  5px 25px,
-    11px 25px, 11px 14px,
-    23px 14px, 23px 6px,
-    36px 6px
-  );
-  box-shadow: inset 0 0 16px rgba(0,255,65,0.25);
   z-index: 0;
+  clip-path: polygon(
+    2px 0, calc(100% - 2px) 0,
+    100% 2px, 100% calc(100% - 2px),
+    calc(100% - 2px) 100%, 2px 100%,
+    0 calc(100% - 2px), 0 2px
+  );
+  box-shadow: inset 0 0 10px rgba(0,255,65,0.18);
 }
 .pspo-root .pixel-cta > * { position: relative; z-index: 1; }
-.pspo-root .pixel-cta:active { transform: translateY(1px); }
+.pspo-root .pixel-cta:active {
+  transform: translateY(2px);
+  /* When pressed, bevel inverts: bottom highlight stays, top highlight muted —
+     simulates the button being pushed in. */
+  box-shadow:
+    inset 0  2px 0 #5cff7f,
+    inset 0 -3px 0 #007a1f;
+}
 .pspo-root .pixel-cta:hover {
   filter: drop-shadow(0 0 18px rgba(0,255,65,0.9));
   color: #ccffdd;

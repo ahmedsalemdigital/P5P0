@@ -91,19 +91,15 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           background: 'var(--g4)', color: '#000',
           boxShadow: '0 0 22px rgba(0,255,65,0.7), inset 0 0 0 3px #00ff41',
           minHeight: 72,
-          display: 'grid',
-          placeItems: 'center',
-          textAlign: 'center',
-          lineHeight: 1.5,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 4,
+          lineHeight: 1.2,
         }} onClick={onStart}>
-          <span style={{
-            display: 'inline-grid',
-            placeItems: 'center',
-            gap: 4,
-          }}>
-            <span style={{ display: 'block' }}>▶ PRESS</span>
-            <span style={{ display: 'block' }}>START</span>
-          </span>
+          <span style={{ paddingLeft: 5 }}>▶ PRESS</span>
+          <span style={{ paddingLeft: 5 }}>START</span>
         </button>
         <button
           onClick={onToggleTheme}

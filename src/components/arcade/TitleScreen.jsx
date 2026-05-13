@@ -87,15 +87,24 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
         marginTop: 4,
       }}>
         <button className="arc-btn" style={{
-          fontSize: 16, padding: '22px 28px', letterSpacing: 5,
+          fontSize: 16, padding: '22px 16px', letterSpacing: 5,
           background: 'var(--g4)', color: '#000',
           boxShadow: '0 0 22px rgba(0,255,65,0.7), inset 0 0 0 3px #00ff41',
           minHeight: 72,
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textIndent: 5,            // compensate for trailing letter-spacing so the block centers
-        }} onClick={onStart}>▶ PRESS START</button>
+          display: 'grid',
+          placeItems: 'center',
+          textAlign: 'center',
+          lineHeight: 1.5,
+        }} onClick={onStart}>
+          <span style={{
+            display: 'inline-grid',
+            placeItems: 'center',
+            gap: 4,
+          }}>
+            <span style={{ display: 'block' }}>▶ PRESS</span>
+            <span style={{ display: 'block' }}>START</span>
+          </span>
+        </button>
         <button
           onClick={onToggleTheme}
           title="Switch to classic theme"

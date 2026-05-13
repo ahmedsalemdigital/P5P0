@@ -50,16 +50,9 @@ export const ARCADE_STYLE = `
   from { top: -100px; }
   to   { top: 100%; }
 }
-/* CRT jitter on the content */
+/* CRT-style contrast bump on the content (no jitter — caused screen shake) */
 .arcade-stage {
   filter: contrast(1.06) brightness(1.02);
-  animation: arcadeJitter 9s infinite;
-}
-@keyframes arcadeJitter {
-  0%, 97%, 100% { transform: translate(0,0); filter: contrast(1.06) brightness(1.02); }
-  97.5% { transform: translate(-1px, 0); filter: contrast(1.2) brightness(1.1) hue-rotate(2deg); }
-  98%   { transform: translate(2px, 0); }
-  98.5% { transform: translate(-1px, 1px); }
 }
 
 /* Animations */

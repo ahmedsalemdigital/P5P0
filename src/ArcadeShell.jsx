@@ -65,7 +65,7 @@ export default function ArcadeShell({
       </button>
       <div className="arcade-stage">
         {view === 'title' && (
-          <TitleScreen progress={progress} onStart={() => onSetView('home')} />
+          <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />
         )}
 
         {(view === 'home' || view === 'review' || view === 'stats') && (

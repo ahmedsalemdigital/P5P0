@@ -5,7 +5,7 @@ import { overallProgress } from '../../lib/quiz.js';
 import { Mascot } from './Mascot.jsx';
 import { AchievementIcon } from './AchievementIcon.jsx';
 
-export function TitleScreen({ progress, onStart }) {
+export function TitleScreen({ progress, onStart, onToggleTheme }) {
   const conceptStats = CONCEPTS.map((c) => ({ id: c.id, optional: !!c.optional, m: masteryForConcept(progress, c.id) }));
   const { total: totalPct, maxTotal } = overallProgress(progress);
   // Required-only count for the "STAGES" tile
@@ -78,13 +78,30 @@ export function TitleScreen({ progress, onStart }) {
         </div>
       </div>
 
-      {/* Start button */}
-      <button className="arc-btn" style={{
-        fontSize: 12, padding: '14px 36px', letterSpacing: 4,
-        background: 'var(--g4)', color: '#000',
-        boxShadow: '0 0 16px rgba(0,255,65,0.6), inset 0 0 0 2px #00ff41',
-        marginBottom: 6,
-      }} onClick={onStart}>▶ PRESS START</button>
+      {/* Primary CTAs — Start + Switch Style */}
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 6 }}>
+        <button className="arc-btn" style={{
+          fontSize: 12, padding: '14px 28px', letterSpacing: 4,
+          background: 'var(--g4)', color: '#000',
+          boxShadow: '0 0 16px rgba(0,255,65,0.6), inset 0 0 0 2px #00ff41',
+        }} onClick={onStart}>▶ PRESS START</button>
+        <button
+          onClick={onToggleTheme}
+          title="Switch to classic theme"
+          style={{
+            fontFamily: 'Press Start 2P, monospace',
+            fontSize: 10, padding: '14px 20px', letterSpacing: 3,
+            background: '#000', color: 'var(--gold)',
+            border: '2px solid var(--gold)',
+            cursor: 'pointer',
+            boxShadow: '0 0 12px rgba(255,176,0,0.4), inset 0 0 8px rgba(255,176,0,0.15)',
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            textTransform: 'uppercase',
+          }}>
+          <span style={{ fontSize: 12 }}>◐</span>
+          <span>CLASSIC</span>
+        </button>
+      </div>
       <div className="arc-blink" style={{ fontSize: 7, color: 'var(--gold)', letterSpacing: 2, marginBottom: 14 }}>
         ▸ INSERT COIN ◂
       </div>

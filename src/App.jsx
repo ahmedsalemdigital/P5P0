@@ -19,6 +19,7 @@ import { STYLE } from './styles/classic.js';
 import ArcadeShell, { ARCADE_STYLE } from './ArcadeShell.jsx';
 
 import { Header } from './components/classic/Header.jsx';
+import { TitleScreen } from './components/classic/TitleScreen.jsx';
 import { HomeView } from './components/classic/HomeView.jsx';
 import { LessonView } from './components/classic/LessonView.jsx';
 import { QuizView } from './components/classic/QuizView.jsx';
@@ -33,7 +34,7 @@ import { StatsView } from './components/classic/StatsView.jsx';
    ────────────────────────────────────────────────────────────────────────── */
 
 export default function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState('title');
   const [activeConcept, setActiveConcept] = useState(null);
   const [quizSet, setQuizSet] = useState(null);
   const [quizPhases, setQuizPhases] = useState(null);
@@ -59,8 +60,9 @@ export default function App() {
       saveTheme(next);
       return next;
     });
-    // Remap arcade-only views to a sensible classic equivalent
-    if (view === 'title' || view === 'results') setView('home');
+    // 'results' is arcade-only (classic shows results inline in QuizView).
+    // 'title' now exists in both themes, so no remap needed there.
+    if (view === 'results') setView('home');
   }
 
   function updateAnswer(qid, correct) {
@@ -188,12 +190,21 @@ export default function App() {
   return (
     <div className="pspo-root grainy">
       <style>{STYLE}</style>
-      <Header
-        stats={progress}
-        onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
-        currentView={view}
-        onToggleTheme={switchTheme}
-      />
+
+      {view === 'title' ? (
+        <TitleScreen
+          progress={progress}
+          onStart={() => setView('home')}
+          onToggleTheme={switchTheme}
+        />
+      ) : (
+        <Header
+          stats={progress}
+          onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
+          currentView={view}
+          onToggleTheme={switchTheme}
+        />
+      )}
 
       {view === 'home' && (
         <HomeView

@@ -12,15 +12,15 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
     <div className="container-max fade-in">
       <section style={{ marginBottom: 48 }}>
         <div className="mono faint" style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 16 }}>
-          PSPO·I Trainer
+          PSPO·I Trainer · Independent study tool
         </div>
         <h1 className="display" style={{ fontSize: 'clamp(40px, 7vw, 64px)', lineHeight: 1.02, margin: '0 0 20px', fontWeight: 500, letterSpacing: '-0.025em' }}>
-          Master PSPO I
+          Study for the <span style={{ color: 'var(--accent)' }}>PSPO I</span> exam.
         </h1>
         <p className="dim" style={{ fontSize: 17, maxWidth: 580, margin: 0, lineHeight: 1.55 }}>
-          A focused study engine for the PSPO I exam. Concept lessons,
-          distractor-level feedback on wrong answers, and spaced review of
-          what you miss.
+          Concept lessons grounded in the 2020 Scrum Guide, distractor-level
+          feedback on every wrong answer, and a spaced-review queue that brings
+          back exactly what you miss — until you don't miss it anymore.
         </p>
 
         {/* Primary action row — Start + Switch Style. Sized as the dominant element on the screen. */}

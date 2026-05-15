@@ -12,7 +12,6 @@ export function Header({ stats, onNav, currentView, onToggleTheme }) {
           ['title', 'Title'],
           ['home', 'Concepts'],
           ['review', 'Review'],
-          ['stats', 'Stats'],
         ].map(([id, label]) => (
           <button
             key={id}

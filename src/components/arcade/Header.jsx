@@ -5,7 +5,6 @@ export function Header({ onNav, currentView, onToggleTheme }) {
     ['title', 'Title'],
     ['home', 'Concepts'],
     ['review', 'Review'],
-    ['stats', 'Stats'],
   ];
 
   return (

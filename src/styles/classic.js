@@ -178,104 +178,156 @@ export const STYLE = `
 
 .pspo-root .container-max { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
 
-/* Theme toggle — styled to match the arcade theme it switches to */
-.pspo-root .theme-toggle-classic {
+/* Theme toggle switch — pill-shaped track with a sliding thumb.
+   Off state = classic (current); on state = arcade (target on click). */
+.pspo-root .theme-toggle-switch {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   margin-left: 10px;
-  padding: 9px 14px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #00ff41;
-  background: #000;
-  border: 2px solid #00ff41;
-  border-radius: 0;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.1s, background 0.12s, color 0.12s;
-  animation: themePulseArcade 2s ease-in-out infinite;
-  box-shadow:
-    0 0 0 0 rgba(0,255,65,0.6),
-    inset 0 0 8px rgba(0,255,65,0.2);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.pspo-root .theme-toggle-classic:hover {
-  background: #00ff41;
-  color: #000;
-  transform: translateY(-1px);
+.pspo-root .theme-toggle-switch-label {
+  line-height: 1;
 }
-.pspo-root .theme-toggle-classic:active { transform: translateY(1px); }
-.pspo-root .theme-toggle-classic .theme-toggle-icon {
+.pspo-root .theme-toggle-switch-track {
+  position: relative;
   display: inline-block;
-  animation: themeSpin 4s linear infinite, themeGlitchIcon 11s infinite;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--surface-on);
+  border: 1px solid var(--border);
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
 }
-@keyframes themePulseArcade {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.6), inset 0 0 8px rgba(0,255,65,0.2); }
-  50%      { box-shadow: 0 0 0 10px rgba(0,255,65,0), inset 0 0 8px rgba(0,255,65,0.2); }
+.pspo-root .theme-toggle-switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transform: translateY(-50%);
+  transition: left 0.2s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
-@keyframes themeSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.pspo-root .theme-toggle-switch:hover {
+  color: #00ff41;
+  border-color: rgba(0,255,65,0.25);
+  background: rgba(0,255,65,0.06);
 }
-/* Brief, rare glitch — about 250ms every 11s */
-@keyframes themeGlitchIcon {
-  0%, 97%, 100% { text-shadow: none; filter: none; }
-  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
-  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
-  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+.pspo-root .theme-toggle-switch:hover .theme-toggle-switch-track {
+  background: #00ff41;
+  border-color: #00ff41;
+  box-shadow: 0 0 10px rgba(0,255,65,0.55);
+}
+.pspo-root .theme-toggle-switch:hover .theme-toggle-switch-thumb {
+  left: 16px;
+  background: #000;
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+.pspo-root .theme-toggle-switch:focus-visible {
+  outline: 2px solid #00ff41;
+  outline-offset: 2px;
 }
 
-/* Oval theme-toggle button — mirrors the pulsing arcade-toggle effect
-   used by the header's .theme-toggle-classic, sized as a primary CTA. */
+/* Chunky pixel-art button styled like an old Pokémon-game UI element.
+   Uses the authentic Game Boy 4-shade green palette:
+       #0f380f  darkest  (outline / deep shadow)
+       #306230  dark     (body fill)
+       #8bac0f  medium   (highlight band)
+       #9bbc0f  bright   (hover accent)
+       #cadc9f  lightest (text + top-pixel glint) */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  color: #00ff41;
-  background: #000;
-  border: 3px solid #00ff41;
-  border-radius: 999px;
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  color: #cadc9f;
+  text-shadow: 1px 1px 0 #0f380f;
+  background: #0f380f;
+  padding: 5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   text-transform: uppercase;
-  min-height: 72px;
-  padding: 0 28px;
+  min-height: 68px;
+  min-width: 220px;
   position: relative;
-  transition: transform 0.1s, background 0.12s, color 0.12s;
-  animation: pixelCtaPulse 2s ease-in-out infinite;
+  border: none;
+  clip-path: polygon(
+    3px 0, calc(100% - 3px) 0,
+    100% 3px, 100% calc(100% - 3px),
+    calc(100% - 3px) 100%, 3px 100%,
+    0 calc(100% - 3px), 0 3px
+  );
+  filter: drop-shadow(0 0 10px rgba(48, 98, 48, 0.65));
+  transition: transform 0.08s, filter 0.12s, color 0.12s;
+}
+.pspo-root .pixel-cta::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: #306230;
+  z-index: 0;
+  clip-path: polygon(
+    2px 0, calc(100% - 2px) 0,
+    100% 2px, 100% calc(100% - 2px),
+    calc(100% - 2px) 100%, 2px 100%,
+    0 calc(100% - 2px), 0 2px
+  );
   box-shadow:
-    0 0 0 0 rgba(0,255,65,0.6),
-    inset 0 0 12px rgba(0,255,65,0.2);
+    inset 0  3px 0 #8bac0f,
+    inset 0 -3px 0 #0f380f;
 }
+.pspo-root .pixel-cta::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  right: 9px;
+  height: 1px;
+  background: #cadc9f;
+  z-index: 0;
+  opacity: 0.85;
+}
+.pspo-root .pixel-cta > * { position: relative; z-index: 1; }
+.pspo-root .pixel-cta:active {
+  transform: translateY(2px);
+  filter: drop-shadow(0 0 6px rgba(48, 98, 48, 0.4));
+}
+.pspo-root .pixel-cta:active::before {
+  box-shadow:
+    inset 0  1px 0 #8bac0f,
+    inset 0 -4px 0 #0f380f;
+}
+.pspo-root .pixel-cta:active::after { opacity: 0; }
 .pspo-root .pixel-cta:hover {
-  background: #00ff41;
-  color: #000;
-  transform: translateY(-1px);
+  filter: drop-shadow(0 0 16px rgba(139, 172, 15, 0.85));
+  color: #9bbc0f;
+  animation: pixelCtaGlitch 0.9s steps(1) infinite;
 }
-.pspo-root .pixel-cta:active { transform: translateY(1px); }
-.pspo-root .pixel-cta .theme-toggle-icon {
-  display: inline-block;
-  font-size: 18px;
-  animation: pixelCtaSpin 4s linear infinite, pixelCtaGlitchIcon 11s infinite;
-}
-@keyframes pixelCtaPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.6), inset 0 0 12px rgba(0,255,65,0.2); }
-  50%      { box-shadow: 0 0 0 14px rgba(0,255,65,0), inset 0 0 12px rgba(0,255,65,0.2); }
-}
-@keyframes pixelCtaSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-/* Brief, rare glitch — about 250ms every 11s */
-@keyframes pixelCtaGlitchIcon {
-  0%, 97%, 100% { text-shadow: none; filter: none; }
-  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
-  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
-  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+@keyframes pixelCtaGlitch {
+  0%   { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  18%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.6), -2px 0 rgba(68,221,255,0.6); }
+  22%  { transform: translate(1px, 0);   text-shadow: -2px 0 rgba(255,68,170,0.6), 2px 0 rgba(68,221,255,0.6); }
+  26%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  60%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+  64%  { transform: translate(2px, -1px); text-shadow: -2px 0 rgba(68,221,255,0.5); filter: hue-rotate(-10deg); }
+  68%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.5); }
+  72%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); filter: none; }
+  100% { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
 }
 
 @media (max-width: 640px) {

@@ -59,9 +59,18 @@ export default function ArcadeShell({
   return (
     <div className="arcade-root">
       <div className="arcade-scanline" />
-      <button className="arcade-theme-toggle" onClick={onSwitchTheme} title="Switch to classic theme">
-        <span className="theme-toggle-icon">◐</span>
-        <span>CLASSIC</span>
+      <button
+        className="arcade-theme-switch"
+        onClick={onSwitchTheme}
+        role="switch"
+        aria-checked="true"
+        title="Switch to classic theme"
+        aria-label="Switch to classic theme"
+      >
+        <span className="arcade-theme-switch-label">ARCADE</span>
+        <span className="arcade-theme-switch-track">
+          <span className="arcade-theme-switch-thumb" />
+        </span>
       </button>
       <div className="arcade-stage">
         {view === 'title' && (

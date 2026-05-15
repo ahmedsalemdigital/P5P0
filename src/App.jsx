@@ -42,7 +42,7 @@ export default function App() {
   const [qsess, setQsess] = useState(FRESH_QSESS);
   const [progress, setProgress] = useState(DEFAULT_PROGRESS);
   const [loaded, setLoaded] = useState(false);
-  const [theme, setTheme] = useState(THEME.ARCADE);
+  const [theme, setTheme] = useState(THEME.CLASSIC);
 
   useEffect(() => {
     setProgress(loadProgress());
@@ -151,11 +151,36 @@ export default function App() {
   }
 
   if (!loaded) {
+    // Use the saved theme (read synchronously) so we don't flash the wrong skin
+    const initialTheme = (typeof window !== 'undefined' ? loadTheme() : THEME.CLASSIC);
+    if (initialTheme === THEME.ARCADE) {
+      return (
+        <div className="arcade-root">
+          <style>{ARCADE_STYLE}</style>
+          <div className="arcade-splash" role="status" aria-live="polite" aria-label="Loading P5P0 Trainer">
+            <div className="arcade-splash-inner">
+              <div className="arcade-splash-mark">P5P0</div>
+              <div className="arcade-splash-sub">★ TRAINER ★</div>
+              <div className="arcade-splash-status">
+                BOOTING<span className="arcade-splash-caret" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
-      <div className="pspo-root grainy" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <>
         <style>{STYLE}</style>
-        <div className="mono faint" style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Loading…</div>
-      </div>
+        <div className="pspo-splash" role="status" aria-live="polite" aria-label="Loading">
+          <div className="pspo-splash-inner">
+            <div className="pspo-splash-mark">
+              PSPO<span className="accent">·I</span>
+            </div>
+            <div className="pspo-splash-spinner" />
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -191,21 +216,34 @@ export default function App() {
     <div className="pspo-root grainy">
       <style>{STYLE}</style>
 
-      {view === 'title' ? (
-        <TitleScreen
-          progress={progress}
-          onStart={() => setView('home')}
-          onToggleTheme={switchTheme}
-        />
-      ) : (
-        <Header
-          stats={progress}
-          onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
-          currentView={view}
-          onToggleTheme={switchTheme}
-        />
-      )}
+      <a href="#main-content" className="pspo-skip-link">Skip to main content</a>
 
+      {view === 'title' ? (
+        <main id="main-content">
+          <TitleScreen
+            progress={progress}
+            onStart={() => setView('home')}
+            onToggleTheme={switchTheme}
+          />
+        </main>
+      ) : (
+        <>
+          <Header
+            stats={progress}
+            onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
+            currentView={view}
+            onToggleTheme={switchTheme}
+          />
+          <main id="main-content">
+            {renderClassicView()}
+          </main>
+        </>
+      )}
+    </div>
+  );
+
+  function renderClassicView() {
+    return <>
       {view === 'home' && (
         <HomeView
           progress={progress}
@@ -239,19 +277,40 @@ export default function App() {
         />
       )}
 
-      {view === 'review' && (
-        <div className="container-max fade-in">
-          <h1 className="display" style={{ fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: 500, margin: '0 0 16px', letterSpacing: '-0.02em' }}>Review queue</h1>
-          <p className="dim" style={{ fontSize: 16, maxWidth: 540, marginTop: 0 }}>
-            Questions you've answered incorrectly, or haven't yet answered correctly twice. Closer to real mastery than one-shot accuracy.
-          </p>
-          <button className="btn primary" onClick={startReview} style={{ marginTop: 16 }}>Start Review →</button>
-        </div>
-      )}
+      {view === 'review' && (() => {
+        const queue = pickReviewQueue(progress);
+        const empty = queue.length === 0;
+        return (
+          <div className="container-max fade-in">
+            <h1 className="display" style={{ fontSize: 'clamp(36px, 6vw, 56px)', fontWeight: 600, margin: '0 0 18px', letterSpacing: '-0.022em', lineHeight: 1.07 }}>
+              Review queue
+            </h1>
+            <p style={{ fontSize: 21, fontWeight: 400, letterSpacing: '-0.231px', color: 'var(--text-dim)', maxWidth: 620, marginTop: 0, lineHeight: 1.43 }}>
+              Questions you've answered incorrectly, or haven't yet answered correctly twice. Closer to real mastery than one-shot accuracy.
+            </p>
+            <div className="card" style={{ marginTop: 28, marginBottom: 24, maxWidth: 360, textAlign: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-dim)', letterSpacing: '-0.224px', marginBottom: 10 }}>
+                Questions pending
+              </div>
+              <div className="numeric" style={{ fontSize: 56, fontWeight: 600, color: empty ? 'var(--text-faint)' : 'var(--accent)', lineHeight: 1, letterSpacing: '-0.022em' }}>
+                {queue.length}
+              </div>
+            </div>
+            <button className="btn primary" onClick={startReview} disabled={empty}>
+              {empty ? 'Queue empty' : 'Start review'}
+            </button>
+            {empty && (
+              <p style={{ fontSize: 14, color: 'var(--text-faint)', marginTop: 12, letterSpacing: '-0.224px' }}>
+                Answer a quiz to populate the queue with what you miss.
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {view === 'stats' && (
         <StatsView progress={progress} onBack={() => setView('home')} onReset={resetProgress} />
       )}
-    </div>
-  );
+    </>;
+  }
 }

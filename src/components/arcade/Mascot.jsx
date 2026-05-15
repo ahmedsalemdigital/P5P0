@@ -10,8 +10,17 @@ export function Mascot({ size = 72, talking = false, happy = false, sad = false 
     return () => clearInterval(iv);
   }, []);
   const eyeColor = happy ? '#00ff41' : sad ? '#006600' : '#00ff41';
+  const mood = happy ? 'happy' : sad ? 'sad' : talking ? 'talking' : 'idle';
   return (
-    <svg width={size} height={size} viewBox="0 0 16 16" shapeRendering="crispEdges" style={{ imageRendering: 'pixelated', display: 'block' }}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      shapeRendering="crispEdges"
+      role="img"
+      aria-label={`P5P0 mascot, ${mood}`}
+      style={{ imageRendering: 'pixelated', display: 'block' }}
+    >
       <rect x="3" y="3" width="10" height="9" fill="#00aa00" />
       {!blink && <rect x="4" y="5" width="3" height="3" fill="#003300" />}
       {!blink && <rect x="9" y="5" width="3" height="3" fill="#003300" />}

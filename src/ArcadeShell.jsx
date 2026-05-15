@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
 import { pickReviewQueue, QUIZ_MODE } from './lib/quiz.js';
+import { Header } from './components/arcade/Header.jsx';
 import { TitleScreen } from './components/arcade/TitleScreen.jsx';
 import { ConceptSelect } from './components/arcade/ConceptSelect.jsx';
 import { LessonScreen } from './components/arcade/LessonScreen.jsx';
 import { QuizScreen } from './components/arcade/QuizScreen.jsx';
 import { ResultsScreen } from './components/arcade/ResultsScreen.jsx';
+import { ReviewScreen } from './components/arcade/ReviewScreen.jsx';
 
 export { ARCADE_STYLE } from './styles/arcade.js';
 
@@ -58,26 +60,21 @@ export default function ArcadeShell({
 
   return (
     <div className="arcade-root">
-      <div className="arcade-scanline" />
-      <button
-        className="arcade-theme-switch"
-        onClick={onSwitchTheme}
-        role="switch"
-        aria-checked="true"
-        title="Switch to classic theme"
-        aria-label="Switch to classic theme"
-      >
-        <span className="arcade-theme-switch-label">ARCADE</span>
-        <span className="arcade-theme-switch-track">
-          <span className="arcade-theme-switch-thumb" />
-        </span>
-      </button>
-      <div className="arcade-stage">
+      <a href="#main-content" className="arcade-skip-link">▶ Skip to content</a>
+      <div className="arcade-scanline" aria-hidden="true" />
+      {view !== 'title' && (
+        <Header
+          onNav={(v) => onSetView(v)}
+          currentView={view}
+          onToggleTheme={onSwitchTheme}
+        />
+      )}
+      <main id="main-content" className="arcade-stage">
         {view === 'title' && (
           <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />
         )}
 
-        {(view === 'home' || view === 'review' || view === 'stats') && (
+        {(view === 'home' || view === 'stats') && (
           <ConceptSelect
             progress={progress}
             onSelect={onPickConcept}
@@ -86,6 +83,14 @@ export default function ArcadeShell({
             onStartMock={onStartMockExam}
             onStartReview={onStartReview}
             reviewQueueSize={reviewQueue.length}
+          />
+        )}
+
+        {view === 'review' && (
+          <ReviewScreen
+            queue={reviewQueue}
+            onStart={onStartReview}
+            onBack={() => onSetView('home')}
           />
         )}
 
@@ -123,7 +128,7 @@ export default function ArcadeShell({
             onHome={() => { setQuizResult(null); onSetView('title'); }}
           />
         )}
-      </div>
+      </main>
     </div>
   );
 }

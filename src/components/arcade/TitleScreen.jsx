@@ -50,12 +50,15 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           <span style={{ color: 'var(--gold)' }}>HI {totalPct}%</span>
         </div>
 
-        <div className="arc-glitch" style={{
+        <h1 className="arc-glitch" style={{
           fontSize: 34, letterSpacing: 6, color: 'var(--g4)',
           textShadow: '0 0 4px #00ff41, 0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.6), 0 4px 0 #003300',
-          marginBottom: 2, lineHeight: 1,
-        }}>P5P0</div>
-        <div style={{ fontSize: 8, color: 'var(--gold)', letterSpacing: 8, marginBottom: 12, textShadow: '0 0 6px rgba(255,176,0,0.5)' }}>★ TRAINER ★</div>
+          margin: '0 0 2px', lineHeight: 1, fontWeight: 400,
+        }}>
+          <span aria-hidden="true">P5P0</span>
+          <span className="sr-only">PSPO·I Trainer</span>
+        </h1>
+        <div aria-hidden="true" style={{ fontSize: 8, color: 'var(--gold)', letterSpacing: 8, marginBottom: 12, textShadow: '0 0 6px rgba(255,176,0,0.5)' }}>★ TRAINER ★</div>
 
         <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
           <div style={{
@@ -128,12 +131,20 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
       </div>
 
       {/* Mission Log */}
-      <div className="pbox" style={{ textAlign: 'left', marginBottom: 12, background: 'rgba(0,30,0,0.4)', position: 'relative' }}>
-        <div style={{
-          position: 'absolute', top: -9, left: 12,
-          background: '#000', padding: '0 8px',
-          fontSize: 7, color: 'var(--g4)', letterSpacing: 2,
-        }}>● MISSION LOG</div>
+      <section
+        className="pbox"
+        aria-labelledby="mission-log-heading"
+        style={{ textAlign: 'left', marginBottom: 12, background: 'rgba(0,30,0,0.4)', position: 'relative' }}
+      >
+        <h2
+          id="mission-log-heading"
+          style={{
+            position: 'absolute', top: -9, left: 12,
+            background: '#000', padding: '0 8px',
+            fontSize: 7, color: 'var(--g4)', letterSpacing: 2,
+            margin: 0, fontWeight: 400,
+          }}
+        >● MISSION LOG</h2>
 
         <div style={{
           display: 'flex', justifyContent: 'space-around', marginTop: 4, marginBottom: 12,
@@ -174,13 +185,21 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
                 </div>
                 <div style={{ fontSize: 6, color: 'var(--g2)' }}>{pct}%</div>
               </div>
-              <div className="pbar-wrap" style={{ height: 5 }}>
+              <div
+                className="pbar-wrap"
+                role="progressbar"
+                aria-valuenow={pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${c.label} mastery, ${pct} percent`}
+                style={{ height: 5 }}
+              >
                 <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%', background: c.optional ? 'var(--magenta)' : 'var(--g4)' }} />
               </div>
             </div>
           );
         })}
-      </div>
+      </section>
 
       <div style={{ fontSize: 6, color: 'var(--g2)', letterSpacing: 2 }}>© 2026 · 2020 SCRUM GUIDE</div>
     </div>

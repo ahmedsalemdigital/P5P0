@@ -60,7 +60,8 @@ export default function ArcadeShell({
 
   return (
     <div className="arcade-root">
-      <div className="arcade-scanline" />
+      <a href="#main-content" className="arcade-skip-link">▶ Skip to content</a>
+      <div className="arcade-scanline" aria-hidden="true" />
       {view !== 'title' && (
         <Header
           onNav={(v) => onSetView(v)}
@@ -68,7 +69,7 @@ export default function ArcadeShell({
           onToggleTheme={onSwitchTheme}
         />
       )}
-      <div className="arcade-stage">
+      <main id="main-content" className="arcade-stage">
         {view === 'title' && (
           <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />
         )}
@@ -127,7 +128,7 @@ export default function ArcadeShell({
             onHome={() => { setQuizResult(null); onSetView('title'); }}
           />
         )}
-      </div>
+      </main>
     </div>
   );
 }

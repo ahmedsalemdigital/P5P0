@@ -18,6 +18,70 @@ export const ARCADE_STYLE = `
 }
 .arcade-root button { font-family: inherit; }
 
+/* Global focus ring — pixel-style green outline for keyboard users.
+   Uses outline so it never disturbs layout. Applied via :focus-visible
+   so it never shows for pointer/touch interactions. */
+.arcade-root *:focus { outline: none; }
+.arcade-root *:focus-visible {
+  outline: 2px solid var(--g4);
+  outline-offset: 3px;
+  box-shadow: 0 0 8px rgba(0,255,65,0.6);
+}
+
+/* Respect prefers-reduced-motion. The CRT theme is heavy on motion
+   (scanlines roll, screen flickers, text blinks/glitches, mascot
+   bounces). For users who request reduced motion we hold the visual
+   identity but freeze every animation. */
+@media (prefers-reduced-motion: reduce) {
+  .arcade-root *, .arcade-root *::before, .arcade-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .arcade-root .arcade-scanline { display: none; }
+  .arcade-root::after { animation: none; }
+}
+
+/* Screen-reader-only utility — exposes labels to AT without altering
+   the pixel-perfect visual layout. */
+.arcade-root .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-to-main-content link — styled as a pixel chip in the arcade
+   palette. Hidden off-screen by default, slides in on keyboard focus. */
+.arcade-skip-link {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 8px 14px;
+  background: var(--g4);
+  color: #000;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid #000;
+  box-shadow: 0 0 12px rgba(0,255,65,0.6);
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+  z-index: 10000;
+}
+.arcade-skip-link:focus,
+.arcade-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* CRT scanlines */
 .arcade-root::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 999;
@@ -326,5 +390,62 @@ export const ARCADE_STYLE = `
 .arcade-theme-switch:focus-visible {
   outline: 2px solid var(--g4);
   outline-offset: 2px;
+}
+
+/* Arcade splash / loading state — used by App while progress is hydrating.
+   Pixel-art "BOOTING" plate with a blinking caret to match the theme. */
+.arcade-splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: var(--g4);
+  font-family: 'Press Start 2P', monospace;
+  z-index: 9999;
+}
+.arcade-splash::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    rgba(0,0,0,0.28) 0px, rgba(0,0,0,0.28) 1px,
+    transparent 1px, transparent 2px);
+}
+.arcade-splash-inner {
+  position: relative;
+  z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  text-align: center;
+}
+.arcade-splash-mark {
+  font-size: 28px;
+  letter-spacing: 6px;
+  color: var(--g4);
+  text-shadow: 0 0 4px #00ff41, 0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.6), 0 4px 0 #003300;
+}
+.arcade-splash-sub {
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-shadow: 0 0 6px rgba(255,176,0,0.5);
+}
+.arcade-splash-status {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--g3);
+  margin-top: 8px;
+}
+.arcade-splash-caret {
+  display: inline-block;
+  width: 7px;
+  height: 10px;
+  background: var(--g4);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: arcBlink 1s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-splash-caret { animation: none; }
 }
 `;

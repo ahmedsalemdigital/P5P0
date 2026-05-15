@@ -17,10 +17,12 @@ export function ReviewScreen({ queue, onStart, onBack }) {
   return (
     <div className="arc-scan-in">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack}>◀ BACK</button>
-        <span style={{ fontSize: 10, letterSpacing: 2, color: 'var(--magenta)', textShadow: '0 0 6px rgba(255,68,170,0.4)' }}>
+        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack} aria-label="Back to concepts">
+          <span aria-hidden="true">◀ </span>BACK
+        </button>
+        <h1 style={{ fontSize: 10, letterSpacing: 2, color: 'var(--magenta)', textShadow: '0 0 6px rgba(255,68,170,0.4)', margin: 0, fontWeight: 400 }}>
           REVIEW QUEUE
-        </span>
+        </h1>
       </div>
 
       <div className="pbox" style={{
@@ -43,10 +45,10 @@ export function ReviewScreen({ queue, onStart, onBack }) {
 
       {rows.length > 0 && (
         <>
-          <div style={{ fontSize: 10, color: 'var(--g4)', letterSpacing: 3, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <h2 style={{ fontSize: 10, color: 'var(--g4)', letterSpacing: 3, margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 400 }}>
             <span>BY CONCEPT</span>
-            <span style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
-          </div>
+            <span aria-hidden="true" style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
+          </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 22 }}>
             {rows.map((r) => (
               <div key={r.id} style={{

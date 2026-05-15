@@ -9,20 +9,28 @@ export function Header({ onNav, currentView, onToggleTheme }) {
 
   return (
     <header className="arc-header">
-      <button className="arc-header-logo" onClick={() => onNav('title')} title="Back to title screen">
-        <span className="arc-header-logo-main">P5P0</span>
-        <span className="arc-header-logo-sub">TRAINER</span>
+      <button
+        className="arc-header-logo"
+        onClick={() => onNav('title')}
+        aria-label="P5P0 Trainer — return to title"
+      >
+        <span className="arc-header-logo-main" aria-hidden="true">P5P0</span>
+        <span className="arc-header-logo-sub" aria-hidden="true">TRAINER</span>
       </button>
-      <nav className="arc-header-nav">
-        {items.map(([id, label]) => (
-          <button
-            key={id}
-            onClick={() => onNav(id)}
-            className={`arc-nav-btn${currentView === id ? ' is-active' : ''}`}
-          >
-            {label.toUpperCase()}
-          </button>
-        ))}
+      <nav className="arc-header-nav" aria-label="Primary">
+        {items.map(([id, label]) => {
+          const isActive = currentView === id;
+          return (
+            <button
+              key={id}
+              onClick={() => onNav(id)}
+              className={`arc-nav-btn${isActive ? ' is-active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {label.toUpperCase()}
+            </button>
+          );
+        })}
         <button
           onClick={onToggleTheme}
           className="arcade-theme-switch"
@@ -32,7 +40,7 @@ export function Header({ onNav, currentView, onToggleTheme }) {
           aria-label="Switch to classic theme"
         >
           <span className="arcade-theme-switch-label">ARCADE</span>
-          <span className="arcade-theme-switch-track">
+          <span className="arcade-theme-switch-track" aria-hidden="true">
             <span className="arcade-theme-switch-thumb" />
           </span>
         </button>

@@ -151,6 +151,24 @@ export default function App() {
   }
 
   if (!loaded) {
+    // Use the saved theme (read synchronously) so we don't flash the wrong skin
+    const initialTheme = (typeof window !== 'undefined' ? loadTheme() : THEME.CLASSIC);
+    if (initialTheme === THEME.ARCADE) {
+      return (
+        <div className="arcade-root">
+          <style>{ARCADE_STYLE}</style>
+          <div className="arcade-splash" role="status" aria-live="polite" aria-label="Loading P5P0 Trainer">
+            <div className="arcade-splash-inner">
+              <div className="arcade-splash-mark">P5P0</div>
+              <div className="arcade-splash-sub">★ TRAINER ★</div>
+              <div className="arcade-splash-status">
+                BOOTING<span className="arcade-splash-caret" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <>
         <style>{STYLE}</style>

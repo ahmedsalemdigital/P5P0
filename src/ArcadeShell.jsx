@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
-import { pickReviewQueue, QUIZ_MODE } from './lib/quiz.js';
+import { pickReviewQueue, QUIZ_MODE, verdictFor } from './lib/quiz.js';
+import { CONCEPTS } from './data/concepts.js';
+import { trackQuizComplete } from './lib/analytics.js';
 import { Header } from './components/arcade/Header.jsx';
 import { TitleScreen } from './components/arcade/TitleScreen.jsx';
 import { ConceptSelect } from './components/arcade/ConceptSelect.jsx';
@@ -47,6 +49,19 @@ export default function ArcadeShell({
   function finishQuiz(result) {
     setQuizResult(result);
     onSetView('results');
+    const scorePct = result.total > 0 ? Math.round((result.correctCount / result.total) * 100) : 0;
+    const concept = result.conceptId ? CONCEPTS.find((c) => c.id === result.conceptId) : null;
+    trackQuizComplete({
+      mode: result.mode,
+      conceptId: result.conceptId,
+      conceptLabel: concept?.label,
+      scorePct,
+      correctCount: result.correctCount,
+      wrongCount: result.wrongCount,
+      total: result.total,
+      timeUsedSec: result.timeUsed,
+      verdict: verdictFor(scorePct),
+    });
   }
 
   function playAgain() {

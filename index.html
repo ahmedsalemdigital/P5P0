@@ -13,7 +13,10 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-WB97T5NR8S');
+      // send_page_view: false → this is a SPA. The app fires its own page_view
+      // events on every screen change (title → home → lesson → quiz → ...) so
+      // we get accurate per-screen engagement instead of one initial pageview.
+      gtag('config', 'G-WB97T5NR8S', { send_page_view: false });
     </script>
     <meta name="description" content="Independent study tool for the Professional Scrum Product Owner I (PSPO I) exam. Concept lessons grounded in the 2020 Scrum Guide, with spaced review of every question you miss." />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />

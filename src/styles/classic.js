@@ -46,6 +46,48 @@ export const STYLE = `
 
 .pspo-root * { box-sizing: border-box; }
 
+/* Global focus ring — Apple uses a 2px blue outline with a 2px offset.
+   Applied via :focus-visible so it only shows for keyboard/AT users. */
+.pspo-root *:focus { outline: none; }
+.pspo-root *:focus-visible {
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect prefers-reduced-motion — disable non-essential animation. */
+@media (prefers-reduced-motion: reduce) {
+  .pspo-root *, .pspo-root *::before, .pspo-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip-to-main-content link — visible only when keyboard-focused. */
+.pspo-skip-link {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 10px 16px;
+  background: var(--text);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.224px;
+  border-radius: 8px;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+  z-index: 10000;
+}
+.pspo-skip-link:focus,
+.pspo-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 .pspo-root .display {
   font-family: var(--font-display);
   font-weight: 600;
@@ -144,6 +186,88 @@ export const STYLE = `
   color: #0071e3;
   background: var(--accent-soft);
   border-color: transparent;
+}
+
+/* Secondary blue pill — Apple's "ghost pill": transparent fill,
+   blue text, 1px blue border. Used as the second CTA next to a primary pill. */
+.pspo-root .btn.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.374px;
+}
+.pspo-root .btn.secondary:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: #0071e3;
+  border-color: #0071e3;
+}
+.pspo-root .btn.secondary:active:not(:disabled) { transform: scale(0.95); }
+.pspo-root .btn.secondary:focus-visible {
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
+}
+
+/* Nav item — used by the header navigation. Active state uses Apple's
+   filled-pill treatment (soft blue surface + accent text). */
+.pspo-root .nav-item {
+  padding: 6px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.156px;
+  color: var(--text-dim);
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.pspo-root .nav-item:hover {
+  color: var(--text);
+  background: var(--surface-hi);
+}
+.pspo-root .nav-item[aria-current="page"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Splash / loading state — full-viewport centered, brand-quiet. */
+.pspo-splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #1d1d1f;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+}
+.pspo-splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.pspo-splash-mark {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.pspo-splash-mark .accent { color: #0066cc; font-style: italic; }
+.pspo-splash-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-top-color: #0066cc;
+  border-radius: 50%;
+  animation: pspoSpin 0.8s linear infinite;
+}
+@keyframes pspoSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .pspo-splash-spinner { animation: none; border-top-color: rgba(0,0,0,0.1); }
 }
 
 /* Quiz option button — hairline border, parchment hover, blue accent on select */

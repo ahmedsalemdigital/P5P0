@@ -192,7 +192,29 @@ Question: *Do returning visitors complete more quizzes than new ones?*
 
 ---
 
-## 6. Future work
+## 6. PDF version (auto-generated)
+
+A rendered PDF lives at **[`ANALYTICS.pdf`](ANALYTICS.pdf)** in the repo
+root — the same content as this file, formatted for printing or sharing
+with stakeholders who don't read markdown.
+
+It is rebuilt automatically:
+
+- **Locally**: `npm run docs:analytics` (uses
+  [`md-to-pdf`](https://www.npmjs.com/package/md-to-pdf))
+- **In CI**: [`.github/workflows/build-analytics-pdf.yml`](.github/workflows/build-analytics-pdf.yml)
+  re-runs the script on every push to `main` that touches `ANALYTICS.md`,
+  `src/lib/analytics.js`, or the build script itself, and commits the
+  regenerated PDF back to `main` with `[skip ci]`. The PDF's header
+  banner shows the build timestamp + commit SHA so the reader can
+  verify it's current.
+
+The markdown is the editable source of truth; the PDF is a derived
+artifact — never edit it by hand.
+
+---
+
+## 7. Future work
 
 Out of scope for this pass, but worth considering:
 

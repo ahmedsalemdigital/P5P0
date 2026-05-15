@@ -33,12 +33,16 @@ export function Header({ stats, onNav, currentView, onToggleTheme }) {
         ))}
         <button
           onClick={onToggleTheme}
-          className="theme-toggle-classic"
+          className="theme-toggle-switch"
+          role="switch"
+          aria-checked="false"
           title="Switch to arcade theme"
           aria-label="Switch to arcade theme"
         >
-          <span className="theme-toggle-icon">◉</span>
-          <span>ARCADE</span>
+          <span className="theme-toggle-switch-label">ARCADE</span>
+          <span className="theme-toggle-switch-track">
+            <span className="theme-toggle-switch-thumb" />
+          </span>
         </button>
       </nav>
     </header>

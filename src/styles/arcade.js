@@ -164,50 +164,70 @@ export const ARCADE_STYLE = `
   }
 }
 
-/* Theme toggle — pulsing arcade button */
-.arcade-theme-toggle {
+/* Theme toggle switch — pill-shaped track with a sliding thumb.
+   On state = arcade (current); hover hints off (slide left → classic). */
+.arcade-theme-switch {
   position: fixed; top: 14px; right: 14px;
   z-index: 1100;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  padding: 9px 14px;
-  background: #000;
-  color: var(--gold);
-  border: 2px solid var(--gold);
-  cursor: pointer;
-  letter-spacing: 2px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  box-shadow:
-    0 0 0 0 rgba(255,176,0,0.6),
-    inset 0 0 8px rgba(255,176,0,0.15);
-  transition: transform 0.1s, background 0.12s;
-  animation: arcadeTogglePulse 2s ease-in-out infinite;
+  gap: 10px;
+  padding: 6px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--g4);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.arcade-theme-toggle:hover {
-  background: var(--gold);
-  color: #000;
-  transform: translateY(-1px);
+.arcade-theme-switch-label {
+  line-height: 1;
 }
-.arcade-theme-toggle:active { transform: translateY(1px); }
-.arcade-theme-toggle .theme-toggle-icon {
+.arcade-theme-switch-track {
+  position: relative;
   display: inline-block;
-  animation: arcadeToggleSpin 4s linear infinite, arcadeToggleGlitch 11s infinite;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--g4);
+  border: 1px solid var(--g4);
+  box-shadow: 0 0 10px rgba(0,255,65,0.55);
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
 }
-@keyframes arcadeTogglePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,176,0,0.6), inset 0 0 8px rgba(255,176,0,0.2); }
-  50%      { box-shadow: 0 0 0 10px rgba(255,176,0,0), inset 0 0 8px rgba(255,176,0,0.2); }
+.arcade-theme-switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000;
+  transform: translateY(-50%);
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+  transition: left 0.2s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
-@keyframes arcadeToggleSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.arcade-theme-switch:hover {
+  color: var(--g3);
+  border-color: rgba(0,170,0,0.4);
+  background: rgba(0,255,65,0.04);
 }
-/* Brief, rare CRT glitch — about 250ms every 11s */
-@keyframes arcadeToggleGlitch {
-  0%, 97%, 100% { text-shadow: none; filter: none; }
-  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
-  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
-  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+.arcade-theme-switch:hover .arcade-theme-switch-track {
+  background: var(--g1);
+  border-color: var(--g2);
+  box-shadow: none;
+}
+.arcade-theme-switch:hover .arcade-theme-switch-thumb {
+  left: 2px;
+  background: var(--g3);
+  box-shadow: none;
+}
+.arcade-theme-switch:focus-visible {
+  outline: 2px solid var(--g4);
+  outline-offset: 2px;
 }
 `;

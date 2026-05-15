@@ -178,52 +178,68 @@ export const STYLE = `
 
 .pspo-root .container-max { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
 
-/* Theme toggle — styled to match the arcade theme it switches to */
-.pspo-root .theme-toggle-classic {
+/* Theme toggle switch — pill-shaped track with a sliding thumb.
+   Off state = classic (current); on state = arcade (target on click). */
+.pspo-root .theme-toggle-switch {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   margin-left: 10px;
-  padding: 9px 14px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #00ff41;
-  background: #000;
-  border: 2px solid #00ff41;
-  border-radius: 0;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.1s, background 0.12s, color 0.12s;
-  animation: themePulseArcade 2s ease-in-out infinite;
-  box-shadow:
-    0 0 0 0 rgba(0,255,65,0.6),
-    inset 0 0 8px rgba(0,255,65,0.2);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.pspo-root .theme-toggle-classic:hover {
-  background: #00ff41;
-  color: #000;
-  transform: translateY(-1px);
+.pspo-root .theme-toggle-switch-label {
+  line-height: 1;
 }
-.pspo-root .theme-toggle-classic:active { transform: translateY(1px); }
-.pspo-root .theme-toggle-classic .theme-toggle-icon {
+.pspo-root .theme-toggle-switch-track {
+  position: relative;
   display: inline-block;
-  animation: themeSpin 4s linear infinite, themeGlitchIcon 11s infinite;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--surface-on);
+  border: 1px solid var(--border);
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
 }
-@keyframes themePulseArcade {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.6), inset 0 0 8px rgba(0,255,65,0.2); }
-  50%      { box-shadow: 0 0 0 10px rgba(0,255,65,0), inset 0 0 8px rgba(0,255,65,0.2); }
+.pspo-root .theme-toggle-switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transform: translateY(-50%);
+  transition: left 0.2s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
-@keyframes themeSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.pspo-root .theme-toggle-switch:hover {
+  color: #00ff41;
+  border-color: rgba(0,255,65,0.25);
+  background: rgba(0,255,65,0.06);
 }
-/* Brief, rare glitch — about 250ms every 11s */
-@keyframes themeGlitchIcon {
-  0%, 97%, 100% { text-shadow: none; filter: none; }
-  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
-  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
-  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+.pspo-root .theme-toggle-switch:hover .theme-toggle-switch-track {
+  background: #00ff41;
+  border-color: #00ff41;
+  box-shadow: 0 0 10px rgba(0,255,65,0.55);
+}
+.pspo-root .theme-toggle-switch:hover .theme-toggle-switch-thumb {
+  left: 16px;
+  background: #000;
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+.pspo-root .theme-toggle-switch:focus-visible {
+  outline: 2px solid #00ff41;
+  outline-offset: 2px;
 }
 
 /* Chunky pixel-art button styled like an old Pokémon-game UI element.
@@ -238,9 +254,9 @@ export const STYLE = `
   font-size: 16px;
   letter-spacing: 0.16em;
   color: #cadc9f;
-  text-shadow: 1px 1px 0 #0f380f;   /* hard 1-pixel drop shadow = Game Boy text */
-  background: #0f380f;              /* outermost = darkest green outline */
-  padding: 5px;                     /* visible outline thickness */
+  text-shadow: 1px 1px 0 #0f380f;
+  background: #0f380f;
+  padding: 5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -250,7 +266,6 @@ export const STYLE = `
   min-width: 220px;
   position: relative;
   border: none;
-  /* Chunky 3px corner chamfer — classic Pokémon menu button silhouette */
   clip-path: polygon(
     3px 0, calc(100% - 3px) 0,
     100% 3px, 100% calc(100% - 3px),
@@ -260,12 +275,11 @@ export const STYLE = `
   filter: drop-shadow(0 0 10px rgba(48, 98, 48, 0.65));
   transition: transform 0.08s, filter 0.12s, color 0.12s;
 }
-/* Inner body face — dark GB green with a top highlight + bottom shadow band */
 .pspo-root .pixel-cta::before {
   content: '';
   position: absolute;
   inset: 5px;
-  background: #306230;              /* main body fill */
+  background: #306230;
   z-index: 0;
   clip-path: polygon(
     2px 0, calc(100% - 2px) 0,
@@ -273,15 +287,10 @@ export const STYLE = `
     calc(100% - 2px) 100%, 2px 100%,
     0 calc(100% - 2px), 0 2px
   );
-  /* Pokémon-style stacked bevel bands:
-       3px medium-green highlight along the top
-       3px darkest-green shadow along the bottom */
   box-shadow:
     inset 0  3px 0 #8bac0f,
     inset 0 -3px 0 #0f380f;
 }
-/* 1-pixel brightest "glint" strip at the very top of the body —
-   the same pixel-row of light you see on Game Boy Pokémon menu boxes. */
 .pspo-root .pixel-cta::after {
   content: '';
   position: absolute;
@@ -299,7 +308,6 @@ export const STYLE = `
   filter: drop-shadow(0 0 6px rgba(48, 98, 48, 0.4));
 }
 .pspo-root .pixel-cta:active::before {
-  /* Pressed: highlight shrinks, shadow grows — the button looks pushed in */
   box-shadow:
     inset 0  1px 0 #8bac0f,
     inset 0 -4px 0 #0f380f;

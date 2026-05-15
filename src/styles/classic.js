@@ -226,17 +226,21 @@ export const STYLE = `
   98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
 }
 
-/* Chunky pixel-art button (e.g. "Try P5P0" CTA on the classic title screen).
-   Modeled after retro mobile-game UI buttons: rectangular with small corner cuts,
-   a clear 3D bevel (lighter top edge + darker bottom edge), and chunky borders.
-   Green/black phosphor palette retained. */
+/* Chunky pixel-art button styled like an old Pokémon-game UI element.
+   Uses the authentic Game Boy 4-shade green palette:
+       #0f380f  darkest  (outline / deep shadow)
+       #306230  dark     (body fill)
+       #8bac0f  medium   (highlight band)
+       #9bbc0f  bright   (hover accent)
+       #cadc9f  lightest (text + top-pixel glint) */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
-  font-size: 18px;
-  letter-spacing: 0.18em;
-  color: #00ff41;
-  background: #00ff41;             /* the green "shell" of the button */
-  padding: 8px;                     /* visible green frame thickness */
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  color: #cadc9f;
+  text-shadow: 1px 1px 0 #0f380f;   /* hard 1-pixel drop shadow = Game Boy text */
+  background: #0f380f;              /* outermost = darkest green outline */
+  padding: 5px;                     /* visible outline thickness */
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -246,32 +250,22 @@ export const STYLE = `
   min-width: 220px;
   position: relative;
   border: none;
-  /* Small chunky pixel chamfer at each corner (3px diagonal cut) — gives the
-     retro rounded-rectangle silhouette without the oval feel of large radii. */
+  /* Chunky 3px corner chamfer — classic Pokémon menu button silhouette */
   clip-path: polygon(
     3px 0, calc(100% - 3px) 0,
     100% 3px, 100% calc(100% - 3px),
     calc(100% - 3px) 100%, 3px 100%,
     0 calc(100% - 3px), 0 3px
   );
-  /* 3D bevel via stacked inset box-shadows:
-       brighter green band along the top    = "highlight"
-       darker green band along the bottom   = "shadow" */
-  box-shadow:
-    inset 0  4px 0 #ccffdd,
-    inset 0 -5px 0 #007a1f;
-  /* Phosphor outer glow follows the clipped silhouette */
-  filter: drop-shadow(0 0 10px rgba(0,255,65,0.6));
-  text-shadow: 0 0 5px rgba(0,255,65,0.55);
+  filter: drop-shadow(0 0 10px rgba(48, 98, 48, 0.65));
   transition: transform 0.08s, filter 0.12s, color 0.12s;
 }
-/* Inner black face — sits inside the green frame, with its own tiny chamfer
-   so the rounded-rect silhouette reads through the layers. */
+/* Inner body face — dark GB green with a top highlight + bottom shadow band */
 .pspo-root .pixel-cta::before {
   content: '';
   position: absolute;
-  inset: 8px;
-  background: #000;
+  inset: 5px;
+  background: #306230;              /* main body fill */
   z-index: 0;
   clip-path: polygon(
     2px 0, calc(100% - 2px) 0,
@@ -279,20 +273,41 @@ export const STYLE = `
     calc(100% - 2px) 100%, 2px 100%,
     0 calc(100% - 2px), 0 2px
   );
-  box-shadow: inset 0 0 10px rgba(0,255,65,0.18);
+  /* Pokémon-style stacked bevel bands:
+       3px medium-green highlight along the top
+       3px darkest-green shadow along the bottom */
+  box-shadow:
+    inset 0  3px 0 #8bac0f,
+    inset 0 -3px 0 #0f380f;
+}
+/* 1-pixel brightest "glint" strip at the very top of the body —
+   the same pixel-row of light you see on Game Boy Pokémon menu boxes. */
+.pspo-root .pixel-cta::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  right: 9px;
+  height: 1px;
+  background: #cadc9f;
+  z-index: 0;
+  opacity: 0.85;
 }
 .pspo-root .pixel-cta > * { position: relative; z-index: 1; }
 .pspo-root .pixel-cta:active {
   transform: translateY(2px);
-  /* When pressed, bevel inverts: bottom highlight stays, top highlight muted —
-     simulates the button being pushed in. */
-  box-shadow:
-    inset 0  2px 0 #5cff7f,
-    inset 0 -3px 0 #007a1f;
+  filter: drop-shadow(0 0 6px rgba(48, 98, 48, 0.4));
 }
+.pspo-root .pixel-cta:active::before {
+  /* Pressed: highlight shrinks, shadow grows — the button looks pushed in */
+  box-shadow:
+    inset 0  1px 0 #8bac0f,
+    inset 0 -4px 0 #0f380f;
+}
+.pspo-root .pixel-cta:active::after { opacity: 0; }
 .pspo-root .pixel-cta:hover {
-  filter: drop-shadow(0 0 18px rgba(0,255,65,0.9));
-  color: #ccffdd;
+  filter: drop-shadow(0 0 16px rgba(139, 172, 15, 0.85));
+  color: #9bbc0f;
   animation: pixelCtaGlitch 0.9s steps(1) infinite;
 }
 @keyframes pixelCtaGlitch {

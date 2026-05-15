@@ -3,21 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Initialize dataLayer immediately so analytics.js can queue events
+         even before GTM finishes loading. GTM will replay everything in the
+         dataLayer once it boots, so no events are lost. -->
+    <script>window.dataLayer = window.dataLayer || [];</script>
     <!-- CookieYes CMP — must load as early as possible so it can gate downstream trackers -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/56f067457d6a30de02f8cc31/script.js"></script>
-    <!-- Google Analytics 4 — gated by CookieYes ("Analytics" category).
-         type="text/plain" prevents browser execution; CookieYes rewrites the
-         type and triggers the script after the user grants consent. -->
-    <script type="text/plain" data-cookieyes="cookieyes-analytics" async src="https://www.googletagmanager.com/gtag/js?id=G-WB97T5NR8S"></script>
-    <script type="text/plain" data-cookieyes="cookieyes-analytics">
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      // send_page_view: false → this is a SPA. The app fires its own page_view
-      // events on every screen change (title → home → lesson → quiz → ...) so
-      // we get accurate per-screen engagement instead of one initial pageview.
-      gtag('config', 'G-WB97T5NR8S', { send_page_view: false });
-    </script>
+    <!-- Google Tag Manager — consent-gated by CookieYes ("Analytics" category).
+         type="text/plain" prevents browser execution; CookieYes flips the type
+         to text/javascript after the user grants consent, then GTM boots and
+         replays any events already queued in dataLayer.
+         Container: GTM-THK4XJZW — see ANALYTICS.md §2 for tag setup. -->
+    <script type="text/plain" data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-THK4XJZW');</script>
     <meta name="description" content="Independent study tool for the Professional Scrum Product Owner I (PSPO I) exam. Concept lessons grounded in the 2020 Scrum Guide, with spaced review of every question you miss." />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
@@ -32,6 +33,11 @@
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) — non-JS fallback. Will only meaningfully
+         fire if a user has JS disabled, in which case they can't see the consent
+         banner either. Kept for completeness. -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-THK4XJZW"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="root"></div>
     <noscript>
       <p style="padding:32px;font-family:system-ui,sans-serif;font-size:17px;line-height:1.47">

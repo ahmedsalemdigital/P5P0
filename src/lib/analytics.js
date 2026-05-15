@@ -1,23 +1,28 @@
 /* ──────────────────────────────────────────────────────────────────────────
    ANALYTICS LAYER
 
-   Thin wrapper around gtag (GA4). Every call is wrapped so it's a no-op
-   when:
-     • gtag hasn't loaded yet (pre-consent — CookieYes loads gtag only
-       after the user accepts the Analytics category)
-     • window is undefined (SSR safety; not strictly needed here)
-     • gtag itself throws
+   Pushes events to window.dataLayer. The page wires Google Tag Manager
+   (GTM-THK4XJZW) which listens to dataLayer and forwards events to GA4
+   (measurement id G-WB97T5NR8S).
 
-   The tracking plan is documented in /ANALYTICS.md at the repo root.
+   Consent: GTM only loads after the user accepts the CookieYes "Analytics"
+   category. Pre-consent, dataLayer is an array that accumulates events but
+   nothing ever sends them anywhere — they're cleared on page reload.
+
+   The full tracking plan and the GTM container setup live in
+   /ANALYTICS.md at the repo root.
    ────────────────────────────────────────────────────────────────────────── */
 
 const GA_ID = 'G-WB97T5NR8S';
+const GTM_ID = 'GTM-THK4XJZW';
 
-function gtagSafe(...args) {
+function dataLayerPush(payload) {
   try {
     if (typeof window === 'undefined') return;
-    if (typeof window.gtag !== 'function') return;
-    window.gtag(...args);
+    // dataLayer is initialized inline in index.html so this should always be
+    // an array; the guard is a paranoia check.
+    if (!Array.isArray(window.dataLayer)) return;
+    window.dataLayer.push(payload);
   } catch {
     // Analytics must never crash the app.
   }
@@ -25,18 +30,20 @@ function gtagSafe(...args) {
 
 /** Generic event helper. Prefer the typed helpers below over calling this directly. */
 export function trackEvent(name, params = {}) {
-  gtagSafe('event', name, params);
+  dataLayerPush({ event: name, ...params });
 }
 
-/** Set GA4 user properties. Called when their value changes. */
+/** Set GA4 user properties. Fires a dedicated `set_user_properties` event
+ *  that the GTM container is configured to map onto GA4 user_properties. */
 export function setUserProperties(properties) {
-  gtagSafe('set', 'user_properties', properties);
+  dataLayerPush({ event: 'set_user_properties', ...properties });
 }
 
-/** SPA page_view. Auto page_view is disabled in index.html's gtag config so
- *  every screen change (title → home → lesson → quiz → results) reports once. */
+/** SPA page_view. The GTM container should send this through a GA4 Event
+ *  tag named `page_view` mapping page_path/page_title/page_location. */
 export function trackPageView({ path, title }) {
-  gtagSafe('event', 'page_view', {
+  dataLayerPush({
+    event: 'page_view',
     page_path: path,
     page_title: title,
     page_location: typeof window !== 'undefined' ? `${window.location.origin}${path}` : path,
@@ -123,4 +130,4 @@ export function trackAchievementUnlocked({ achievementId, achievementName }) {
   });
 }
 
-export { GA_ID };
+export { GA_ID, GTM_ID };

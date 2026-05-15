@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { pickReviewQueue, QUIZ_MODE } from './lib/quiz.js';
+import { Header } from './components/arcade/Header.jsx';
 import { TitleScreen } from './components/arcade/TitleScreen.jsx';
 import { ConceptSelect } from './components/arcade/ConceptSelect.jsx';
 import { LessonScreen } from './components/arcade/LessonScreen.jsx';
@@ -59,19 +60,13 @@ export default function ArcadeShell({
   return (
     <div className="arcade-root">
       <div className="arcade-scanline" />
-      <button
-        className="arcade-theme-switch"
-        onClick={onSwitchTheme}
-        role="switch"
-        aria-checked="true"
-        title="Switch to classic theme"
-        aria-label="Switch to classic theme"
-      >
-        <span className="arcade-theme-switch-label">ARCADE</span>
-        <span className="arcade-theme-switch-track">
-          <span className="arcade-theme-switch-thumb" />
-        </span>
-      </button>
+      {view !== 'title' && (
+        <Header
+          onNav={(v) => onSetView(v)}
+          currentView={view}
+          onToggleTheme={onSwitchTheme}
+        />
+      )}
       <div className="arcade-stage">
         {view === 'title' && (
           <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />

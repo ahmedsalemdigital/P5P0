@@ -191,11 +191,81 @@ export const ARCADE_STYLE = `
   transform: translateY(0);
 }
 
+/* Arcade top nav — mirrors the classic Header layout in pixel style */
+.arcade-root .arc-header {
+  position: relative;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, #001a00 0%, #000800 100%);
+  border-bottom: 2px solid var(--g3);
+  box-shadow: inset 0 0 16px rgba(0,255,65,0.12);
+}
+.arcade-root .arc-header-logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--g4);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+.arcade-root .arc-header-logo-main {
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+.arcade-root .arc-header-logo-sub {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-shadow: 0 0 4px rgba(255,176,0,0.5);
+}
+.arcade-root .arc-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.arcade-root .arc-nav-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--g3);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease,
+              border-color 0.12s ease, text-shadow 0.12s ease,
+              transform 0.08s ease;
+}
+.arcade-root .arc-nav-btn:hover {
+  color: var(--g4);
+  border-color: var(--g2);
+  background: rgba(0,255,65,0.06);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+.arcade-root .arc-nav-btn:active {
+  transform: translateY(1px);
+}
+.arcade-root .arc-nav-btn.is-active {
+  color: #000;
+  background: var(--g4);
+  border-color: var(--g4);
+  box-shadow: 0 0 10px rgba(0,255,65,0.6), inset 0 0 0 1px #00ff41;
+  text-shadow: none;
+}
+
 /* Theme toggle switch — pill-shaped track with a sliding thumb.
    On state = arcade (current); hover hints off (slide left → classic). */
 .arcade-theme-switch {
-  position: fixed; top: 14px; right: 14px;
-  z-index: 1100;
   display: inline-flex;
   align-items: center;
   gap: 10px;

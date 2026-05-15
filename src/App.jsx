@@ -42,7 +42,7 @@ export default function App() {
   const [qsess, setQsess] = useState(FRESH_QSESS);
   const [progress, setProgress] = useState(DEFAULT_PROGRESS);
   const [loaded, setLoaded] = useState(false);
-  const [theme, setTheme] = useState(THEME.ARCADE);
+  const [theme, setTheme] = useState(THEME.CLASSIC);
 
   useEffect(() => {
     setProgress(loadProgress());

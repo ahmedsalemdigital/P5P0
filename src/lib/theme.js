@@ -5,7 +5,7 @@ export const THEME = {
   ARCADE: 'arcade',
 };
 
-const DEFAULT_THEME = THEME.ARCADE;
+const DEFAULT_THEME = THEME.CLASSIC;
 
 export function loadTheme() {
   try {

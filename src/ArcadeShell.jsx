@@ -6,6 +6,7 @@ import { ConceptSelect } from './components/arcade/ConceptSelect.jsx';
 import { LessonScreen } from './components/arcade/LessonScreen.jsx';
 import { QuizScreen } from './components/arcade/QuizScreen.jsx';
 import { ResultsScreen } from './components/arcade/ResultsScreen.jsx';
+import { ReviewScreen } from './components/arcade/ReviewScreen.jsx';
 
 export { ARCADE_STYLE } from './styles/arcade.js';
 
@@ -72,7 +73,7 @@ export default function ArcadeShell({
           <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />
         )}
 
-        {(view === 'home' || view === 'review' || view === 'stats') && (
+        {(view === 'home' || view === 'stats') && (
           <ConceptSelect
             progress={progress}
             onSelect={onPickConcept}
@@ -81,6 +82,14 @@ export default function ArcadeShell({
             onStartMock={onStartMockExam}
             onStartReview={onStartReview}
             reviewQueueSize={reviewQueue.length}
+          />
+        )}
+
+        {view === 'review' && (
+          <ReviewScreen
+            queue={reviewQueue}
+            onStart={onStartReview}
+            onBack={() => onSetView('home')}
           />
         )}
 

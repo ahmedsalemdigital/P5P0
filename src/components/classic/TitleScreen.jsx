@@ -50,6 +50,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
             title="Switch to arcade theme"
             aria-label="Try the P5P0 arcade theme"
           >
+            <span className="theme-toggle-icon">◐</span>
             <span>TRY P5P0</span>
           </button>
         </div>

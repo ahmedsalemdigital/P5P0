@@ -226,100 +226,56 @@ export const STYLE = `
   98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
 }
 
-/* Chunky pixel-art button styled like an old Pokémon-game UI element.
-   Uses the authentic Game Boy 4-shade green palette:
-       #0f380f  darkest  (outline / deep shadow)
-       #306230  dark     (body fill)
-       #8bac0f  medium   (highlight band)
-       #9bbc0f  bright   (hover accent)
-       #cadc9f  lightest (text + top-pixel glint) */
+/* Oval theme-toggle button — mirrors the pulsing arcade-toggle effect
+   used by the header's .theme-toggle-classic, sized as a primary CTA. */
 .pspo-root .pixel-cta {
   font-family: 'Press Start 2P', monospace;
-  font-size: 16px;
-  letter-spacing: 0.16em;
-  color: #cadc9f;
-  text-shadow: 1px 1px 0 #0f380f;   /* hard 1-pixel drop shadow = Game Boy text */
-  background: #0f380f;              /* outermost = darkest green outline */
-  padding: 5px;                     /* visible outline thickness */
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: #00ff41;
+  background: #000;
+  border: 3px solid #00ff41;
+  border-radius: 999px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   text-transform: uppercase;
-  min-height: 68px;
-  min-width: 220px;
+  min-height: 72px;
+  padding: 0 28px;
   position: relative;
-  border: none;
-  /* Chunky 3px corner chamfer — classic Pokémon menu button silhouette */
-  clip-path: polygon(
-    3px 0, calc(100% - 3px) 0,
-    100% 3px, 100% calc(100% - 3px),
-    calc(100% - 3px) 100%, 3px 100%,
-    0 calc(100% - 3px), 0 3px
-  );
-  filter: drop-shadow(0 0 10px rgba(48, 98, 48, 0.65));
-  transition: transform 0.08s, filter 0.12s, color 0.12s;
-}
-/* Inner body face — dark GB green with a top highlight + bottom shadow band */
-.pspo-root .pixel-cta::before {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  background: #306230;              /* main body fill */
-  z-index: 0;
-  clip-path: polygon(
-    2px 0, calc(100% - 2px) 0,
-    100% 2px, 100% calc(100% - 2px),
-    calc(100% - 2px) 100%, 2px 100%,
-    0 calc(100% - 2px), 0 2px
-  );
-  /* Pokémon-style stacked bevel bands:
-       3px medium-green highlight along the top
-       3px darkest-green shadow along the bottom */
+  transition: transform 0.1s, background 0.12s, color 0.12s;
+  animation: pixelCtaPulse 2s ease-in-out infinite;
   box-shadow:
-    inset 0  3px 0 #8bac0f,
-    inset 0 -3px 0 #0f380f;
+    0 0 0 0 rgba(0,255,65,0.6),
+    inset 0 0 12px rgba(0,255,65,0.2);
 }
-/* 1-pixel brightest "glint" strip at the very top of the body —
-   the same pixel-row of light you see on Game Boy Pokémon menu boxes. */
-.pspo-root .pixel-cta::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 9px;
-  right: 9px;
-  height: 1px;
-  background: #cadc9f;
-  z-index: 0;
-  opacity: 0.85;
-}
-.pspo-root .pixel-cta > * { position: relative; z-index: 1; }
-.pspo-root .pixel-cta:active {
-  transform: translateY(2px);
-  filter: drop-shadow(0 0 6px rgba(48, 98, 48, 0.4));
-}
-.pspo-root .pixel-cta:active::before {
-  /* Pressed: highlight shrinks, shadow grows — the button looks pushed in */
-  box-shadow:
-    inset 0  1px 0 #8bac0f,
-    inset 0 -4px 0 #0f380f;
-}
-.pspo-root .pixel-cta:active::after { opacity: 0; }
 .pspo-root .pixel-cta:hover {
-  filter: drop-shadow(0 0 16px rgba(139, 172, 15, 0.85));
-  color: #9bbc0f;
-  animation: pixelCtaGlitch 0.9s steps(1) infinite;
+  background: #00ff41;
+  color: #000;
+  transform: translateY(-1px);
 }
-@keyframes pixelCtaGlitch {
-  0%   { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
-  18%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.6), -2px 0 rgba(68,221,255,0.6); }
-  22%  { transform: translate(1px, 0);   text-shadow: -2px 0 rgba(255,68,170,0.6), 2px 0 rgba(68,221,255,0.6); }
-  26%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
-  60%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
-  64%  { transform: translate(2px, -1px); text-shadow: -2px 0 rgba(68,221,255,0.5); filter: hue-rotate(-10deg); }
-  68%  { transform: translate(-1px, 0);  text-shadow: 2px 0 rgba(255,68,170,0.5); }
-  72%  { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); filter: none; }
-  100% { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
+.pspo-root .pixel-cta:active { transform: translateY(1px); }
+.pspo-root .pixel-cta .theme-toggle-icon {
+  display: inline-block;
+  font-size: 18px;
+  animation: pixelCtaSpin 4s linear infinite, pixelCtaGlitchIcon 11s infinite;
+}
+@keyframes pixelCtaPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,65,0.6), inset 0 0 12px rgba(0,255,65,0.2); }
+  50%      { box-shadow: 0 0 0 14px rgba(0,255,65,0), inset 0 0 12px rgba(0,255,65,0.2); }
+}
+@keyframes pixelCtaSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+/* Brief, rare glitch — about 250ms every 11s */
+@keyframes pixelCtaGlitchIcon {
+  0%, 97%, 100% { text-shadow: none; filter: none; }
+  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
+  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
+  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
 }
 
 @media (max-width: 640px) {

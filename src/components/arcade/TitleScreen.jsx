@@ -106,6 +106,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
         </button>
         <button
           onClick={onToggleTheme}
+          className="arc-classic-cta"
           title="Switch to classic theme"
           style={{
             fontFamily: 'Press Start 2P, monospace',
@@ -118,7 +119,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
             textTransform: 'uppercase', whiteSpace: 'nowrap',
             minHeight: 72,
           }}>
-          <span style={{ fontSize: 16 }}>◐</span>
+          <span className="arc-classic-cta-icon" style={{ fontSize: 16 }}>◐</span>
           <span>CLASSIC</span>
         </button>
       </div>

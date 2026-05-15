@@ -164,6 +164,33 @@ export const ARCADE_STYLE = `
   }
 }
 
+/* Title-screen CLASSIC CTA hover — inverts to gold-fill,
+   amps the halo, lifts, and spins the ◐ icon to telegraph the switch. */
+.arcade-root .arc-classic-cta {
+  transition: background 0.15s ease, color 0.15s ease,
+              transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.arcade-root .arc-classic-cta-icon {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+.arcade-root .arc-classic-cta:hover {
+  background: var(--gold) !important;
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 32px rgba(255,176,0,0.85),
+    0 0 64px rgba(255,176,0,0.35),
+    inset 0 0 14px rgba(255,255,255,0.25) !important;
+  filter: brightness(1.05);
+}
+.arcade-root .arc-classic-cta:hover .arc-classic-cta-icon {
+  transform: rotate(180deg);
+}
+.arcade-root .arc-classic-cta:active {
+  transform: translateY(0);
+}
+
 /* Theme toggle switch — pill-shaped track with a sliding thumb.
    On state = arcade (current); hover hints off (slide left → classic). */
 .arcade-theme-switch {

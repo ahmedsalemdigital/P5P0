@@ -36,8 +36,8 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
   const timeStr = timeUsed != null ? `${Math.floor(timeUsed / 60)}m ${timeUsed % 60}s` : null;
 
   return (
-    <div className="arc-scan-in" style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: 10, letterSpacing: 3, marginBottom: 4, color: 'var(--g3)' }}>{headerLabel}</div>
+    <div className="arc-scan-in" style={{ textAlign: 'center' }} role="region" aria-labelledby="results-heading" aria-live="polite">
+      <h1 id="results-heading" style={{ fontSize: 10, letterSpacing: 3, margin: '0 0 4px', color: 'var(--g3)', fontWeight: 400 }}>{headerLabel}</h1>
       {concept && <div style={{ fontSize: 14, marginBottom: 16, color: 'var(--g5)' }}>{concept.label.toUpperCase()}</div>}
       <div style={{ marginBottom: 12, display: 'inline-block' }}>
         <Mascot size={72} happy={cleared} sad={!cleared} />
@@ -49,9 +49,13 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
             {pct}%
           </div>
           <div style={{ fontSize: 8, color: 'var(--g3)', marginTop: 2 }}>{correctCount} / {total} CORRECT</div>
-          <div style={{ margin: '10px 0', fontSize: 18 }}>
+          <div
+            style={{ margin: '10px 0', fontSize: 18 }}
+            role="img"
+            aria-label={`${stars} of 3 stars earned`}
+          >
             {Array.from({ length: 3 }, (_, i) => (
-              <span key={i} style={{ color: i < stars ? 'var(--gold)' : 'var(--g2)', marginRight: 4 }}>★</span>
+              <span key={i} aria-hidden="true" style={{ color: i < stars ? 'var(--gold)' : 'var(--g2)', marginRight: 4 }}>★</span>
             ))}
           </div>
           <div style={{ fontSize: 11, color: verdictColor, letterSpacing: 2, textShadow: `0 0 8px ${verdictGlow}` }}>
@@ -104,9 +108,15 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
       </div>
 
       <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
-        <button className="arc-btn" style={{ width: '100%', padding: 12, fontSize: 9 }} onClick={onPlayAgain}>↺ PLAY AGAIN</button>
-        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onBack}>◀ STAGE SELECT</button>
-        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onHome}>⌂ TITLE</button>
+        <button className="arc-btn" style={{ width: '100%', padding: 12, fontSize: 9 }} onClick={onPlayAgain} aria-label="Play again">
+          <span aria-hidden="true">↺ </span>PLAY AGAIN
+        </button>
+        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onBack} aria-label="Back to stage select">
+          <span aria-hidden="true">◀ </span>STAGE SELECT
+        </button>
+        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onHome} aria-label="Return to title screen">
+          <span aria-hidden="true">⌂ </span>TITLE
+        </button>
       </div>
     </div>
   );

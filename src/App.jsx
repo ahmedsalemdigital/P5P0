@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   DEFAULT_PROGRESS,
   loadProgress,
   saveProgress,
+  masteryForConcept,
 } from './lib/progress.js';
 import {
   FRESH_QSESS,
@@ -12,8 +13,19 @@ import {
   pickQuickQuiz,
   pickMockExam,
   pickReviewQueue,
+  overallProgress,
 } from './lib/quiz.js';
 import { THEME, loadTheme, saveTheme } from './lib/theme.js';
+import { CONCEPTS } from './data/concepts.js';
+import {
+  trackPageView,
+  trackThemeSwitch,
+  trackConceptView,
+  trackQuizStart,
+  trackConceptMastered,
+  trackAchievementUnlocked,
+  setUserProperties,
+} from './lib/analytics.js';
 
 import { STYLE } from './styles/classic.js';
 import ArcadeShell, { ARCADE_STYLE } from './ArcadeShell.jsx';
@@ -24,6 +36,16 @@ import { HomeView } from './components/classic/HomeView.jsx';
 import { LessonView } from './components/classic/LessonView.jsx';
 import { QuizView } from './components/classic/QuizView.jsx';
 import { StatsView } from './components/classic/StatsView.jsx';
+
+const VIEW_TITLES = {
+  title: 'Title',
+  home: 'Concepts',
+  lesson: 'Lesson',
+  quiz: 'Quiz',
+  results: 'Results',
+  review: 'Review queue',
+  stats: 'Stats',
+};
 
 /* ──────────────────────────────────────────────────────────────────────────
    APP ROOT
@@ -42,13 +64,78 @@ export default function App() {
   const [qsess, setQsess] = useState(FRESH_QSESS);
   const [progress, setProgress] = useState(DEFAULT_PROGRESS);
   const [loaded, setLoaded] = useState(false);
-  const [theme, setTheme] = useState(THEME.ARCADE);
+  const [theme, setTheme] = useState(THEME.CLASSIC);
 
   useEffect(() => {
-    setProgress(loadProgress());
-    setTheme(loadTheme());
+    const loadedProgress = loadProgress();
+    const loadedTheme = loadTheme();
+    setProgress(loadedProgress);
+    setTheme(loadedTheme);
     setLoaded(true);
+    // Seed user properties as soon as we know the user's starting state.
+    setUserProperties({
+      theme: loadedTheme,
+      concepts_mastered: CONCEPTS.filter((c) => masteryForConcept(loadedProgress, c.id).level === 'mastered').length,
+      total_progress_pct: overallProgress(loadedProgress).total,
+    });
   }, []);
+
+  /* Analytics: SPA page_view on every view change.
+     gtag's auto page_view is disabled in index.html so this is the sole source. */
+  useEffect(() => {
+    if (!loaded) return;
+    trackPageView({
+      path: `/${view}${activeConcept ? `/${activeConcept}` : ''}`,
+      title: `${VIEW_TITLES[view] || view} — PSPO·I Trainer`,
+    });
+  }, [view, activeConcept, loaded]);
+
+  /* Analytics: detect newly-mastered concepts and the "all required concepts
+     mastered" achievement. Runs whenever progress changes. */
+  const prevMasteredRef = useRef(null);
+  const mockCompleteUnlockedRef = useRef(false);
+  useEffect(() => {
+    if (!loaded) return;
+    const masteredNow = new Set(
+      CONCEPTS
+        .filter((c) => masteryForConcept(progress, c.id).level === 'mastered')
+        .map((c) => c.id),
+    );
+
+    // Newly mastered concepts → fire one concept_mastered event per concept.
+    if (prevMasteredRef.current) {
+      for (const id of masteredNow) {
+        if (!prevMasteredRef.current.has(id)) {
+          const c = CONCEPTS.find((x) => x.id === id);
+          trackConceptMastered({ conceptId: id, conceptLabel: c?.label });
+        }
+      }
+    }
+    prevMasteredRef.current = masteredNow;
+
+    // "Mock complete" achievement = all required (non-optional) concepts mastered.
+    const requiredAllMastered = CONCEPTS.filter((c) => !c.optional).every((c) => masteredNow.has(c.id));
+    if (requiredAllMastered && !mockCompleteUnlockedRef.current) {
+      // Idempotency: only fire once per session even if progress mutates further.
+      const already = (() => {
+        try { return localStorage.getItem('pspo_mock_complete_unlocked') === 'true'; } catch { return false; }
+      })();
+      if (!already) {
+        try { localStorage.setItem('pspo_mock_complete_unlocked', 'true'); } catch {}
+        trackAchievementUnlocked({
+          achievementId: 'mock_complete',
+          achievementName: 'Mock Complete — all required concepts mastered',
+        });
+      }
+      mockCompleteUnlockedRef.current = true;
+    }
+
+    // Keep user properties fresh.
+    setUserProperties({
+      concepts_mastered: masteredNow.size,
+      total_progress_pct: overallProgress(progress).total,
+    });
+  }, [progress, loaded]);
 
   function resetQsess() {
     setQsess({ ...FRESH_QSESS });
@@ -58,6 +145,7 @@ export default function App() {
     setTheme((t) => {
       const next = t === THEME.ARCADE ? THEME.CLASSIC : THEME.ARCADE;
       saveTheme(next);
+      trackThemeSwitch({ from: t, to: next });
       return next;
     });
     // 'results' is arcade-only (classic shows results inline in QuizView).
@@ -103,42 +191,58 @@ export default function App() {
   }
 
   function pickConcept(conceptId) {
+    const c = CONCEPTS.find((x) => x.id === conceptId);
+    trackConceptView({ conceptId, conceptLabel: c?.label });
     setActiveConcept(conceptId);
     setView('lesson');
   }
 
   function startQuizForConcept(conceptId) {
+    const phases = pickConceptPhases(conceptId);
+    const c = CONCEPTS.find((x) => x.id === conceptId);
     setQuizSet(null);
-    setQuizPhases(pickConceptPhases(conceptId));
+    setQuizPhases(phases);
     setQuizMode(QUIZ_MODE.CONCEPT);
     resetQsess();
     setView('quiz');
+    trackQuizStart({
+      mode: 'concept',
+      conceptId,
+      conceptLabel: c?.label,
+      questionCount: phases.reduce((s, p) => s + p.questions.length, 0),
+    });
   }
 
   function startQuickQuiz() {
-    setQuizSet(pickQuickQuiz());
+    const set = pickQuickQuiz();
+    setQuizSet(set);
     setActiveConcept(null);
     setQuizMode(QUIZ_MODE.MIXED);
     resetQsess();
     setView('quiz');
+    trackQuizStart({ mode: 'mixed', questionCount: set.length });
   }
 
   function startMockExam() {
-    setQuizSet(pickMockExam());
+    const set = pickMockExam();
+    setQuizSet(set);
     setActiveConcept(null);
     setQuizMode(QUIZ_MODE.MOCK);
     resetQsess();
     setView('quiz');
+    trackQuizStart({ mode: 'mock', questionCount: set.length });
   }
 
   function startReview() {
     const queue = pickReviewQueue(progress);
     if (queue.length === 0) { setView('home'); return; }
-    setQuizSet([...queue].sort(() => Math.random() - 0.5));
+    const set = [...queue].sort(() => Math.random() - 0.5);
+    setQuizSet(set);
     setActiveConcept(null);
     setQuizMode(QUIZ_MODE.REVIEW);
     resetQsess();
     setView('quiz');
+    trackQuizStart({ mode: 'review', questionCount: set.length });
   }
 
   function exitQuiz() {
@@ -151,11 +255,36 @@ export default function App() {
   }
 
   if (!loaded) {
+    // Use the saved theme (read synchronously) so we don't flash the wrong skin
+    const initialTheme = (typeof window !== 'undefined' ? loadTheme() : THEME.CLASSIC);
+    if (initialTheme === THEME.ARCADE) {
+      return (
+        <div className="arcade-root">
+          <style>{ARCADE_STYLE}</style>
+          <div className="arcade-splash" role="status" aria-live="polite" aria-label="Loading P5P0 Trainer">
+            <div className="arcade-splash-inner">
+              <div className="arcade-splash-mark">P5P0</div>
+              <div className="arcade-splash-sub">★ TRAINER ★</div>
+              <div className="arcade-splash-status">
+                BOOTING<span className="arcade-splash-caret" aria-hidden="true" />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
-      <div className="pspo-root grainy" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <>
         <style>{STYLE}</style>
-        <div className="mono faint" style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Loading…</div>
-      </div>
+        <div className="pspo-splash" role="status" aria-live="polite" aria-label="Loading">
+          <div className="pspo-splash-inner">
+            <div className="pspo-splash-mark">
+              PSPO<span className="accent">·I</span>
+            </div>
+            <div className="pspo-splash-spinner" />
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -191,21 +320,34 @@ export default function App() {
     <div className="pspo-root grainy">
       <style>{STYLE}</style>
 
-      {view === 'title' ? (
-        <TitleScreen
-          progress={progress}
-          onStart={() => setView('home')}
-          onToggleTheme={switchTheme}
-        />
-      ) : (
-        <Header
-          stats={progress}
-          onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
-          currentView={view}
-          onToggleTheme={switchTheme}
-        />
-      )}
+      <a href="#main-content" className="pspo-skip-link">Skip to main content</a>
 
+      {view === 'title' ? (
+        <main id="main-content">
+          <TitleScreen
+            progress={progress}
+            onStart={() => setView('home')}
+            onToggleTheme={switchTheme}
+          />
+        </main>
+      ) : (
+        <>
+          <Header
+            stats={progress}
+            onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
+            currentView={view}
+            onToggleTheme={switchTheme}
+          />
+          <main id="main-content">
+            {renderClassicView()}
+          </main>
+        </>
+      )}
+    </div>
+  );
+
+  function renderClassicView() {
+    return <>
       {view === 'home' && (
         <HomeView
           progress={progress}
@@ -239,19 +381,40 @@ export default function App() {
         />
       )}
 
-      {view === 'review' && (
-        <div className="container-max fade-in">
-          <h1 className="display" style={{ fontSize: 'clamp(30px, 5vw, 42px)', fontWeight: 500, margin: '0 0 16px', letterSpacing: '-0.02em' }}>Review queue</h1>
-          <p className="dim" style={{ fontSize: 16, maxWidth: 540, marginTop: 0 }}>
-            Questions you've answered incorrectly, or haven't yet answered correctly twice. Closer to real mastery than one-shot accuracy.
-          </p>
-          <button className="btn primary" onClick={startReview} style={{ marginTop: 16 }}>Start Review →</button>
-        </div>
-      )}
+      {view === 'review' && (() => {
+        const queue = pickReviewQueue(progress);
+        const empty = queue.length === 0;
+        return (
+          <div className="container-max fade-in">
+            <h1 className="display" style={{ fontSize: 'clamp(36px, 6vw, 56px)', fontWeight: 600, margin: '0 0 18px', letterSpacing: '-0.022em', lineHeight: 1.07 }}>
+              Review queue
+            </h1>
+            <p style={{ fontSize: 21, fontWeight: 400, letterSpacing: '-0.231px', color: 'var(--text-dim)', maxWidth: 620, marginTop: 0, lineHeight: 1.43 }}>
+              Questions you've answered incorrectly, or haven't yet answered correctly twice. Closer to real mastery than one-shot accuracy.
+            </p>
+            <div className="card" style={{ marginTop: 28, marginBottom: 24, maxWidth: 360, textAlign: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-dim)', letterSpacing: '-0.224px', marginBottom: 10 }}>
+                Questions pending
+              </div>
+              <div className="numeric" style={{ fontSize: 56, fontWeight: 600, color: empty ? 'var(--text-faint)' : 'var(--accent)', lineHeight: 1, letterSpacing: '-0.022em' }}>
+                {queue.length}
+              </div>
+            </div>
+            <button className="btn primary" onClick={startReview} disabled={empty}>
+              {empty ? 'Queue empty' : 'Start review'}
+            </button>
+            {empty && (
+              <p style={{ fontSize: 14, color: 'var(--text-faint)', marginTop: 12, letterSpacing: '-0.224px' }}>
+                Answer a quiz to populate the queue with what you miss.
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {view === 'stats' && (
         <StatsView progress={progress} onBack={() => setView('home')} onReset={resetProgress} />
       )}
-    </div>
-  );
+    </>;
+  }
 }

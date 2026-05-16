@@ -271,25 +271,43 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
 
   return (
     <div className="arc-scan-in">
+      {/* SR-only live region announces correct/wrong feedback */}
+      <div
+        role="status"
+        aria-live="polite"
+        className="sr-only"
+      >
+        {flash === 'correct' ? 'Correct answer.' : flash === 'wrong' ? 'Incorrect answer.' : ''}
+      </div>
+
       {/* Top row: back + identity + accuracy/timer */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-          <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onExit}>◀</button>
+          <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onExit} aria-label="Exit quiz">
+            <span aria-hidden="true">◀</span>
+          </button>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 7, color: 'var(--g3)', marginBottom: 3, letterSpacing: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{headerLabel}</div>
-            <div style={{ fontSize: 8, color: 'var(--g3)' }}>Q{globalIdx + 1}/{total}</div>
+            <div style={{ fontSize: 8, color: 'var(--g3)' }} aria-label={`Question ${globalIdx + 1} of ${total}`}>
+              Q{globalIdx + 1}/{total}
+            </div>
           </div>
         </div>
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ textAlign: 'right' }} aria-live="off">
           {isMock ? (
             <>
               <div style={{ fontSize: 7, color: 'var(--g3)' }}>TIME LEFT</div>
-              <div style={{ color: lowTime ? 'var(--red)' : 'var(--gold)', fontSize: 14, letterSpacing: 1 }}>{timeStr}</div>
+              <div
+                style={{ color: lowTime ? 'var(--red)' : 'var(--gold)', fontSize: 14, letterSpacing: 1 }}
+                aria-label={`Time remaining ${mins} minutes ${secs} seconds`}
+              >
+                {timeStr}
+              </div>
             </>
           ) : (
             <>
               <div style={{ fontSize: 7, color: 'var(--g3)' }}>ACCURACY</div>
-              <div style={{ color: 'var(--gold)', fontSize: 14 }}>
+              <div style={{ color: 'var(--gold)', fontSize: 14 }} aria-label={answeredCount === 0 ? 'Accuracy not yet measured' : `Accuracy ${accuracy} percent`}>
                 {answeredCount === 0 ? '—' : `${accuracy}%`}
               </div>
             </>
@@ -298,7 +316,11 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
       </div>
 
       {/* Clickable per-question progress bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 8 }}>
+      <div
+        role="navigation"
+        aria-label="Question navigator"
+        style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 8 }}
+      >
         {allQuestions.map((qq, gIdx) => {
           const { p: pIdx, i: qIdx } = globalToLocal(gIdx);
           const isAnsweredHere = isMock ? !!mockAnswers[qq.id] : !!sessionAnswers[qq.id];
@@ -322,8 +344,14 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
               bColor = 'var(--red)'; bg = 'rgba(255,58,58,0.18)'; txt = 'var(--red)';
             }
           }
+          const stateLabel = isAnsweredHere
+            ? (isMock ? 'answered' : wasCorrect ? 'answered correctly' : 'answered incorrectly')
+            : 'unanswered';
+          const ariaLabel = `Go to question ${gIdx + 1}, ${stateLabel}${isBookmarked ? ', bookmarked' : ''}${isCurr ? ', current' : ''}`;
           return (
             <button key={gIdx} onClick={() => goTo(pIdx, qIdx)}
+              aria-label={ariaLabel}
+              aria-current={isCurr ? 'true' : undefined}
               title={`Q${gIdx + 1}${isBookmarked ? ' · ★ bookmarked' : ''}${isAnsweredHere && !isMock ? (wasCorrect ? ' · correct' : ' · wrong') : isAnsweredHere ? ' · answered' : ''}`}
               style={{
                 flex: '0 0 auto',
@@ -370,18 +398,29 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
           <div className={flash ? '' : 'arc-bounce'} style={{ flexShrink: 0, marginTop: -4 }}>
             <Mascot size={36} talking={!submitted} happy={flash === 'correct'} sad={flash === 'wrong'} />
           </div>
-          <p style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9, flex: 1 }}>{displayedQuestionText}</p>
-          <button onClick={() => onToggleBookmark(q.id)} title="Bookmark"
+          <p id={`question-text-${q.id}`} style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9, flex: 1 }}>{displayedQuestionText}</p>
+          <button
+            onClick={() => onToggleBookmark(q.id)}
+            aria-label={progress.bookmarks?.[q.id] ? 'Remove bookmark' : 'Bookmark this question'}
+            aria-pressed={!!progress.bookmarks?.[q.id]}
+            title="Bookmark"
             style={{
               flexShrink: 0, background: 'transparent',
               border: '1px solid var(--g2)', color: progress.bookmarks?.[q.id] ? 'var(--gold)' : 'var(--g3)',
               padding: '4px 6px', cursor: 'pointer', fontSize: 10, lineHeight: 1,
-            }}>★</button>
+            }}
+          >
+            <span aria-hidden="true">★</span>
+          </button>
         </div>
       </div>
 
       {/* Options */}
-      <div style={{ marginBottom: 12 }}>
+      <div
+        style={{ marginBottom: 12 }}
+        role="group"
+        aria-labelledby={`question-text-${q.id}`}
+      >
         {opts.map((opt) => {
           const isSel = selected.includes(opt.id);
           const isCorr = correctSet.has(opt.id);
@@ -393,13 +432,23 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
             cls += ' selected';
           }
           const optText = opt.text || opt.t || '';
+          const stateLabel = submitted
+            ? (isCorr ? 'correct answer' : isSel ? 'your incorrect choice' : '')
+            : (isSel ? 'selected' : '');
           return (
-            <button key={opt.id} className={cls} onClick={() => toggleSelect(opt.id)} disabled={submitted}>
-              <span style={{
+            <button
+              key={opt.id}
+              className={cls}
+              onClick={() => toggleSelect(opt.id)}
+              disabled={submitted}
+              aria-pressed={isSel}
+              aria-label={`Option ${opt.id.toUpperCase()}: ${optText}${stateLabel ? ` (${stateLabel})` : ''}`}
+            >
+              <span aria-hidden="true" style={{
                 color: submitted && isCorr ? '#000' : submitted && isSel && !isCorr ? 'var(--red)' : 'var(--g3)',
                 marginRight: 8,
               }}>[{opt.id.toUpperCase()}]</span>
-              {optText}
+              <span aria-hidden="true">{optText}</span>
             </button>
           );
         })}

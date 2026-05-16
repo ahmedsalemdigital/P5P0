@@ -19,6 +19,70 @@ export const ARCADE_STYLE = `
 }
 .arcade-root button { font-family: inherit; }
 
+/* Global focus ring — pixel-style green outline for keyboard users.
+   Uses outline so it never disturbs layout. Applied via :focus-visible
+   so it never shows for pointer/touch interactions. */
+.arcade-root *:focus { outline: none; }
+.arcade-root *:focus-visible {
+  outline: 2px solid var(--g4);
+  outline-offset: 3px;
+  box-shadow: 0 0 8px rgba(0,255,65,0.6);
+}
+
+/* Respect prefers-reduced-motion. The CRT theme is heavy on motion
+   (scanlines roll, screen flickers, text blinks/glitches, mascot
+   bounces). For users who request reduced motion we hold the visual
+   identity but freeze every animation. */
+@media (prefers-reduced-motion: reduce) {
+  .arcade-root *, .arcade-root *::before, .arcade-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .arcade-root .arcade-scanline { display: none; }
+  .arcade-root::after { animation: none; }
+}
+
+/* Screen-reader-only utility — exposes labels to AT without altering
+   the pixel-perfect visual layout. */
+.arcade-root .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-to-main-content link — styled as a pixel chip in the arcade
+   palette. Hidden off-screen by default, slides in on keyboard focus. */
+.arcade-skip-link {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 8px 14px;
+  background: var(--g4);
+  color: #000;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid #000;
+  box-shadow: 0 0 12px rgba(0,255,65,0.6);
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+  z-index: 10000;
+}
+.arcade-skip-link:focus,
+.arcade-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* CRT scanlines */
 .arcade-root::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 999;
@@ -166,50 +230,224 @@ export const ARCADE_STYLE = `
   }
 }
 
-/* Theme toggle — pulsing arcade button */
-.arcade-theme-toggle {
-  position: fixed; top: 14px; right: 14px;
+/* Title-screen CLASSIC CTA hover — inverts to gold-fill,
+   amps the halo, lifts, and spins the ◐ icon to telegraph the switch. */
+.arcade-root .arc-classic-cta {
+  transition: background 0.15s ease, color 0.15s ease,
+              transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+.arcade-root .arc-classic-cta-icon {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+.arcade-root .arc-classic-cta:hover {
+  background: var(--gold) !important;
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 32px rgba(255,176,0,0.85),
+    0 0 64px rgba(255,176,0,0.35),
+    inset 0 0 14px rgba(255,255,255,0.25) !important;
+  filter: brightness(1.05);
+}
+.arcade-root .arc-classic-cta:hover .arc-classic-cta-icon {
+  transform: rotate(180deg);
+}
+.arcade-root .arc-classic-cta:active {
+  transform: translateY(0);
+}
+
+/* Arcade top nav — mirrors the classic Header layout in pixel style */
+.arcade-root .arc-header {
+  position: relative;
   z-index: 1100;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
-  padding: 9px 14px;
-  background: #000;
-  color: var(--gold);
-  border: 2px solid var(--gold);
-  cursor: pointer;
-  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, #001a00 0%, #000800 100%);
+  border-bottom: 2px solid var(--g3);
+  box-shadow: inset 0 0 16px rgba(0,255,65,0.12);
+}
+.arcade-root .arc-header-logo {
   display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--g4);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+.arcade-root .arc-header-logo-main {
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+.arcade-root .arc-header-logo-sub {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-shadow: 0 0 4px rgba(255,176,0,0.5);
+}
+.arcade-root .arc-header-nav {
+  display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow:
-    0 0 0 0 rgba(255,176,0,0.6),
-    inset 0 0 8px rgba(255,176,0,0.15);
-  transition: transform 0.1s, background 0.12s;
-  animation: arcadeTogglePulse 2s ease-in-out infinite;
+  flex-wrap: wrap;
 }
-.arcade-theme-toggle:hover {
-  background: var(--gold);
+.arcade-root .arc-nav-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--g3);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease,
+              border-color 0.12s ease, text-shadow 0.12s ease,
+              transform 0.08s ease;
+}
+.arcade-root .arc-nav-btn:hover {
+  color: var(--g4);
+  border-color: var(--g2);
+  background: rgba(0,255,65,0.06);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+.arcade-root .arc-nav-btn:active {
+  transform: translateY(1px);
+}
+.arcade-root .arc-nav-btn.is-active {
   color: #000;
-  transform: translateY(-1px);
+  background: var(--g4);
+  border-color: var(--g4);
+  box-shadow: 0 0 10px rgba(0,255,65,0.6), inset 0 0 0 1px #00ff41;
+  text-shadow: none;
 }
-.arcade-theme-toggle:active { transform: translateY(1px); }
-.arcade-theme-toggle .theme-toggle-icon {
+
+/* Theme toggle switch — pill-shaped track with a sliding thumb.
+   On state = arcade (current); hover hints off (slide left → classic). */
+.arcade-theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--g4);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.arcade-theme-switch-label {
+  line-height: 1;
+}
+.arcade-theme-switch-track {
+  position: relative;
   display: inline-block;
-  animation: arcadeToggleSpin 4s linear infinite, arcadeToggleGlitch 11s infinite;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--g4);
+  border: 1px solid var(--g4);
+  box-shadow: 0 0 10px rgba(0,255,65,0.55);
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  flex-shrink: 0;
 }
-@keyframes arcadeTogglePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,176,0,0.6), inset 0 0 8px rgba(255,176,0,0.2); }
-  50%      { box-shadow: 0 0 0 10px rgba(255,176,0,0), inset 0 0 8px rgba(255,176,0,0.2); }
+.arcade-theme-switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000;
+  transform: translateY(-50%);
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+  transition: left 0.2s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
-@keyframes arcadeToggleSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.arcade-theme-switch:hover {
+  color: var(--g3);
+  border-color: rgba(0,170,0,0.4);
+  background: rgba(0,255,65,0.04);
 }
-/* Brief, rare CRT glitch — about 250ms every 11s */
-@keyframes arcadeToggleGlitch {
-  0%, 97%, 100% { text-shadow: none; filter: none; }
-  97.5%         { text-shadow: 1px 0 rgba(255,68,170,0.55), -1px 0 rgba(68,221,255,0.55); filter: brightness(1.1); }
-  98%           { text-shadow: -1px 0 rgba(255,68,170,0.55), 1px 0 rgba(68,221,255,0.55); }
-  98.8%         { text-shadow: 1px 0 rgba(255,68,170,0.4), -1px 0 rgba(68,221,255,0.4); }
+.arcade-theme-switch:hover .arcade-theme-switch-track {
+  background: var(--g1);
+  border-color: var(--g2);
+  box-shadow: none;
+}
+.arcade-theme-switch:hover .arcade-theme-switch-thumb {
+  left: 2px;
+  background: var(--g3);
+  box-shadow: none;
+}
+.arcade-theme-switch:focus-visible {
+  outline: 2px solid var(--g4);
+  outline-offset: 2px;
+}
+
+/* Arcade splash / loading state — used by App while progress is hydrating.
+   Pixel-art "BOOTING" plate with a blinking caret to match the theme. */
+.arcade-splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: var(--g4);
+  font-family: 'Press Start 2P', monospace;
+  z-index: 9999;
+}
+.arcade-splash::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    rgba(0,0,0,0.28) 0px, rgba(0,0,0,0.28) 1px,
+    transparent 1px, transparent 2px);
+}
+.arcade-splash-inner {
+  position: relative;
+  z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  text-align: center;
+}
+.arcade-splash-mark {
+  font-size: 28px;
+  letter-spacing: 6px;
+  color: var(--g4);
+  text-shadow: 0 0 4px #00ff41, 0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.6), 0 4px 0 #003300;
+}
+.arcade-splash-sub {
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-shadow: 0 0 6px rgba(255,176,0,0.5);
+}
+.arcade-splash-status {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--g3);
+  margin-top: 8px;
+}
+.arcade-splash-caret {
+  display: inline-block;
+  width: 7px;
+  height: 10px;
+  background: var(--g4);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: arcBlink 1s step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-splash-caret { animation: none; }
 }
 `;

@@ -3,14 +3,124 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>PSPO·I Trainer</title>
+    <!-- Initialize dataLayer immediately so analytics.js can queue events
+         even before GTM finishes loading. GTM will replay everything in the
+         dataLayer once it boots, so no events are lost. -->
+    <script>window.dataLayer = window.dataLayer || [];</script>
+    <!-- CookieYes CMP — renders the consent banner and writes the consent
+         cookie. We do NOT rely on its script-blocking mechanism because the
+         data-cookieyes attribute activation is fragile on SPAs. Instead, the
+         loader script below reads CookieYes's consent cookie directly and
+         loads GTM when analytics consent is granted. -->
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/56f067457d6a30de02f8cc31/script.js"></script>
+    <!-- GTM loader.
+         %VITE_VERCEL_ENV% is substituted at build time:
+           'production'  → load GTM only after the user grants analytics
+                           consent via CookieYes. Listens for the consent
+                           event, polls for ~60s as a safety net, and reads
+                           the consent cookie on each fresh page load so
+                           returning consented users see no delay.
+           'preview' / 'development' / unset → load GTM unconditionally so
+                           the pipeline can be verified end-to-end on
+                           localhost and Vercel preview deploys (CookieYes
+                           does not render on non-prod hostnames). Use GTM
+                           Preview from tagmanager.google.com when testing
+                           so events route to GA4 DebugView only. -->
+    <script>
+      (function () {
+        var GTM_ID = 'GTM-THK4XJZW';
+        var env = '%VITE_VERCEL_ENV%';
+        var loaded = false;
+
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, 'script', 'dataLayer', GTM_ID);
+          // eslint-disable-next-line no-console
+          console.info('[analytics] GTM loaded (env=' + (env || 'unset') + ')');
+        }
+
+        function hasAnalyticsConsent() {
+          try {
+            var cookie = document.cookie
+              .split(';')
+              .map(function (c) { return c.trim(); })
+              .find(function (c) { return c.indexOf('cookieyes-consent=') === 0; });
+            return !!cookie && /analytics:yes/.test(cookie);
+          } catch (e) {
+            return false;
+          }
+        }
+
+        // Non-production: load GTM unconditionally. CookieYes doesn't render
+        // on non-whitelisted hostnames, so waiting for consent would hang
+        // forever in dev/preview.
+        if (env !== 'production') {
+          loadGTM();
+          return;
+        }
+
+        // Production: gate on consent. Three strategies, whichever fires
+        // first wins:
+        //   1. The user already consented in a previous session → cookie
+        //      is present → load immediately.
+        //   2. CookieYes fires its consent_update event when the user clicks
+        //      Accept → re-check the cookie and load.
+        //   3. Polling fallback (500ms × 120 = 60s) in case CookieYes's
+        //      event doesn't fire reliably (it sometimes doesn't on
+        //      first-time consent in some setups).
+        function tryLoad() {
+          if (hasAnalyticsConsent()) {
+            loadGTM();
+            return true;
+          }
+          return false;
+        }
+
+        if (!tryLoad()) {
+          document.addEventListener('cookieyes_consent_update', tryLoad);
+          document.addEventListener('cookieyes_consent_set', tryLoad);
+          var ticks = 0;
+          var poll = setInterval(function () {
+            if (tryLoad() || ++ticks > 120) clearInterval(poll);
+          }, 500);
+        }
+      })();
+    </script>
+    <meta name="description" content="Independent study tool for the Professional Scrum Product Owner I (PSPO I) exam. Concept lessons grounded in the 2020 Scrum Guide, with spaced review of every question you miss." />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>PSPO·I Trainer — Study tool for the Professional Scrum Product Owner I exam</title>
     <style>
-      html { margin: 0; padding: 0; background: #000; }
-      body, #root { margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; background: #0e0c0a; }
+      html, body, #root { margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; }
+      html { background: #ffffff; }
+      body { background: #ffffff; -webkit-font-smoothing: antialiased; }
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) — non-JS fallback. Will only meaningfully
+         fire if a user has JS disabled, in which case they can't see the consent
+         banner either. Kept for completeness. -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-THK4XJZW"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="root"></div>
+    <noscript>
+      <p style="padding:32px;font-family:system-ui,sans-serif;font-size:17px;line-height:1.47">
+        PSPO·I Trainer is an interactive study app and requires JavaScript to run.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

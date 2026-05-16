@@ -1,0 +1,48 @@
+name: Build ANALYTICS.pdf
+
+# Regenerates ANALYTICS.pdf from ANALYTICS.md whenever the markdown,
+# the analytics runtime, or the build script change on main.
+# Uses [skip ci] on the commit message to prevent the auto-commit from
+# triggering another run.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ANALYTICS.md'
+      - 'src/lib/analytics.js'
+      - 'scripts/build-analytics-pdf.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-analytics-pdf.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need write access for the auto-commit step
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ANALYTICS.pdf
+        run: npm run docs:analytics
+
+      - name: Commit regenerated PDF
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'docs: regenerate ANALYTICS.pdf [skip ci]'
+          file_pattern: 'ANALYTICS.pdf'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: '41898282+github-actions[bot]@users.noreply.github.com'

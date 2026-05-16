@@ -11,8 +11,10 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
     <div className="arc-scan-in">
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack}>◀ BACK</button>
-        <span style={{ fontSize: 10, letterSpacing: 2 }}>SELECT STAGE</span>
+        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack} aria-label="Back to title">
+          <span aria-hidden="true">◀ </span>BACK
+        </button>
+        <h1 style={{ fontSize: 10, letterSpacing: 2, margin: 0, fontWeight: 400 }}>SELECT STAGE</h1>
       </div>
 
       <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2, display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
@@ -23,9 +25,9 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
         <span>{CONCEPTS.length} CONCEPTS</span>
       </div>
 
-      <div style={{ fontSize: 18, color: 'var(--g5)', lineHeight: 1.4, marginBottom: 12, letterSpacing: 1 }}>
+      <h2 style={{ fontSize: 18, color: 'var(--g5)', lineHeight: 1.4, margin: '0 0 12px', letterSpacing: 1, fontWeight: 400 }}>
         Master PSPO I
-      </div>
+      </h2>
 
       <div style={{ fontSize: 9, color: 'var(--g3)', lineHeight: 1.9, marginBottom: 18 }}>
         A focused study engine for the PSPO I exam. Concept lessons,
@@ -34,8 +36,8 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
       </div>
 
       {/* Action chips — three across */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 22 }}>
-        <button onClick={onStartQuick} className="pbox" style={{
+      <div style={{ display: 'flex', gap: 6, marginBottom: 22 }} role="group" aria-label="Quick actions">
+        <button onClick={onStartQuick} className="pbox" aria-label="Start quick quiz, 10 questions" style={{
           flex: 1, minWidth: 0,
           padding: '12px 8px', cursor: 'pointer', borderColor: 'var(--cyan)',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -44,32 +46,39 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
           <div style={{ fontSize: 9, color: 'var(--cyan)', letterSpacing: 2, textShadow: '0 0 6px rgba(68,221,255,0.4)' }}>QUICK</div>
           <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 1 }}>10 QS</div>
         </button>
-        <button onClick={onStartMock} className="pbox" style={{
+        <button onClick={onStartMock} className="pbox" aria-label="Start mock exam, 80 questions in 60 minutes" style={{
           flex: 1, minWidth: 0,
           padding: '12px 8px', cursor: 'pointer', borderColor: 'var(--purple)',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
           background: 'transparent', textAlign: 'center',
         }}>
-          <div style={{ fontSize: 9, color: 'var(--purple)', letterSpacing: 2, textShadow: '0 0 6px rgba(176,102,255,0.4)' }}>◉ MOCK</div>
+          <div style={{ fontSize: 9, color: 'var(--purple)', letterSpacing: 2, textShadow: '0 0 6px rgba(176,102,255,0.4)' }}>
+            <span aria-hidden="true">◉ </span>MOCK
+          </div>
           <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 1 }}>80·60M</div>
         </button>
-        <button onClick={onStartReview} disabled={reviewQueueSize === 0} className="pbox" style={{
-          flex: 1, minWidth: 0,
-          padding: '12px 8px', cursor: reviewQueueSize === 0 ? 'not-allowed' : 'pointer',
-          opacity: reviewQueueSize === 0 ? 0.5 : 1,
-          borderColor: 'var(--magenta)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
-          background: 'transparent', textAlign: 'center',
-        }}>
+        <button
+          onClick={onStartReview}
+          disabled={reviewQueueSize === 0}
+          className="pbox"
+          aria-label={`Start review queue, ${reviewQueueSize} items`}
+          style={{
+            flex: 1, minWidth: 0,
+            padding: '12px 8px', cursor: reviewQueueSize === 0 ? 'not-allowed' : 'pointer',
+            opacity: reviewQueueSize === 0 ? 0.5 : 1,
+            borderColor: 'var(--magenta)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
+            background: 'transparent', textAlign: 'center',
+          }}>
           <div style={{ fontSize: 9, color: 'var(--magenta)', letterSpacing: 2, textShadow: '0 0 6px rgba(255,68,170,0.4)' }}>REVIEW</div>
           <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 1 }}>{reviewQueueSize} ITEMS</div>
         </button>
       </div>
 
-      <div style={{ fontSize: 10, color: 'var(--g4)', letterSpacing: 3, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+      <h2 style={{ fontSize: 10, color: 'var(--g4)', letterSpacing: 3, margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 400 }}>
         <span>CONCEPTS</span>
-        <span style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
-      </div>
+        <span aria-hidden="true" style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
+      </h2>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {CONCEPTS.map((c, i) => {
@@ -110,7 +119,15 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
                     </div>
                   </div>
                   <div style={{ fontSize: 8, color: 'var(--g3)', marginBottom: 10, lineHeight: 1.6 }}>{c.subtitle}</div>
-                  <div className="pbar-wrap" style={{ height: 5, marginBottom: 5 }}>
+                  <div
+                    className="pbar-wrap"
+                    role="progressbar"
+                    aria-valuenow={pct}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`${c.label} mastery, ${pct} percent`}
+                    style={{ height: 5, marginBottom: 5 }}
+                  >
                     <div className="pbar-fill" style={{ width: `${pct}%`, height: '100%', background: c.optional ? 'var(--magenta)' : 'var(--g4)' }} />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 7, color: 'var(--g3)' }}>

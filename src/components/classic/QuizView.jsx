@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CONCEPTS } from '../../data/concepts.js';
 import { arraysEqualAsSet, defangBrutalQuestion } from '../../lib/progress.js';
+import { verdictFor } from '../../lib/quiz.js';
+import { trackQuizComplete } from '../../lib/analytics.js';
 import { PhaseProgressBar } from './PhaseProgressBar.jsx';
 
 export function QuizView({ questions: questionsProp, phases, progress, onComplete, onBack, mode, conceptId, onToggleBookmark, qsess, setQsess }) {
@@ -26,6 +28,37 @@ export function QuizView({ questions: questionsProp, phases, progress, onComplet
 
   // Derive active question list from phases or direct prop
   const questions = phases ? phases[phaseIdx].questions : (questionsProp || []);
+
+  // Analytics: fire quiz_complete exactly once when `finished` first becomes true.
+  // (The state lives in qsess and persists across theme switches, but the ref
+  // guard ensures we only emit on the transition.)
+  const reportedFinishRef = useRef(false);
+  useEffect(() => {
+    if (!finished) {
+      reportedFinishRef.current = false;
+      return;
+    }
+    if (reportedFinishRef.current) return;
+    reportedFinishRef.current = true;
+
+    const total = sessionCorrect + sessionWrong;
+    const scorePct = total > 0 ? Math.round((sessionCorrect / total) * 100) : 0;
+    const concept = conceptId ? CONCEPTS.find((c) => c.id === conceptId) : null;
+    const isMock = mode === 'mock';
+    const timeUsedSec = isMock ? (60 * 60 - mockTimeLeft) : null;
+    trackQuizComplete({
+      mode,
+      conceptId,
+      conceptLabel: concept?.label,
+      scorePct,
+      correctCount: sessionCorrect,
+      wrongCount: sessionWrong,
+      total,
+      timeUsedSec,
+      verdict: verdictFor(scorePct),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished]);
 
   // Ephemeral per-question UI state — local; resets on theme toggle, which is fine
   const [selected, setSelected] = useState([]);

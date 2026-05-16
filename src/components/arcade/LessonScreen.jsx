@@ -30,8 +30,10 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
     <div className="arc-scan-in">
       {/* Top nav */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack}>◀</button>
-        <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2 }}>STAGE BRIEFING</div>
+        <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack} aria-label="Back to concepts">
+          <span aria-hidden="true">◀</span>
+        </button>
+        <h1 style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2, margin: 0, fontWeight: 400 }}>STAGE BRIEFING</h1>
       </div>
 
       {/* Stage banner */}
@@ -73,11 +75,17 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
       </div>
 
       {/* Tab pills */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
+      <div role="tablist" aria-label="Lesson sections" style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
         {tabs.map((t, i) => {
           const isActive = tab === i;
           return (
-            <button key={t.label} onClick={() => setTab(i)}
+            <button
+              key={t.label}
+              onClick={() => setTab(i)}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`lesson-panel-${i}`}
+              id={`lesson-tab-${i}`}
               style={{
                 font: 'inherit', fontSize: 7, padding: '8px 6px', cursor: 'pointer',
                 border: '2px solid',
@@ -89,7 +97,7 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
                 transition: 'all 0.1s',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
               }}>
-              <span style={{ fontSize: 9 }}>{t.icon}</span>
+              <span aria-hidden="true" style={{ fontSize: 9 }}>{t.icon}</span>
               <span>{t.label}</span>
             </button>
           );
@@ -97,16 +105,22 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
       </div>
 
       {/* Content panel */}
-      <div style={{
-        position: 'relative',
-        border: `3px solid ${activeColor}`,
-        padding: 14, marginBottom: 14,
-        boxShadow: `0 0 12px ${activeColor === 'var(--g4)' ? 'rgba(0,255,65,0.18)' :
-          activeColor === 'var(--cyan)' ? 'rgba(68,221,255,0.18)' :
-            activeColor === 'var(--gold)' ? 'rgba(255,176,0,0.18)' :
-              'rgba(255,58,58,0.18)'}, inset 0 0 18px rgba(0,0,0,0.6)`,
-        background: 'rgba(0,12,0,0.4)',
-      }}>
+      <div
+        role="tabpanel"
+        id={`lesson-panel-${tab}`}
+        aria-labelledby={`lesson-tab-${tab}`}
+        tabIndex={0}
+        style={{
+          position: 'relative',
+          border: `3px solid ${activeColor}`,
+          padding: 14, marginBottom: 14,
+          boxShadow: `0 0 12px ${activeColor === 'var(--g4)' ? 'rgba(0,255,65,0.18)' :
+            activeColor === 'var(--cyan)' ? 'rgba(68,221,255,0.18)' :
+              activeColor === 'var(--gold)' ? 'rgba(255,176,0,0.18)' :
+                'rgba(255,58,58,0.18)'}, inset 0 0 18px rgba(0,0,0,0.6)`,
+          background: 'rgba(0,12,0,0.4)',
+        }}
+      >
         <div style={{
           position: 'absolute', top: -9, left: 12,
           background: '#000', padding: '0 8px',

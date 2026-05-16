@@ -7,54 +7,93 @@
          even before GTM finishes loading. GTM will replay everything in the
          dataLayer once it boots, so no events are lost. -->
     <script>window.dataLayer = window.dataLayer || [];</script>
-    <!-- CookieYes CMP — must load as early as possible so it can gate downstream trackers -->
+    <!-- CookieYes CMP — renders the consent banner and writes the consent
+         cookie. We do NOT rely on its script-blocking mechanism because the
+         data-cookieyes attribute activation is fragile on SPAs. Instead, the
+         loader script below reads CookieYes's consent cookie directly and
+         loads GTM when analytics consent is granted. -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/56f067457d6a30de02f8cc31/script.js"></script>
-    <!-- Google Tag Manager — consent-gated by CookieYes ("Analytics" category).
-         type="text/plain" prevents browser execution; CookieYes flips the type
-         to text/javascript after the user grants consent, then GTM boots and
-         replays any events already queued in dataLayer.
-         Container: GTM-THK4XJZW — see ANALYTICS.md §2 for tag setup. -->
-    <script type="text/plain" data-cookieyes="cookieyes-analytics">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-THK4XJZW');</script>
-    <!-- Non-production bootstrap. CookieYes only renders its banner on the
-         exact production domain registered in its dashboard. On localhost,
-         on Vercel preview deploys (unique *.vercel.app subdomains), and on
-         any other non-whitelisted origin, the gated GTM script above never
-         activates and tracking is invisible.
-
+    <!-- GTM loader.
          %VITE_VERCEL_ENV% is substituted at build time:
-           'production'  → Vercel production deploy. Skip this block; the
-                           CookieYes-gated path above handles real users.
-           'preview'     → Vercel preview deploy (e.g. PR previews). Load
-                           GTM directly so tracking can be verified.
-           'development' → local dev or unknown env. Load GTM directly.
-
-         Use GTM Preview from tagmanager.google.com when testing so events
-         are tagged debug_mode=1 and land in GA4 DebugView only — not in
-         production reports. -->
+           'production'  → load GTM only after the user grants analytics
+                           consent via CookieYes. Listens for the consent
+                           event, polls for ~60s as a safety net, and reads
+                           the consent cookie on each fresh page load so
+                           returning consented users see no delay.
+           'preview' / 'development' / unset → load GTM unconditionally so
+                           the pipeline can be verified end-to-end on
+                           localhost and Vercel preview deploys (CookieYes
+                           does not render on non-prod hostnames). Use GTM
+                           Preview from tagmanager.google.com when testing
+                           so events route to GA4 DebugView only. -->
     <script>
       (function () {
+        var GTM_ID = 'GTM-THK4XJZW';
         var env = '%VITE_VERCEL_ENV%';
-        if (env === 'production') return;
-        (function (w, d, s, l, i) {
-          w[l] = w[l] || [];
-          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-          var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s),
-            dl = l != 'dataLayer' ? '&l=' + l : '';
-          j.async = true;
-          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-          f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-THK4XJZW');
-        // eslint-disable-next-line no-console
-        console.info(
-          '[analytics] non-prod bootstrap: GTM loaded directly on ' +
-            location.hostname + ' (VERCEL_ENV=' + (env || 'unset') +
-            '). Use GTM Preview to flag events as debug_mode=1.',
-        );
+        var loaded = false;
+
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+          (function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+          })(window, document, 'script', 'dataLayer', GTM_ID);
+          // eslint-disable-next-line no-console
+          console.info('[analytics] GTM loaded (env=' + (env || 'unset') + ')');
+        }
+
+        function hasAnalyticsConsent() {
+          try {
+            var cookie = document.cookie
+              .split(';')
+              .map(function (c) { return c.trim(); })
+              .find(function (c) { return c.indexOf('cookieyes-consent=') === 0; });
+            return !!cookie && /analytics:yes/.test(cookie);
+          } catch (e) {
+            return false;
+          }
+        }
+
+        // Non-production: load GTM unconditionally. CookieYes doesn't render
+        // on non-whitelisted hostnames, so waiting for consent would hang
+        // forever in dev/preview.
+        if (env !== 'production') {
+          loadGTM();
+          return;
+        }
+
+        // Production: gate on consent. Three strategies, whichever fires
+        // first wins:
+        //   1. The user already consented in a previous session → cookie
+        //      is present → load immediately.
+        //   2. CookieYes fires its consent_update event when the user clicks
+        //      Accept → re-check the cookie and load.
+        //   3. Polling fallback (500ms × 120 = 60s) in case CookieYes's
+        //      event doesn't fire reliably (it sometimes doesn't on
+        //      first-time consent in some setups).
+        function tryLoad() {
+          if (hasAnalyticsConsent()) {
+            loadGTM();
+            return true;
+          }
+          return false;
+        }
+
+        if (!tryLoad()) {
+          document.addEventListener('cookieyes_consent_update', tryLoad);
+          document.addEventListener('cookieyes_consent_set', tryLoad);
+          var ticks = 0;
+          var poll = setInterval(function () {
+            if (tryLoad() || ++ticks > 120) clearInterval(poll);
+          }, 500);
+        }
       })();
     </script>
     <meta name="description" content="Independent study tool for the Professional Scrum Product Owner I (PSPO I) exam. Concept lessons grounded in the 2020 Scrum Guide, with spaced review of every question you miss." />

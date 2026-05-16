@@ -10,10 +10,14 @@ Events are routed:
 App code  →  window.dataLayer.push({event, …})  →  GTM (GTM-THK4XJZW)  →  GA4 (G-WB97T5NR8S)
 ```
 
-Every event is consent-gated through CookieYes (the `cookieyes-analytics`
-category); the GTM script is `type="text/plain"` until the user grants
-consent, at which point CookieYes activates it and GTM replays any events
-that the app already queued in `dataLayer`.
+Every event is consent-gated through CookieYes (the `analytics` category).
+We do **not** rely on CookieYes's `type="text/plain"` + `data-cookieyes`
+attribute mechanism for script gating — in practice it silently fails on
+SPAs even after the user accepts. Instead, the loader in `index.html`
+reads CookieYes's consent cookie directly and only inserts the GTM script
+tag once `analytics:yes` is present. It listens for CookieYes's
+`cookieyes_consent_update` / `cookieyes_consent_set` events and also
+polls (500 ms × 120 = 60 s) as a safety net.
 
 ---
 

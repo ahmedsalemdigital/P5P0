@@ -368,24 +368,34 @@ console. You should see `google_tag_data` and `google_tag_manager`.
 If you see *nothing*, GTM hasn't loaded.
 
 **Why this usually happens:** CookieYes only renders its consent banner
-on the production domain registered in its dashboard. On any other
-origin — localhost, `*.vercel.app` preview deploys, staging hostnames —
-the CookieYes script loads but silently no-ops, which means the
+on the *exact* production domain registered in its dashboard. On any
+other origin — localhost, every Vercel preview deploy
+(`p5-p0-git-<branch>-<user>.vercel.app`), staging — the CookieYes
+script loads but silently no-ops, which means the
 `type="text/plain"` GTM snippet never gets activated.
 
-**Fix in dev:** The dev bootstrap block in `index.html` loads GTM
-unconditionally on `localhost`, `127.0.0.1`, `[::1]`, and `*.local`
-hostnames so you can verify the pipeline without consent gating. When
-testing, start a **GTM Preview session** from `tagmanager.google.com`
-so the events are tagged `debug_mode=1` and route to GA4 DebugView
-only — not your production reports.
+**Fix in dev and on Vercel previews (automatic):** The non-production
+bootstrap block in `index.html` keys off Vercel's build-time
+`VERCEL_ENV` value (forwarded into the bundle as `VITE_VERCEL_ENV` by
+`vite.config.js`):
+
+| `VERCEL_ENV`   | Behavior |
+|---|---|
+| `production`   | Skip the bootstrap. Real users go through CookieYes as designed. |
+| `preview`      | Auto-load GTM. Preview deploys can be tested with GA4 DebugView. |
+| `development`  | Auto-load GTM (this is the default Vercel injects on `vercel dev` and what we fall back to locally). |
+
+When testing on a preview deploy, start a **GTM Preview session** from
+`tagmanager.google.com` so the events are tagged `debug_mode=1` and
+route to GA4 DebugView only — not your production reports.
 
 **Fix in production:** In the CookieYes dashboard
 ([app.cookieyes.com](https://app.cookieyes.com)) → Site settings →
-**Site URL**, make sure your production domain is registered exactly
-(including `https://` and no trailing slash). If you're on a preview
-deploy URL that isn't in the list, the banner won't render and GTM
-won't activate.
+**Site URL**, register your production deploy URL exactly (including
+`https://` and no trailing slash). For a Vercel project without a
+custom domain that's the default `<project>.vercel.app`; with a custom
+domain, it's that domain. If neither matches what the user lands on,
+the banner won't render and GTM won't activate.
 
 ### 5.3 GTM tags configured?
 

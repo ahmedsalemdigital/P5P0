@@ -19,23 +19,26 @@
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-THK4XJZW');</script>
-    <!-- Dev/preview bootstrap. CookieYes only renders its banner on the
-         production domain registered in its dashboard, so on localhost (and
-         any non-whitelisted host) the gated GTM script above never activates
-         and tracking is invisible. This block loads GTM unconditionally on
-         development hosts so the dataLayer pipeline can be verified end-to-
-         end. Use GTM Preview from tagmanager.google.com when testing so the
-         events are tagged debug_mode=1 and land in GA4 DebugView only — not
-         in your production reports. -->
+    <!-- Non-production bootstrap. CookieYes only renders its banner on the
+         exact production domain registered in its dashboard. On localhost,
+         on Vercel preview deploys (unique *.vercel.app subdomains), and on
+         any other non-whitelisted origin, the gated GTM script above never
+         activates and tracking is invisible.
+
+         %VITE_VERCEL_ENV% is substituted at build time:
+           'production'  → Vercel production deploy. Skip this block; the
+                           CookieYes-gated path above handles real users.
+           'preview'     → Vercel preview deploy (e.g. PR previews). Load
+                           GTM directly so tracking can be verified.
+           'development' → local dev or unknown env. Load GTM directly.
+
+         Use GTM Preview from tagmanager.google.com when testing so events
+         are tagged debug_mode=1 and land in GA4 DebugView only — not in
+         production reports. -->
     <script>
       (function () {
-        var h = location.hostname;
-        var isDev =
-          h === 'localhost' ||
-          h === '127.0.0.1' ||
-          h === '[::1]' ||
-          h.endsWith('.local');
-        if (!isDev) return;
+        var env = '%VITE_VERCEL_ENV%';
+        if (env === 'production') return;
         (function (w, d, s, l, i) {
           w[l] = w[l] || [];
           w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -48,8 +51,9 @@
         })(window, document, 'script', 'dataLayer', 'GTM-THK4XJZW');
         // eslint-disable-next-line no-console
         console.info(
-          '[analytics] dev bootstrap: GTM loaded unconditionally on ' + h +
-            '. Use GTM Preview from tagmanager.google.com so events route to GA4 DebugView, not production reports.',
+          '[analytics] non-prod bootstrap: GTM loaded directly on ' +
+            location.hostname + ' (VERCEL_ENV=' + (env || 'unset') +
+            '). Use GTM Preview to flag events as debug_mode=1.',
         );
       })();
     </script>

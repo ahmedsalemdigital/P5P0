@@ -347,7 +347,97 @@ Question: *Do returning visitors complete more quizzes than new ones?*
 
 ---
 
-## 5. Debugging
+## 5. Troubleshooting — "tracking isn't working"
+
+There are exactly four places this pipeline can break. Run through them in
+order; the symptoms below tell you which step you're stuck on.
+
+### 5.1 dataLayer pushes happen?
+
+Open DevTools → Console, run `window.dataLayer` and look for entries with
+`event` keys like `page_view`, `set_user_properties`, `quiz_start`. If
+you see them, the **app layer is fine**. If `window.dataLayer` is
+undefined or empty after navigating, the inline init in `index.html` is
+not running — check for a syntax error in your edits or a CSP that
+blocked the inline script.
+
+### 5.2 GTM loaded? (the most common gotcha)
+
+Run `Object.keys(window).filter(k => /gtm|google_tag/.test(k))` in the
+console. You should see `google_tag_data` and `google_tag_manager`.
+If you see *nothing*, GTM hasn't loaded.
+
+**Why this usually happens:** CookieYes only renders its consent banner
+on the production domain registered in its dashboard. On any other
+origin — localhost, `*.vercel.app` preview deploys, staging hostnames —
+the CookieYes script loads but silently no-ops, which means the
+`type="text/plain"` GTM snippet never gets activated.
+
+**Fix in dev:** The dev bootstrap block in `index.html` loads GTM
+unconditionally on `localhost`, `127.0.0.1`, `[::1]`, and `*.local`
+hostnames so you can verify the pipeline without consent gating. When
+testing, start a **GTM Preview session** from `tagmanager.google.com`
+so the events are tagged `debug_mode=1` and route to GA4 DebugView
+only — not your production reports.
+
+**Fix in production:** In the CookieYes dashboard
+([app.cookieyes.com](https://app.cookieyes.com)) → Site settings →
+**Site URL**, make sure your production domain is registered exactly
+(including `https://` and no trailing slash). If you're on a preview
+deploy URL that isn't in the list, the banner won't render and GTM
+won't activate.
+
+### 5.3 GTM tags configured?
+
+Even with GTM loaded, you need the tags inside the GTM container to
+forward events to GA4. If you see GTM in the dataLayer but no events
+in GA4 DebugView, it's almost certainly this.
+
+Open `tagmanager.google.com` → container `GTM-THK4XJZW` →
+**Workspace Changes / Versions**. If the only thing there is the
+default empty workspace, you haven't done the §2 setup yet. Follow
+§2.1 through §2.10 to wire the tags, then **Submit / Publish**.
+
+Quickest verification: in GTM, click **Preview** → enter your URL →
+click around in your app. Each user action should make tags fire in
+the Tag Assistant left rail. If nothing fires, the trigger event
+names don't match what the app pushes (case-sensitive).
+
+### 5.4 GA4 receiving events?
+
+Open GA4 → Reports → **Real-time → DebugView**. Events appear within
+~10 seconds. If GTM Preview shows tags firing but DebugView is empty:
+
+- The GA4 Event tag is missing its Measurement ID (should be
+  `G-WB97T5NR8S` on every event tag)
+- The browser has DNT or an ad blocker that's blocking
+  `google-analytics.com/g/collect`
+- The GA4 property's data stream is paused (Admin → Data streams)
+
+### 5.5 Quick diagnostic snippet
+
+Paste into the DevTools console to summarize the state of the
+pipeline in one go:
+
+\`\`\`js
+({
+  dataLayerLen: window.dataLayer?.length,
+  appEventsQueued: window.dataLayer?.filter(e => e.event && !e.event.startsWith('gtm.')).map(e => e.event),
+  gtmLoaded: !!window.google_tag_manager,
+  gtmGated: !!document.querySelector('script[type="text/plain"][data-cookieyes]'),
+  cookieYesActive: !!document.querySelector('.cky-consent-bar, [id^="cky-"]'),
+  host: location.hostname,
+})
+\`\`\`
+
+If `gtmGated: true` *and* `gtmLoaded: false`, you're hitting issue 5.2
+(consent gate is blocking GTM). If `gtmLoaded: true` and you don't see
+events in GA4 DebugView, you're hitting 5.3 (no tags configured) or
+5.4 (downstream).
+
+---
+
+## 6. Debugging
 
 - **Did the dataLayer push fire?** Open DevTools → Console and inspect
   `window.dataLayer`. Each event is a separate array entry. Run
@@ -370,7 +460,7 @@ Question: *Do returning visitors complete more quizzes than new ones?*
 
 ---
 
-## 6. PDF version (auto-generated)
+## 7. PDF version (auto-generated)
 
 A rendered PDF lives at **[`ANALYTICS.pdf`](ANALYTICS.pdf)** in the repo
 root — the same content as this file, formatted for printing or sharing
@@ -392,7 +482,7 @@ artifact — never edit it by hand.
 
 ---
 
-## 7. Future work
+## 8. Future work
 
 Out of scope for this pass, but worth considering:
 

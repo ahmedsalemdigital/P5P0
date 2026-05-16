@@ -37,6 +37,7 @@ export const STYLE = `
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
+  min-height: 100dvh;
   line-height: 1.47;
   font-size: 17px;
   letter-spacing: -0.374px;
@@ -502,6 +503,9 @@ export const STYLE = `
   .pspo-root .card { padding: 20px; }
   .pspo-root .btn { padding: 8px 14px; font-size: 13px; }
   .pspo-root .btn.primary { padding: 10px 20px; font-size: 16px; }
+  /* Let the header nav wrap onto multiple rows instead of overflowing */
+  .pspo-root .pspo-primary-nav { flex-wrap: wrap; gap: 2px; }
+  .pspo-root .nav-item { padding: 5px 10px; }
 }
 
 .pspo-dot {

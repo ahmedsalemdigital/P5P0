@@ -55,7 +55,7 @@ export function Header({ onNav, currentView, onToggleTheme }) {
         </span>
       </button>
 
-      <nav aria-label="Primary" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+      <nav aria-label="Primary" className="pspo-primary-nav" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
         {navItems.map(([id, label]) => (
           <button
             key={id}

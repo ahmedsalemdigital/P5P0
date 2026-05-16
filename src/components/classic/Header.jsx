@@ -2,12 +2,12 @@ import React from 'react';
 
 export function Header({ stats, onNav, currentView, onToggleTheme }) {
   return (
-    <header style={{ borderBottom: '1px solid var(--border)', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+    <header className="classic-header">
       <button onClick={() => onNav('title')} style={{ display: 'flex', alignItems: 'baseline', gap: 12, textAlign: 'left' }} title="Back to title screen">
         <span className="display" style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em' }}>PSPO<span className="accent" style={{ fontStyle: 'italic' }}>·I</span></span>
         <span className="mono faint" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Trainer</span>
       </button>
-      <nav style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+      <nav className="classic-nav">
         {[
           ['title', 'Title'],
           ['home', 'Concepts'],

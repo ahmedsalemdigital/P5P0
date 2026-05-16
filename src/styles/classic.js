@@ -26,6 +26,7 @@ export const STYLE = `
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
+  min-height: 100dvh;
   line-height: 1.5;
   font-size: 15px;
 }
@@ -322,11 +323,29 @@ export const STYLE = `
   100% { transform: translate(0, 0);     text-shadow: 0 0 6px rgba(0,255,65,0.6); }
 }
 
+/* Classic header — layout pulled into CSS so media queries can override */
+.pspo-root .classic-header {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pspo-root .classic-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
 @media (max-width: 640px) {
   .pspo-root { font-size: 14px; }
   .pspo-root .container-max { padding: 20px 16px 60px; }
   .pspo-root .card { padding: 20px; }
   .pspo-root .btn { padding: 10px 16px; font-size: 11px; }
+  .pspo-root .classic-header { padding: 12px 16px; gap: 10px; }
+  .pspo-root .classic-nav { flex-wrap: wrap; gap: 4px; }
 }
 
 .pspo-dot {

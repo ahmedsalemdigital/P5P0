@@ -10,6 +10,7 @@ export const ARCADE_STYLE = `
   color: var(--g4);
   font-family: 'Press Start 2P', monospace;
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
 }
@@ -134,7 +135,8 @@ export const ARCADE_STYLE = `
   z-index: 2;
 }
 @media (max-width: 480px) {
-  .arcade-stage { padding: 12px 10px 48px; }
+  /* Extra top padding clears the fixed CLASSIC toggle button (≈50px tall at top:14px) */
+  .arcade-stage { padding: 56px 10px calc(48px + env(safe-area-inset-bottom)); }
 }
 @media (min-width: 768px) {
   .arcade-stage { zoom: 1.2; }

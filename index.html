@@ -19,6 +19,40 @@
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-THK4XJZW');</script>
+    <!-- Dev/preview bootstrap. CookieYes only renders its banner on the
+         production domain registered in its dashboard, so on localhost (and
+         any non-whitelisted host) the gated GTM script above never activates
+         and tracking is invisible. This block loads GTM unconditionally on
+         development hosts so the dataLayer pipeline can be verified end-to-
+         end. Use GTM Preview from tagmanager.google.com when testing so the
+         events are tagged debug_mode=1 and land in GA4 DebugView only — not
+         in your production reports. -->
+    <script>
+      (function () {
+        var h = location.hostname;
+        var isDev =
+          h === 'localhost' ||
+          h === '127.0.0.1' ||
+          h === '[::1]' ||
+          h.endsWith('.local');
+        if (!isDev) return;
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-THK4XJZW');
+        // eslint-disable-next-line no-console
+        console.info(
+          '[analytics] dev bootstrap: GTM loaded unconditionally on ' + h +
+            '. Use GTM Preview from tagmanager.google.com so events route to GA4 DebugView, not production reports.',
+        );
+      })();
+    </script>
     <meta name="description" content="Independent study tool for the Professional Scrum Product Owner I (PSPO I) exam. Concept lessons grounded in the 2020 Scrum Guide, with spaced review of every question you miss." />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />

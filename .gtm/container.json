@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-17T20:55:27.062Z",
+  "exportTime": "2026-05-17T21:08:58.192Z",
   "containerVersion": {
     "accountId": "0",
     "containerId": "0",
@@ -24,24 +24,24 @@
         "type": "googtag",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "tagId",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "configSettingsTable",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "parameter",
                     "value": "send_page_view"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "parameterValue",
                     "value": "false"
                   }
@@ -62,59 +62,59 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "page_view"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "page_path"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_page_path}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "page_title"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_page_title}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "page_location"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_page_location}}"
                   }
@@ -135,44 +135,44 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "theme_switch"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "from"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_from}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "to"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_to}}"
                   }
@@ -193,44 +193,44 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "concept_view"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
@@ -251,74 +251,74 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "quiz_start"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "question_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_question_count}}"
                   }
@@ -339,164 +339,164 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "quiz_complete"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "score_pct"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "correct_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_correct_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "wrong_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_wrong_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "total_questions"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_total_questions}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "time_used_sec"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_time_used_sec}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "verdict"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_verdict}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "value"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
@@ -517,164 +517,164 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "quiz_pass"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "score_pct"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "correct_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_correct_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "wrong_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_wrong_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "total_questions"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_total_questions}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "time_used_sec"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_time_used_sec}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "verdict"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_verdict}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "value"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
@@ -695,164 +695,164 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "mock_exam_complete"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "score_pct"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "correct_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_correct_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "wrong_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_wrong_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "total_questions"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_total_questions}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "time_used_sec"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_time_used_sec}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "verdict"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_verdict}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "value"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_score_pct}}"
                   }
@@ -873,44 +873,44 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "concept_mastered"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
@@ -931,44 +931,44 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "achievement_unlocked"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "achievement_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_achievement_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "achievement_name"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_achievement_name}}"
                   }
@@ -989,89 +989,89 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "quiz_abandon"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "question_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_question_count}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "answered_count"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_answered_count}}"
                   }
@@ -1092,134 +1092,134 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "question_answer"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "question_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_question_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "correct"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_correct}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "question_type"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_question_type}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "difficulty"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_difficulty}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "attempt_number"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_attempt_number}}"
                   }
@@ -1240,89 +1240,89 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "question_bookmark"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "eventParameters",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "question_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_question_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_id"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_id}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concept_label"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concept_label}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "bookmarked"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_bookmarked}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "mode"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_mode}}"
                   }
@@ -1343,59 +1343,59 @@
         "type": "gaawe",
         "parameter": [
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "eventName",
             "value": "set_user_properties"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "measurementIdOverride",
             "value": "G-WB97T5NR8S"
           },
           {
-            "type": "list",
+            "type": "LIST",
             "key": "userProperties",
             "list": [
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "theme"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_theme}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "concepts_mastered"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_concepts_mastered}}"
                   }
                 ]
               },
               {
-                "type": "map",
+                "type": "MAP",
                 "map": [
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "name",
                     "value": "total_progress_pct"
                   },
                   {
-                    "type": "template",
+                    "type": "TEMPLATE",
                     "key": "value",
                     "value": "{{dlv_total_progress_pct}}"
                   }
@@ -1418,15 +1418,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "page_view"
               }
@@ -1441,15 +1441,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "theme_switch"
               }
@@ -1464,15 +1464,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "concept_view"
               }
@@ -1487,15 +1487,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "quiz_start"
               }
@@ -1510,15 +1510,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "quiz_complete"
               }
@@ -1533,15 +1533,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "quiz_pass"
               }
@@ -1556,15 +1556,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "mock_exam_complete"
               }
@@ -1579,15 +1579,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "concept_mastered"
               }
@@ -1602,15 +1602,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "achievement_unlocked"
               }
@@ -1625,15 +1625,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "quiz_abandon"
               }
@@ -1648,15 +1648,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "question_answer"
               }
@@ -1671,15 +1671,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "question_bookmark"
               }
@@ -1694,15 +1694,15 @@
         "type": "customEvent",
         "customEventFilter": [
           {
-            "type": "equals",
+            "type": "EQUALS",
             "parameter": [
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg0",
                 "value": "{{_event}}"
               },
               {
-                "type": "template",
+                "type": "TEMPLATE",
                 "key": "arg1",
                 "value": "set_user_properties"
               }
@@ -1719,17 +1719,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "achievement_id"
           }
@@ -1742,17 +1742,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "achievement_name"
           }
@@ -1765,17 +1765,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "answered_count"
           }
@@ -1788,17 +1788,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "attempt_number"
           }
@@ -1811,17 +1811,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "bookmarked"
           }
@@ -1834,17 +1834,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "concept_id"
           }
@@ -1857,17 +1857,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "concept_label"
           }
@@ -1880,17 +1880,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "concepts_mastered"
           }
@@ -1903,17 +1903,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "correct"
           }
@@ -1926,17 +1926,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "correct_count"
           }
@@ -1949,17 +1949,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "difficulty"
           }
@@ -1972,17 +1972,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "from"
           }
@@ -1995,17 +1995,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "mode"
           }
@@ -2018,17 +2018,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "page_location"
           }
@@ -2041,17 +2041,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "page_path"
           }
@@ -2064,17 +2064,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "page_title"
           }
@@ -2087,17 +2087,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "question_count"
           }
@@ -2110,17 +2110,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "question_id"
           }
@@ -2133,17 +2133,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "question_type"
           }
@@ -2156,17 +2156,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "score_pct"
           }
@@ -2179,17 +2179,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "theme"
           }
@@ -2202,17 +2202,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "time_used_sec"
           }
@@ -2225,17 +2225,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "to"
           }
@@ -2248,17 +2248,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "total_progress_pct"
           }
@@ -2271,17 +2271,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "total_questions"
           }
@@ -2294,17 +2294,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "verdict"
           }
@@ -2317,17 +2317,17 @@
         "type": "v",
         "parameter": [
           {
-            "type": "integer",
+            "type": "INTEGER",
             "key": "dataLayerVersion",
             "value": "2"
           },
           {
-            "type": "boolean",
+            "type": "BOOLEAN",
             "key": "setDefaultValue",
             "value": "false"
           },
           {
-            "type": "template",
+            "type": "TEMPLATE",
             "key": "name",
             "value": "wrong_count"
           }

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { CONCEPTS } from '../../data/concepts.js';
 import { QUESTIONS } from '../../data/questions.js';
 import { masteryForConcept } from '../../lib/progress.js';
-import { MasteryDots } from './MasteryDots.jsx';
 
 export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick, onStartMock }) {
   const wrongQueueSize = useMemo(() => {
@@ -64,6 +63,8 @@ export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick,
               m.level === 'practicing' ? 'var(--accent)' :
               m.level === 'learning' ? 'var(--accent-dim)' :
               'var(--border-hi)';
+            const pct = m.questionCount > 0 ? Math.round((m.uniqueCorrect / m.questionCount) * 100) : 0;
+            const complete = m.uniqueCorrect === m.questionCount && m.questionCount > 0;
             return (
               <button
                 key={c.id}
@@ -90,14 +91,29 @@ export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick,
                 <div style={{ fontSize: 14, color: 'var(--text-dim)', marginBottom: 16, lineHeight: 1.4, letterSpacing: '-0.224px' }}>
                   {c.subtitle}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <MasteryDots coverage={m.coverage} questionCount={m.questionCount} />
+                <div
+                  className="concept-pbar"
+                  role="progressbar"
+                  aria-valuenow={pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`${c.label} mastery, ${pct} percent`}
+                >
+                  <div className="concept-pbar-fill" style={{ width: `${pct}%`, background: masteryColor }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 8 }}>
                   <span className="numeric" style={{
                     fontSize: 13, letterSpacing: '-0.156px',
-                    color: m.uniqueCorrect === m.questionCount && m.questionCount > 0 ? 'var(--correct)' : 'var(--text-dim)',
+                    color: complete ? 'var(--correct)' : 'var(--text-dim)',
                   }}>
                     <span style={{ color: m.uniqueCorrect > 0 ? 'var(--text)' : 'var(--text-faint)', fontWeight: 600 }}>{m.uniqueCorrect}</span>
                     {' / '}{m.questionCount} correct
+                  </span>
+                  <span className="numeric" style={{
+                    fontSize: 13, letterSpacing: '-0.156px', fontWeight: 600,
+                    color: complete ? 'var(--correct)' : (pct > 0 ? 'var(--text)' : 'var(--text-faint)'),
+                  }}>
+                    {pct}%
                   </span>
                 </div>
               </button>

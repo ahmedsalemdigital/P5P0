@@ -334,14 +334,18 @@ export const STYLE = `
   background: var(--mastery-color, var(--border));
 }
 
-.pspo-root .tick {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border-hi);
-  display: inline-block;
+.pspo-root .concept-pbar {
+  height: 4px;
+  width: 100%;
+  background: var(--surface-on);
+  border-radius: 999px;
+  overflow: hidden;
 }
-.pspo-root .tick.filled { background: var(--accent); }
+.pspo-root .concept-pbar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
 
 .pspo-root .numeric {
   font-family: var(--font-display);

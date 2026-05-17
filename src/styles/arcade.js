@@ -1,6 +1,11 @@
 export const ARCADE_STYLE = `
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* index.html sets html/body to white as a flash-prevention baseline.
+   Override here so overscroll / rubber-banding past page edges shows
+   black instead of a bright flash against the arcade CRT theme. */
+html, body, #root { background: #000; }
+
 .arcade-root {
   --g0:#000000; --g1:#003300; --g2:#006600;
   --g3:#00aa00; --g4:#00ff41; --g5:#ccffdd;
@@ -264,7 +269,7 @@ export const ARCADE_STYLE = `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
   padding: 12px 18px;
   background: linear-gradient(180deg, #001a00 0%, #000800 100%);
@@ -282,6 +287,7 @@ export const ARCADE_STYLE = `
   font-family: 'Press Start 2P', monospace;
   color: var(--g4);
   text-shadow: 0 0 6px rgba(0,255,65,0.5);
+  flex-shrink: 0;
 }
 .arcade-root .arc-header-logo-main {
   font-size: 16px;
@@ -297,7 +303,52 @@ export const ARCADE_STYLE = `
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+/* Mobile: shrink the header so logo + nav + theme switch fit on one row.
+   Without this the flex line overflows at narrow widths. */
+@media (max-width: 560px) {
+  .arcade-root .arc-header {
+    gap: 6px;
+    padding: 10px 10px;
+  }
+  .arcade-root .arc-header-logo {
+    gap: 6px;
+    padding: 2px 2px;
+  }
+  .arcade-root .arc-header-logo-main {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+  .arcade-root .arc-header-logo-sub {
+    display: none;
+  }
+  .arcade-root .arc-header-nav {
+    gap: 2px;
+  }
+  .arcade-root .arc-nav-btn {
+    font-size: 7px;
+    letter-spacing: 1px;
+    padding: 6px 5px;
+  }
+  .arcade-theme-switch {
+    gap: 5px;
+    padding: 4px 6px;
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  .arcade-theme-switch-track {
+    width: 24px;
+    height: 14px;
+  }
+  .arcade-theme-switch-thumb {
+    left: 12px;
+    width: 8px;
+    height: 8px;
+  }
+  .arcade-theme-switch:hover .arcade-theme-switch-thumb {
+    left: 2px;
+  }
 }
 .arcade-root .arc-nav-btn {
   font-family: 'Press Start 2P', monospace;

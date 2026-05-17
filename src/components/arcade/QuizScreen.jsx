@@ -276,15 +276,15 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
     const next = phases[phaseIdx + 1];
     return (
       <div className="arc-scan-in">
-        <div className="pbox" style={{ textAlign: 'center', padding: 20 }}>
-          <div style={{ fontSize: 8, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 10 }}>STAGE CLEAR · PHASE COMPLETE</div>
-          <div className="arc-bounce" style={{ display: 'inline-block', marginBottom: 16 }}>
+        <div className="pbox" style={{ textAlign: 'center', padding: 28 }}>
+          <div style={{ fontSize: 11, color: 'var(--cyan)', letterSpacing: 3, marginBottom: 14, textShadow: '0 0 8px rgba(123,228,255,0.4)' }}>STAGE CLEAR · PHASE COMPLETE</div>
+          <div className="arc-bounce" style={{ display: 'inline-block', marginBottom: 20 }}>
             <Mascot size={64} happy />
           </div>
-          <div style={{ fontSize: 14, color: 'var(--gold)', letterSpacing: 2, marginBottom: 6 }}>NEXT PHASE</div>
-          <div style={{ fontSize: 10, color: 'var(--g5)', marginBottom: 4 }}>{next.name.toUpperCase()}</div>
-          <div style={{ fontSize: 7, color: 'var(--g3)', lineHeight: 1.7, marginBottom: 18 }}>{next.subtitle}</div>
-          <button className="arc-btn" style={{ padding: '12px 24px', fontSize: 10, letterSpacing: 2 }} onClick={continuePhase}>▶ CONTINUE</button>
+          <div style={{ fontSize: 18, color: 'var(--gold)', letterSpacing: 3, marginBottom: 10, textShadow: '0 0 10px rgba(255,196,77,0.5)' }}>NEXT PHASE</div>
+          <div style={{ fontSize: 14, color: 'var(--text)', marginBottom: 8, letterSpacing: 1 }}>{next.name.toUpperCase()}</div>
+          <p style={{ fontSize: 14, color: 'var(--text-dim)', lineHeight: 1.65, marginBottom: 22, marginTop: 0 }}>{next.subtitle}</p>
+          <button className="arc-btn" style={{ fontSize: 13, padding: '16px 28px' }} onClick={continuePhase}>▶ CONTINUE</button>
         </div>
       </div>
     );
@@ -324,14 +324,14 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
       </div>
 
       {/* Top row: back + identity + accuracy/timer */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
           <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onExit} aria-label="Exit quiz">
             <span aria-hidden="true">◀</span>
           </button>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 7, color: 'var(--g3)', marginBottom: 3, letterSpacing: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{headerLabel}</div>
-            <div style={{ fontSize: 8, color: 'var(--g3)' }} aria-label={`Question ${globalIdx + 1} of ${total}`}>
+            <div style={{ fontSize: 10, color: 'var(--g4)', marginBottom: 6, letterSpacing: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: '0 0 6px rgba(0,255,102,0.35)' }}>{headerLabel}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)', letterSpacing: 1 }} aria-label={`Question ${globalIdx + 1} of ${total}`}>
               Q{globalIdx + 1}/{total}
             </div>
           </div>
@@ -339,9 +339,9 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
         <div style={{ textAlign: 'right' }} aria-live="off">
           {isMock ? (
             <>
-              <div style={{ fontSize: 7, color: 'var(--g3)' }}>TIME LEFT</div>
+              <div style={{ fontSize: 9, color: 'var(--text-dim)', letterSpacing: 2, marginBottom: 4 }}>TIME LEFT</div>
               <div
-                style={{ color: lowTime ? 'var(--red)' : 'var(--gold)', fontSize: 14, letterSpacing: 1 }}
+                style={{ color: lowTime ? 'var(--red)' : 'var(--gold)', fontSize: 20, letterSpacing: 2, textShadow: lowTime ? '0 0 10px rgba(255,90,90,0.55)' : '0 0 8px rgba(255,196,77,0.45)' }}
                 aria-label={`Time remaining ${mins} minutes ${secs} seconds`}
               >
                 {timeStr}
@@ -349,8 +349,8 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
             </>
           ) : (
             <>
-              <div style={{ fontSize: 7, color: 'var(--g3)' }}>ACCURACY</div>
-              <div style={{ color: 'var(--gold)', fontSize: 14 }} aria-label={answeredCount === 0 ? 'Accuracy not yet measured' : `Accuracy ${accuracy} percent`}>
+              <div style={{ fontSize: 9, color: 'var(--text-dim)', letterSpacing: 2, marginBottom: 4 }}>ACCURACY</div>
+              <div style={{ color: 'var(--gold)', fontSize: 20, letterSpacing: 2, textShadow: '0 0 8px rgba(255,196,77,0.45)' }} aria-label={answeredCount === 0 ? 'Accuracy not yet measured' : `Accuracy ${accuracy} percent`}>
                 {answeredCount === 0 ? '—' : `${accuracy}%`}
               </div>
             </>
@@ -362,7 +362,7 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
       <div
         role="navigation"
         aria-label="Question navigator"
-        style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginBottom: 8 }}
+        style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}
       >
         {allQuestions.map((qq, gIdx) => {
           const { p: pIdx, i: qIdx } = globalToLocal(gIdx);
@@ -375,16 +375,16 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
             : !!progress.bookmarks?.[qq.id];
           let bg = 'transparent';
           let bColor = 'var(--g2)';
-          let txt = 'var(--g3)';
+          let txt = 'var(--text-dim)';
           if (isCurr) {
-            bColor = 'var(--g4)'; bg = 'rgba(0,255,65,0.15)'; txt = 'var(--g4)';
+            bColor = 'var(--g4)'; bg = 'rgba(0,255,102,0.22)'; txt = 'var(--g4)';
           } else if (isAnsweredHere) {
             if (isMock) {
-              bColor = 'var(--g3)'; bg = 'rgba(0,255,65,0.10)'; txt = 'var(--g4)';
+              bColor = 'var(--g3)'; bg = 'rgba(0,255,102,0.12)'; txt = 'var(--g4)';
             } else if (wasCorrect) {
-              bColor = 'var(--g4)'; bg = 'rgba(0,255,65,0.18)'; txt = 'var(--g4)';
+              bColor = 'var(--g4)'; bg = 'rgba(0,255,102,0.22)'; txt = 'var(--g4)';
             } else {
-              bColor = 'var(--red)'; bg = 'rgba(255,58,58,0.18)'; txt = 'var(--red)';
+              bColor = 'var(--red)'; bg = 'rgba(255,90,90,0.22)'; txt = '#ffd4d4';
             }
           }
           const stateLabel = isAnsweredHere
@@ -399,49 +399,49 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
               style={{
                 flex: '0 0 auto',
                 fontFamily: 'Press Start 2P, monospace',
-                fontSize: 6,
-                padding: '3px 4px',
-                minWidth: 16,
-                height: 16,
+                fontSize: 10,
+                padding: '4px 6px',
+                minWidth: 28,
+                height: 28,
                 background: bg,
-                border: `1.5px solid ${isBookmarked ? 'var(--gold)' : bColor}`,
+                border: `2px solid ${isBookmarked ? 'var(--gold)' : bColor}`,
                 color: txt,
                 cursor: 'pointer',
                 letterSpacing: 0.5,
                 lineHeight: 1,
-                boxShadow: isBookmarked ? '0 0 4px rgba(255,176,0,0.4)' : 'none',
+                boxShadow: isBookmarked ? '0 0 8px rgba(255,196,77,0.55)' : 'none',
               }}>{gIdx + 1}</button>
           );
         })}
       </div>
       {isPhased && (
-        <div style={{ fontSize: 6, color: 'var(--g3)', letterSpacing: 1, marginBottom: 12 }}>
+        <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 2, marginBottom: 16 }}>
           PHASE {phaseIdx + 1} / {phases.length} · {phases[phaseIdx].name.toUpperCase()} · {Math.round(progressPct)}% DONE
         </div>
       )}
       {!isPhased && (
-        <div style={{ fontSize: 6, color: 'var(--g3)', letterSpacing: 1, marginBottom: 12 }}>
+        <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 2, marginBottom: 16 }}>
           {Math.round(progressPct)}% DONE
         </div>
       )}
 
       {/* Selection hint */}
-      <div style={{ fontSize: 7, color: 'var(--g3)', marginBottom: 12, letterSpacing: 1 }}>
-        {isMulti ? `SELECT ${q.selectCount || correctAnswers.length}` : isTF ? 'TRUE OR FALSE' : 'SINGLE ANSWER'}
+      <div style={{ fontSize: 11, color: 'var(--gold)', marginBottom: 14, letterSpacing: 2, textShadow: '0 0 6px rgba(255,196,77,0.3)' }}>
+        {isMulti ? `▸ SELECT ${q.selectCount || correctAnswers.length}` : isTF ? '▸ TRUE OR FALSE' : '▸ SINGLE ANSWER'}
       </div>
 
       {/* Question + mascot */}
       <div className="pbox" style={{
-        marginBottom: 12,
+        marginBottom: 18,
         borderColor: flash === 'correct' ? 'var(--g4)' : flash === 'wrong' ? 'var(--red)' : 'var(--g4)',
-        background: flash === 'correct' ? 'rgba(0,255,65,0.08)' : flash === 'wrong' ? 'rgba(255,58,58,0.10)' : 'transparent',
+        background: flash === 'correct' ? 'rgba(0,255,102,0.10)' : flash === 'wrong' ? 'rgba(255,90,90,0.10)' : 'rgba(0,30,12,0.35)',
         transition: 'all 0.2s',
       }}>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-          <div className={flash ? '' : 'arc-bounce'} style={{ flexShrink: 0, marginTop: -4 }}>
-            <Mascot size={36} talking={!submitted} happy={flash === 'correct'} sad={flash === 'wrong'} />
+        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+          <div className={flash ? '' : 'arc-bounce'} style={{ flexShrink: 0, marginTop: 2 }}>
+            <Mascot size={42} talking={!submitted} happy={flash === 'correct'} sad={flash === 'wrong'} />
           </div>
-          <p id={`question-text-${q.id}`} style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9, flex: 1 }}>{displayedQuestionText}</p>
+          <p id={`question-text-${q.id}`} style={{ fontSize: 16, color: 'var(--text)', lineHeight: 1.65, flex: 1, margin: 0, letterSpacing: 0.2 }}>{displayedQuestionText}</p>
           <button
             onClick={() => {
               const wasBookmarked = !!progress.bookmarks?.[q.id];
@@ -459,8 +459,11 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
             title="Bookmark"
             style={{
               flexShrink: 0, background: 'transparent',
-              border: '1px solid var(--g2)', color: progress.bookmarks?.[q.id] ? 'var(--gold)' : 'var(--g3)',
-              padding: '4px 6px', cursor: 'pointer', fontSize: 10, lineHeight: 1,
+              border: `2px solid ${progress.bookmarks?.[q.id] ? 'var(--gold)' : 'var(--g2)'}`,
+              color: progress.bookmarks?.[q.id] ? 'var(--gold)' : 'var(--text-dim)',
+              padding: '8px 10px', cursor: 'pointer', fontSize: 16, lineHeight: 1,
+              boxShadow: progress.bookmarks?.[q.id] ? '0 0 10px rgba(255,196,77,0.45)' : 'none',
+              transition: 'all 0.15s',
             }}
           >
             <span aria-hidden="true">★</span>
@@ -498,32 +501,37 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
               aria-label={`Option ${opt.id.toUpperCase()}: ${optText}${stateLabel ? ` (${stateLabel})` : ''}`}
             >
               <span aria-hidden="true" style={{
-                color: submitted && isCorr ? '#000' : submitted && isSel && !isCorr ? 'var(--red)' : 'var(--g3)',
-                marginRight: 8,
+                fontFamily: 'Press Start 2P, monospace',
+                fontSize: 10,
+                color: submitted && isCorr ? '#061a0d' : submitted && isSel && !isCorr ? '#ffd4d4' : 'var(--gold)',
+                marginRight: 12,
+                letterSpacing: 1,
+                flexShrink: 0,
+                marginTop: 3,
               }}>[{opt.id.toUpperCase()}]</span>
-              <span aria-hidden="true">{optText}</span>
+              <span aria-hidden="true" style={{ flex: 1 }}>{optText}</span>
             </button>
           );
         })}
       </div>
 
       {/* Navigation row — prev / next without requiring submit */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-        <button className="arc-btn arc-btn-ghost" style={{ flex: 1, padding: 10, fontSize: 8 }}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+        <button className="arc-btn arc-btn-ghost" style={{ flex: 1 }}
           onClick={goPrev} disabled={atFirst}>◀ PREV</button>
-        <button className="arc-btn arc-btn-ghost" style={{ flex: 1, padding: 10, fontSize: 8 }}
+        <button className="arc-btn arc-btn-ghost" style={{ flex: 1 }}
           onClick={goNext} disabled={atLast && submitted ? false : atLast}>NEXT ▶</button>
       </div>
 
       {/* Confirm or feedback */}
       {!submitted && (
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 10 }}>
           {isMock && (
-            <button className="arc-btn arc-btn-ghost" style={{ padding: 12, fontSize: 8 }} onClick={() => {
+            <button className="arc-btn arc-btn-ghost" onClick={() => {
               if (window.confirm('Submit mock exam now?')) finalize();
             }}>SUBMIT EXAM</button>
           )}
-          <button className="arc-btn" style={{ flex: 1, padding: 12, fontSize: 9 }} onClick={submit} disabled={selected.length === 0}>
+          <button className="arc-btn" style={{ flex: 1, fontSize: 13, padding: '16px 22px' }} onClick={submit} disabled={selected.length === 0}>
             ▶ CONFIRM
           </button>
         </div>
@@ -531,13 +539,23 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
 
       {submitted && !isMock && (
         <div>
-          <div className="pbox" style={{ marginBottom: 10, borderColor: flash === 'correct' ? 'var(--g4)' : 'var(--red)' }}>
-            <div style={{ fontSize: 8, color: flash === 'correct' ? 'var(--g4)' : 'var(--red)', marginBottom: 6, letterSpacing: 1 }}>
+          <div className="pbox" style={{
+            marginBottom: 12,
+            borderColor: flash === 'correct' ? 'var(--g4)' : 'var(--red)',
+            background: flash === 'correct' ? 'rgba(0,255,102,0.08)' : 'rgba(255,90,90,0.08)',
+          }}>
+            <div style={{
+              fontFamily: 'Press Start 2P, monospace',
+              fontSize: 13,
+              color: flash === 'correct' ? 'var(--g4)' : 'var(--red)',
+              marginBottom: 12, letterSpacing: 2,
+              textShadow: `0 0 8px ${flash === 'correct' ? 'rgba(0,255,102,0.5)' : 'rgba(255,90,90,0.5)'}`,
+            }}>
               {flash === 'correct' ? '✓ CORRECT!' : '✕ WRONG'}
             </div>
-            <div style={{ fontSize: 8, color: 'var(--g3)', lineHeight: 1.9 }}>{q.explanation}</div>
+            <p style={{ fontSize: 14.5, color: 'var(--text)', lineHeight: 1.7, margin: 0 }}>{q.explanation}</p>
           </div>
-          <button className="arc-btn" style={{ width: '100%', padding: 12, fontSize: 9 }} onClick={next}>
+          <button className="arc-btn" style={{ width: '100%', fontSize: 13, padding: '16px 22px' }} onClick={next}>
             {(isPhased ? (idx + 1 >= phases[phaseIdx].questions.length && phaseIdx + 1 >= phases.length) : (idx + 1 >= total))
               ? '▶ SEE RESULTS' : '▶ NEXT'}
           </button>

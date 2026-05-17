@@ -7,22 +7,44 @@ export const ARCADE_STYLE = `
 html, body, #root { background: #000; }
 
 .arcade-root {
-  --g0:#000000; --g1:#003300; --g2:#006600;
-  --g3:#00aa00; --g4:#00ff41; --g5:#ccffdd;
-  --red:#ff3a3a; --gold:#ffb000; --amber:#ff9933;
-  --cyan:#44ddff; --magenta:#ff44aa; --purple:#b066ff;
-  background: radial-gradient(ellipse 90% 95% at center, #000 60%, #050505 100%) #000;
-  color: var(--g4);
+  --g0:#000000; --g1:#003c1e; --g2:#0a7a3c;
+  --g3:#3ddc70; --g4:#00ff66; --g5:#e5ffe5;
+  --text:#e5ffe5; --text-dim:#9ce6b3; --text-muted:#3ddc70;
+  --red:#ff5a5a; --gold:#ffc44d; --amber:#ffa94d;
+  --cyan:#7be4ff; --magenta:#ff7ac4; --purple:#c98aff;
+  background: radial-gradient(ellipse 90% 95% at center, #020e07 0%, #010604 70%, #000 100%) #000;
+  color: var(--text);
   font-family: 'Press Start 2P', monospace;
   min-height: 100vh;
   min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 .arcade-root *, .arcade-root *::before, .arcade-root *::after {
   box-sizing: border-box;
 }
 .arcade-root button { font-family: inherit; }
+
+/* Two-tier typography: pixel font for arcade-marquee moments (headers,
+   badges, score readouts, button labels), readable monospace for body
+   content (questions, options, explanations, paragraphs). Components
+   opt into the pixel face with .arc-marquee; body content uses the
+   default font set on .arcade-root. */
+.arcade-root .arc-marquee {
+  font-family: 'Press Start 2P', ui-monospace, monospace;
+  letter-spacing: 1px;
+  line-height: 1.4;
+}
+.arcade-root .arc-body,
+.arcade-root p {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
 
 /* Global focus ring — pixel-style green outline for keyboard users.
    Uses outline so it never disturbs layout. Applied via :focus-visible
@@ -88,19 +110,22 @@ html, body, #root { background: #000; }
   transform: translateY(0);
 }
 
-/* CRT scanlines */
+/* CRT scanlines — softer than vintage CRT so they texture the screen
+   without chewing through small text. Period is 3px so the dark bar
+   only occupies ~33% of each row instead of 50%. */
 .arcade-root::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 999;
   background: repeating-linear-gradient(0deg,
-    rgba(0,0,0,0.28) 0px, rgba(0,0,0,0.28) 1px,
-    transparent 1px, transparent 2px);
+    rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px,
+    transparent 1px, transparent 3px);
 }
-/* CRT vignette + flicker */
+/* CRT vignette + flicker — gentle darkening at the corners so the
+   center stays comfortable to read. */
 .arcade-root::after {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1001;
   background: radial-gradient(ellipse at center,
-    transparent 35%, rgba(0,0,0,0.25) 75%, rgba(0,0,0,0.7) 100%);
-  box-shadow: inset 0 0 120px rgba(0,255,65,0.08);
+    transparent 55%, rgba(0,0,0,0.18) 85%, rgba(0,0,0,0.45) 100%);
+  box-shadow: inset 0 0 140px rgba(0,255,102,0.05);
   animation: arcadeFlicker 6s infinite;
 }
 @keyframes arcadeFlicker {
@@ -137,48 +162,70 @@ html, body, #root { background: #000; }
 
 /* Frame box */
 .arcade-root .pbox {
-  border: 3px solid var(--g4); padding: 14px; position: relative;
-  box-shadow: 0 0 10px rgba(0,255,65,0.25), inset 0 0 20px rgba(0,0,0,0.6);
+  border: 2px solid var(--g4); padding: 18px 20px; position: relative;
+  background: rgba(0, 30, 12, 0.35);
+  box-shadow: 0 0 12px rgba(0,255,102,0.18), inset 0 0 24px rgba(0,0,0,0.45);
 }
 .arcade-root .pbox::before {
-  content: ''; position: absolute; inset: 2px;
-  border: 1px solid var(--g1); pointer-events: none;
+  content: ''; position: absolute; inset: 3px;
+  border: 1px solid rgba(0,255,102,0.18); pointer-events: none;
+}
+/* Body text inside a frame box defaults to the readable monospace.
+   Components that want pixel-style content should override explicitly. */
+.arcade-root .pbox p,
+.arcade-root .pbox .arc-body {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px; line-height: 1.7; color: var(--text);
+  letter-spacing: 0.2px;
 }
 
-/* Buttons */
+/* Buttons — pixel marquee face with comfortable hit-targets */
 .arcade-root .arc-btn {
-  font-family: 'Press Start 2P', monospace; font-size: 9px;
+  font-family: 'Press Start 2P', monospace; font-size: 11px;
   color: #000; background: var(--g4); border: none;
-  padding: 10px 16px; cursor: pointer;
-  outline: 3px solid var(--g2); outline-offset: 2px;
-  transition: transform 0.08s, background 0.08s;
-  text-transform: uppercase; letter-spacing: 1px;
+  padding: 14px 20px; cursor: pointer;
+  outline: 2px solid var(--g2); outline-offset: 3px;
+  transition: transform 0.08s, background 0.08s, box-shadow 0.15s;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  line-height: 1.4;
 }
-.arcade-root .arc-btn:hover:not(:disabled) { background: var(--g5); transform: translateY(-2px); }
+.arcade-root .arc-btn:hover:not(:disabled) {
+  background: var(--g5); transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(0,255,102,0.55);
+}
 .arcade-root .arc-btn:active:not(:disabled) { transform: translateY(1px); }
 .arcade-root .arc-btn:disabled { opacity: 0.4; cursor: default; }
 .arcade-root .arc-btn-ghost {
   background: transparent; color: var(--g4); border: 2px solid var(--g4); outline: none;
+  text-shadow: 0 0 6px rgba(0,255,102,0.4);
 }
-.arcade-root .arc-btn-ghost:hover { background: var(--g1); }
-.arcade-root .arc-btn-sm { font-size: 7px; padding: 7px 12px; }
+.arcade-root .arc-btn-ghost:hover:not(:disabled) {
+  background: rgba(0,255,102,0.12); color: var(--g5); box-shadow: 0 0 12px rgba(0,255,102,0.35);
+}
+.arcade-root .arc-btn-sm { font-size: 9px; padding: 10px 14px; letter-spacing: 1.2px; }
 
 /* Progress bars */
 .arcade-root .pbar-wrap { height: 10px; background: var(--g1); border: 2px solid var(--g3); }
 .arcade-root .pbar-fill { height: 100%; background: var(--g4); transition: width 0.4s; box-shadow: 0 0 6px var(--g4); }
 
-/* Option buttons */
+/* Option buttons — body font, bigger hit target, brighter foreground */
 .arcade-root .opt-btn {
-  display: block; width: 100%;
-  font-family: 'Press Start 2P', monospace; font-size: 8px; line-height: 1.8;
-  text-align: left; background: transparent; color: var(--g4);
-  border: 2px solid var(--g2); padding: 10px 12px;
-  cursor: pointer; margin-bottom: 6px; transition: border-color 0.1s, background 0.1s;
+  display: flex; align-items: flex-start; width: 100%;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px; line-height: 1.55;
+  text-align: left; background: rgba(0,30,12,0.25); color: var(--text);
+  border: 2px solid var(--g2); padding: 14px 16px;
+  cursor: pointer; margin-bottom: 10px;
+  transition: border-color 0.12s, background 0.12s, transform 0.08s, box-shadow 0.15s;
+  letter-spacing: 0.2px;
 }
-.arcade-root .opt-btn:hover:not(:disabled) { border-color: var(--g4); background: var(--g1); }
-.arcade-root .opt-btn.selected { border-color: var(--g4); background: var(--g1); }
-.arcade-root .opt-btn.correct  { border-color: var(--g4); background: var(--g4); color: #000; }
-.arcade-root .opt-btn.wrong    { border-color: var(--red); background: rgba(255,58,58,0.12); color: var(--red); }
+.arcade-root .opt-btn:hover:not(:disabled) {
+  border-color: var(--g4); background: rgba(0,255,102,0.08);
+  box-shadow: 0 0 10px rgba(0,255,102,0.2);
+}
+.arcade-root .opt-btn.selected { border-color: var(--g4); background: rgba(0,255,102,0.14); }
+.arcade-root .opt-btn.correct  { border-color: var(--g4); background: var(--g4); color: #061a0d; font-weight: 500; }
+.arcade-root .opt-btn.wrong    { border-color: var(--red); background: rgba(255,90,90,0.16); color: #ffd4d4; }
 .arcade-root .opt-btn:disabled { cursor: default; }
 
 .arcade-root .arc-divider { border: none; border-top: 2px solid var(--g2); margin: 12px 0; }

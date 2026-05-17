@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { CONCEPTS } from '../../data/concepts.js';
 import { defangBrutalQuestion, arraysEqualAsSet } from '../../lib/progress.js';
+import { trackQuestionAnswer, trackQuestionBookmark } from '../../lib/analytics.js';
 import { Mascot } from './Mascot.jsx';
 
 export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess, progress, onComplete, onToggleBookmark, onFinish, onExit }) {
@@ -148,7 +149,20 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
         sessionCorrect: correct ? s.sessionCorrect + 1 : s.sessionCorrect,
         sessionWrong: correct ? s.sessionWrong : s.sessionWrong + 1,
       }));
-      if (!alreadyAnswered) onComplete(q.id, correct);
+      if (!alreadyAnswered) {
+        const prevAttempts = progress.questions?.[q.id]?.attempts || 0;
+        onComplete(q.id, correct);
+        trackQuestionAnswer({
+          questionId: q.id,
+          conceptId: q.concept,
+          conceptLabel: CONCEPTS.find((c) => c.id === q.concept)?.label,
+          mode,
+          correct,
+          questionType: q.type,
+          difficulty: q.difficulty,
+          attemptNumber: prevAttempts + 1,
+        });
+      }
       advanceImmediate();
     } else {
       // Immediate feedback
@@ -162,7 +176,18 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
           sessionCorrect: correct ? s.sessionCorrect + 1 : s.sessionCorrect,
           sessionWrong: correct ? s.sessionWrong : s.sessionWrong + 1,
         }));
+        const prevAttempts = progress.questions?.[q.id]?.attempts || 0;
         onComplete(q.id, correct);
+        trackQuestionAnswer({
+          questionId: q.id,
+          conceptId: q.concept,
+          conceptLabel: CONCEPTS.find((c) => c.id === q.concept)?.label,
+          mode,
+          correct,
+          questionType: q.type,
+          difficulty: q.difficulty,
+          attemptNumber: prevAttempts + 1,
+        });
       }
     }
   }
@@ -212,7 +237,25 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
     const finalTotal = total;
     // Mark mock answers as graded — onComplete updates progress storage
     if (isMock) {
-      for (const r of finalResults) onComplete(r.qid, r.correct);
+      for (const r of finalResults) {
+        onComplete(r.qid, r.correct);
+        // Fire question_answer only for questions the user skipped — answered
+        // ones already fired at submit() time.
+        if (!mockAnswers[r.qid]) {
+          const qq = allQuestions.find((x) => x.id === r.qid);
+          const prevAttempts = progress.questions?.[r.qid]?.attempts || 0;
+          trackQuestionAnswer({
+            questionId: r.qid,
+            conceptId: qq?.concept,
+            conceptLabel: CONCEPTS.find((c) => c.id === qq?.concept)?.label,
+            mode,
+            correct: r.correct,
+            questionType: qq?.type,
+            difficulty: qq?.difficulty,
+            attemptNumber: prevAttempts + 1,
+          });
+        }
+      }
     }
     if (finalCorrect === finalTotal && finalTotal > 0) {
       try { localStorage.setItem('pspo_flawless', 'true'); } catch {}
@@ -400,7 +443,17 @@ export function QuizScreen({ mode, conceptId, phases, questions, qsess, setQsess
           </div>
           <p id={`question-text-${q.id}`} style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9, flex: 1 }}>{displayedQuestionText}</p>
           <button
-            onClick={() => onToggleBookmark(q.id)}
+            onClick={() => {
+              const wasBookmarked = !!progress.bookmarks?.[q.id];
+              onToggleBookmark(q.id);
+              trackQuestionBookmark({
+                questionId: q.id,
+                conceptId: q.concept,
+                conceptLabel: CONCEPTS.find((c) => c.id === q.concept)?.label,
+                bookmarked: !wasBookmarked,
+                mode,
+              });
+            }}
             aria-label={progress.bookmarks?.[q.id] ? 'Remove bookmark' : 'Bookmark this question'}
             aria-pressed={!!progress.bookmarks?.[q.id]}
             title="Bookmark"

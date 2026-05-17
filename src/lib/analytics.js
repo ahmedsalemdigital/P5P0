@@ -152,4 +152,49 @@ export function trackAchievementUnlocked({ achievementId, achievementName }) {
   });
 }
 
+/** A question was answered (graded).
+ *  • Non-mock: fires immediately on submit, first-answer only per session.
+ *  • Mock: fires when the answer is first graded — at submit for arcade, at
+ *    finalize for classic. Unanswered mock questions fire at finalize too. */
+export function trackQuestionAnswer({
+  questionId,
+  conceptId,
+  conceptLabel,
+  mode,
+  correct,
+  questionType,
+  difficulty,
+  attemptNumber,
+}) {
+  trackEvent('question_answer', {
+    question_id: questionId,
+    concept_id: conceptId,
+    concept_label: conceptLabel,
+    mode,
+    correct,
+    question_type: questionType,
+    difficulty: difficulty || undefined,
+    attempt_number: attemptNumber,
+  });
+}
+
+/** User toggled a question's bookmark. `bookmarked` is the NEW state
+ *  (true = just added, false = just removed). `mode` is the quiz mode the
+ *  toggle happened inside — bookmarks today only fire from a live quiz. */
+export function trackQuestionBookmark({
+  questionId,
+  conceptId,
+  conceptLabel,
+  bookmarked,
+  mode,
+}) {
+  trackEvent('question_bookmark', {
+    question_id: questionId,
+    concept_id: conceptId,
+    concept_label: conceptLabel,
+    bookmarked,
+    mode: mode || undefined,
+  });
+}
+
 export { GA_ID, GTM_ID };

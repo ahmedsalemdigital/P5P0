@@ -55,7 +55,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           textShadow: '0 0 4px #00ff41, 0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.6), 0 4px 0 #003300',
           margin: '0 0 2px', lineHeight: 1, fontWeight: 400,
         }}>
-          <span aria-hidden="true">P5P0</span>
+          <span aria-hidden="true">P5P0 I</span>
           <span className="sr-only">PSPO·I Trainer</span>
         </h1>
         <div aria-hidden="true" style={{ fontSize: 8, color: 'var(--gold)', letterSpacing: 8, marginBottom: 12, textShadow: '0 0 6px rgba(255,176,0,0.5)' }}>★ TRAINER ★</div>

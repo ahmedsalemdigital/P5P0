@@ -14,7 +14,7 @@ export function Header({ onNav, currentView, onToggleTheme }) {
         onClick={() => onNav('title')}
         aria-label="P5P0 Trainer — return to title"
       >
-        <span className="arc-header-logo-main" aria-hidden="true">P5P0</span>
+        <span className="arc-header-logo-main" aria-hidden="true">P5P0 I</span>
         <span className="arc-header-logo-sub" aria-hidden="true">TRAINER</span>
       </button>
       <nav className="arc-header-nav" aria-label="Primary">

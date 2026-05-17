@@ -315,7 +315,7 @@ export default function App() {
           <style>{ARCADE_STYLE}</style>
           <div className="arcade-splash" role="status" aria-live="polite" aria-label="Loading P5P0 Trainer">
             <div className="arcade-splash-inner">
-              <div className="arcade-splash-mark">P5P0</div>
+              <div className="arcade-splash-mark">P5P0 I</div>
               <div className="arcade-splash-sub">★ TRAINER ★</div>
               <div className="arcade-splash-status">
                 BOOTING<span className="arcade-splash-caret" aria-hidden="true" />

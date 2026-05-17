@@ -305,49 +305,22 @@ html, body, #root { background: #000; }
   gap: 6px;
   flex-wrap: nowrap;
 }
-/* Mobile: shrink the header so logo + nav + theme switch fit on one row.
-   Without this the flex line overflows at narrow widths. */
+/* Mobile: stack logo on top, nav below — mirrors the classic header's
+   wrap behavior so the ARCADE toggle stays on-screen at narrow widths. */
 @media (max-width: 560px) {
   .arcade-root .arc-header {
-    gap: 6px;
-    padding: 10px 10px;
-  }
-  .arcade-root .arc-header-logo {
-    gap: 6px;
-    padding: 2px 2px;
-  }
-  .arcade-root .arc-header-logo-main {
-    font-size: 12px;
-    letter-spacing: 2px;
-  }
-  .arcade-root .arc-header-logo-sub {
-    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
   }
   .arcade-root .arc-header-nav {
-    gap: 2px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
   }
   .arcade-root .arc-nav-btn {
-    font-size: 7px;
-    letter-spacing: 1px;
-    padding: 6px 5px;
-  }
-  .arcade-theme-switch {
-    gap: 5px;
-    padding: 4px 6px;
-    font-size: 7px;
-    letter-spacing: 1px;
-  }
-  .arcade-theme-switch-track {
-    width: 24px;
-    height: 14px;
-  }
-  .arcade-theme-switch-thumb {
-    left: 12px;
-    width: 8px;
-    height: 8px;
-  }
-  .arcade-theme-switch:hover .arcade-theme-switch-thumb {
-    left: 2px;
+    padding: 8px 8px;
   }
 }
 .arcade-root .arc-nav-btn {

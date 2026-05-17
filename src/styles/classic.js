@@ -512,37 +512,58 @@ export const STYLE = `
   .pspo-root .nav-item { padding: 5px 10px; }
 }
 
-.pspo-dot {
-  position: relative;
-  cursor: pointer;
+.pspo-qtile {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  cursor: pointer;
   flex-shrink: 0;
-  border-radius: 4px;
-  transition: background 0.15s;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
-.pspo-dot:hover {
-  background: var(--surface-hi);
+.pspo-qtile:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
 }
-.pspo-dot[data-tip]:hover::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text);
+.pspo-qtile.is-answered {
+  border-color: var(--accent-dim);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.pspo-qtile.is-correct {
+  border-color: var(--correct);
+  background: var(--correct-soft);
+  color: #1f8a3e;
+}
+.pspo-qtile.is-wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-soft);
+  color: #c4382e;
+}
+.pspo-qtile.is-current {
+  border-color: var(--accent);
+  background: var(--accent);
   color: #ffffff;
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 100;
-  letter-spacing: -0.12px;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.pspo-qtile.is-bookmarked {
+  border-color: #ff8c1a;
+  box-shadow: 0 0 0 2px rgba(255, 140, 26, 0.18);
+}
+.pspo-qtile.is-bookmarked.is-current {
+  background: #ff8c1a;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 140, 26, 0.22);
 }
 `;

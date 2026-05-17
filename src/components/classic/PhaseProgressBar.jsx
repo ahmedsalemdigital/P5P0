@@ -1,56 +1,59 @@
 import React from 'react';
 
-export function PhaseProgressBar({ phases, phaseIdx, questionIdx, onJump, answered, bookmarks, uniform }) {
-  const phaseColor = (phase) => {
-    if (uniform) return 'var(--correct)';
-    const d = phase.questions[0]?.difficulty;
-    if (d === 'brutal') return 'var(--wrong)';
-    if (d === 'scenario') return 'var(--accent)';
-    return 'var(--correct)';
-  };
-
-  const shapeStyle = (phase, qIdx, pIdx) => {
-    const d = phase.questions[0]?.difficulty;
-    const isCurrent = pIdx === phaseIdx;
-    const isNow = isCurrent && qIdx === questionIdx;
-    const qid = phase.questions[qIdx]?.id;
-    const isAnswered = !!(answered && qid && answered[qid]);
-    const isBookmarked = !!(bookmarks && qid && bookmarks[qid]);
-    const color = isBookmarked ? '#ff8c1a' : phaseColor(phase);
-    const size = isNow ? 11 : 8;
-    const base = {
-      width: size, height: size,
-      background: color,
-      opacity: isNow ? 1 : isAnswered ? 0.85 : isBookmarked ? 0.85 : 0.32,
-      transition: 'width 0.15s, height 0.15s, opacity 0.15s',
-      boxShadow: isNow ? `0 0 0 3px ${color}50` : 'none',
-    };
-    if (isBookmarked) return { ...base, clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 50% 70%, 0% 100%)' };
-    if (uniform) return { ...base, borderRadius: '50%' };
-    if (d === 'scenario') return { ...base, clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)' };
-    if (d === 'brutal') return { ...base, clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' };
-    return { ...base, borderRadius: '50%' };
-  };
+export function PhaseProgressBar({ phases, phaseIdx, questionIdx, onJump, answered, bookmarks }) {
+  const total = phases.reduce((s, p) => s + p.questions.length, 0);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+    <div
+      role="navigation"
+      aria-label="Question navigator"
+      style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}
+    >
       {phases.map((phase, pIdx) => {
         const offset = phases.slice(0, pIdx).reduce((s, p) => s + p.questions.length, 0);
         return (
           <React.Fragment key={pIdx}>
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-              {phase.questions.map((_, qIdx) => (
-                <button
-                  key={qIdx}
-                  type="button"
-                  className="pspo-dot"
-                  data-tip={`Q${offset + qIdx + 1}`}
-                  onClick={onJump ? () => onJump(pIdx, qIdx) : undefined}
-                  aria-label={`Go to question ${offset + qIdx + 1}`}
-                >
-                  <div style={shapeStyle(phase, qIdx, pIdx)} />
-                </button>
-              ))}
+            {pIdx > 0 && (
+              <span aria-hidden="true" style={{
+                width: 1, height: 16, background: 'var(--border-hi)', margin: '0 2px',
+              }} />
+            )}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+              {phase.questions.map((q, qIdx) => {
+                const gIdx = offset + qIdx;
+                const isCurrent = pIdx === phaseIdx && qIdx === questionIdx;
+                const a = answered && q?.id ? answered[q.id] : null;
+                const isAnswered = !!a;
+                const wasCorrect = a && typeof a === 'object' && !Array.isArray(a) ? a.wasCorrect : null;
+                const isBookmarked = !!(bookmarks && q?.id && bookmarks[q.id]);
+
+                let cls = 'pspo-qtile';
+                if (isCurrent) cls += ' is-current';
+                else if (isAnswered && wasCorrect === true) cls += ' is-correct';
+                else if (isAnswered && wasCorrect === false) cls += ' is-wrong';
+                else if (isAnswered) cls += ' is-answered';
+                if (isBookmarked) cls += ' is-bookmarked';
+
+                const stateLabel = isAnswered
+                  ? (wasCorrect === true ? 'answered correctly'
+                     : wasCorrect === false ? 'answered incorrectly'
+                     : 'answered')
+                  : 'unanswered';
+                const ariaLabel = `Go to question ${gIdx + 1} of ${total}, ${stateLabel}${isBookmarked ? ', bookmarked' : ''}${isCurrent ? ', current' : ''}`;
+
+                return (
+                  <button
+                    key={qIdx}
+                    type="button"
+                    className={cls}
+                    onClick={onJump ? () => onJump(pIdx, qIdx) : undefined}
+                    aria-label={ariaLabel}
+                    aria-current={isCurrent ? 'true' : undefined}
+                  >
+                    {gIdx + 1}
+                  </button>
+                );
+              })}
             </div>
           </React.Fragment>
         );

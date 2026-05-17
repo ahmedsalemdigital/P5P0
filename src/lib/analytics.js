@@ -50,10 +50,12 @@ export function trackPageView({ path, title }) {
   });
 }
 
-/** Theme toggle. Useful to see Classic vs Arcade preference at the cohort level. */
+/** Theme toggle. Useful to see Classic vs Arcade preference at the cohort level.
+ *  The `theme` user property is updated by App.jsx's consolidated
+ *  user-properties effect when `theme` state changes — no inline
+ *  setUserProperties call here, to avoid duplicate pushes. */
 export function trackThemeSwitch({ from, to }) {
   trackEvent('theme_switch', { from, to });
-  setUserProperties({ theme: to });
 }
 
 /** User opened a concept's lesson page. */
@@ -105,12 +107,32 @@ export function trackQuizComplete({
   trackEvent('quiz_complete', params);
   if (scorePct >= 85) trackEvent('quiz_pass', params);
   if (mode === 'mock') trackEvent('mock_exam_complete', params);
+  // flawless_victory: fire ONCE per browser. The UI's pspo_flawless flag
+  // is kept for the trophy display; we use a separate key here so the
+  // analytics state and the UI state can't race.
   if (correctCount === total && total > 0) {
-    trackAchievementUnlocked({
-      achievementId: 'flawless_victory',
-      achievementName: 'Flawless Victory',
-    });
+    let alreadyFired = false;
+    try { alreadyFired = localStorage.getItem('pspo_flawless_event_fired') === 'true'; } catch {}
+    if (!alreadyFired) {
+      try { localStorage.setItem('pspo_flawless_event_fired', 'true'); } catch {}
+      trackAchievementUnlocked({
+        achievementId: 'flawless_victory',
+        achievementName: 'Flawless Victory',
+      });
+    }
   }
+}
+
+/** A quiz was started but never completed — user exited mid-quiz.
+ *  Useful for engagement-depth + drop-off funnels. */
+export function trackQuizAbandon({ mode, conceptId, conceptLabel, questionCount, answeredCount }) {
+  trackEvent('quiz_abandon', {
+    mode,
+    concept_id: conceptId || undefined,
+    concept_label: conceptLabel || undefined,
+    question_count: questionCount,
+    answered_count: answeredCount,
+  });
 }
 
 /** A concept's mastery level just transitioned to 'mastered'. */

@@ -22,6 +22,7 @@ import {
   trackThemeSwitch,
   trackConceptView,
   trackQuizStart,
+  trackQuizAbandon,
   trackConceptMastered,
   trackAchievementUnlocked,
   setUserProperties,
@@ -72,12 +73,8 @@ export default function App() {
     setProgress(loadedProgress);
     setTheme(loadedTheme);
     setLoaded(true);
-    // Seed user properties as soon as we know the user's starting state.
-    setUserProperties({
-      theme: loadedTheme,
-      concepts_mastered: CONCEPTS.filter((c) => masteryForConcept(loadedProgress, c.id).level === 'mastered').length,
-      total_progress_pct: overallProgress(loadedProgress).total,
-    });
+    // User properties handled by the dedicated user-properties effect
+    // below — keeping it in one place ensures diff-guarded pushes only.
   }, []);
 
   /* Analytics: SPA page_view on every view change.
@@ -129,13 +126,33 @@ export default function App() {
       }
       mockCompleteUnlockedRef.current = true;
     }
-
-    // Keep user properties fresh.
-    setUserProperties({
-      concepts_mastered: masteredNow.size,
-      total_progress_pct: overallProgress(progress).total,
-    });
   }, [progress, loaded]);
+
+  /* Analytics: consolidated user-properties push.
+     One effect, one ref, one diff guard — fires set_user_properties only
+     when at least one of {theme, concepts_mastered, total_progress_pct}
+     actually changes. Previously we were firing on every progress
+     mutation, which meant 1 push per answered question (~17 events per
+     14-question quiz). */
+  const lastUserPropsRef = useRef(null);
+  useEffect(() => {
+    if (!loaded) return;
+    const concepts_mastered = CONCEPTS.filter(
+      (c) => masteryForConcept(progress, c.id).level === 'mastered',
+    ).length;
+    const total_progress_pct = overallProgress(progress).total;
+    const next = { theme, concepts_mastered, total_progress_pct };
+    const prev = lastUserPropsRef.current;
+    if (
+      !prev ||
+      prev.theme !== next.theme ||
+      prev.concepts_mastered !== next.concepts_mastered ||
+      prev.total_progress_pct !== next.total_progress_pct
+    ) {
+      setUserProperties(next);
+      lastUserPropsRef.current = next;
+    }
+  }, [theme, progress, loaded]);
 
   function resetQsess() {
     setQsess({ ...FRESH_QSESS });
@@ -245,13 +262,48 @@ export default function App() {
     trackQuizStart({ mode: 'review', questionCount: set.length });
   }
 
+  // Records a quiz_abandon event if the user is mid-quiz right now. Called
+  // from any code path that ends a quiz session without finishing it
+  // (exit button, header nav, theme-toggle-to-results-only flows). Safe to
+  // call when not in a quiz — early-exits silently.
+  function maybeTrackQuizAbandon() {
+    if (view !== 'quiz' || qsess.finished) return;
+    const concept = activeConcept ? CONCEPTS.find((c) => c.id === activeConcept) : null;
+    const questions = quizPhases
+      ? quizPhases.flatMap((p) => p.questions)
+      : (quizSet || []);
+    const isMock = quizMode === QUIZ_MODE.MOCK;
+    const answeredCount = isMock
+      ? Object.keys(qsess.mockAnswers || {}).length
+      : Object.keys(qsess.sessionAnswers || {}).length;
+    trackQuizAbandon({
+      mode: quizMode,
+      conceptId: activeConcept,
+      conceptLabel: concept?.label,
+      questionCount: questions.length,
+      answeredCount,
+    });
+  }
+
   function exitQuiz() {
+    maybeTrackQuizAbandon();
     setView('home');
     setQuizSet(null);
     setQuizPhases(null);
     setActiveConcept(null);
     setQuizMode(QUIZ_MODE.MIXED);
     resetQsess();
+  }
+
+  // Header nav handler. Wraps setView so navigation away from an in-progress
+  // quiz fires quiz_abandon (otherwise users who exit via the header are
+  // invisible to the funnel).
+  function navigateTo(v) {
+    maybeTrackQuizAbandon();
+    setView(v);
+    setActiveConcept(null);
+    setQuizSet(null);
+    setQuizPhases(null);
   }
 
   if (!loaded) {
@@ -310,6 +362,7 @@ export default function App() {
           onStartMockExam={startMockExam}
           onStartReview={startReview}
           onSetView={setView}
+          onNavigate={navigateTo}
           onExitQuiz={exitQuiz}
         />
       </>
@@ -334,7 +387,7 @@ export default function App() {
         <>
           <Header
             stats={progress}
-            onNav={(v) => { setView(v); setActiveConcept(null); setQuizSet(null); }}
+            onNav={navigateTo}
             currentView={view}
             onToggleTheme={switchTheme}
           />

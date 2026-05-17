@@ -103,7 +103,7 @@ tags.push({
     },
   ],
   firingTriggerId: ['2147479573'],
-  tagFiringOption: 'oncePerEvent',
+  tagFiringOption: 'ONCE_PER_EVENT',
   fingerprint: '0',
 });
 
@@ -135,7 +135,7 @@ for (const [eventName, params] of Object.entries(EVENT_PARAMS)) {
       { type: 'LIST', key: 'eventParameters', list: eventParameters },
     ],
     firingTriggerId: [triggerIdByEvent[eventName]],
-    tagFiringOption: 'oncePerEvent',
+    tagFiringOption: 'ONCE_PER_EVENT',
     fingerprint: '0',
   });
 }
@@ -161,7 +161,7 @@ tags.push({
     },
   ],
   firingTriggerId: [triggerIdByEvent['set_user_properties']],
-  tagFiringOption: 'oncePerEvent',
+  tagFiringOption: 'ONCE_PER_EVENT',
   fingerprint: '0',
 });
 
@@ -186,7 +186,7 @@ const container = {
     trigger: triggers,
     variable: variables,
     builtInVariable: [
-      { accountId: '0', containerId: '0', type: 'event', name: 'Event' },
+      { accountId: '0', containerId: '0', type: 'EVENT', name: 'Event' },
     ],
     fingerprint: '0',
   },

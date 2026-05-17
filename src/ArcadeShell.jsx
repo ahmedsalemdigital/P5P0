@@ -38,6 +38,7 @@ export default function ArcadeShell({
   onStartMockExam,
   onStartReview,
   onSetView,
+  onNavigate,
   onExitQuiz,
 }) {
   // Results screen is the only screen with state purely local to the arcade theme
@@ -79,7 +80,7 @@ export default function ArcadeShell({
       <div className="arcade-scanline" aria-hidden="true" />
       {view !== 'title' && (
         <Header
-          onNav={(v) => onSetView(v)}
+          onNav={onNavigate}
           currentView={view}
           onToggleTheme={onSwitchTheme}
         />

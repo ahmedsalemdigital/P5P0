@@ -36,8 +36,9 @@ All events are fired client-side via `gtag('event', name, params)`.
 | `quiz_complete` | Any quiz finalizes | `mode`, `concept_id?`, `concept_label?`, `score_pct`, `correct_count`, `wrong_count`, `total_questions`, `time_used_sec?`, `verdict`, `value` (=score_pct) |
 | `quiz_pass` | Quiz finalizes with `score_pct >= 85` (PSPO I pass bar). **Fires in addition to `quiz_complete`.** | same as `quiz_complete` |
 | `mock_exam_complete` | A mock-exam (mode=`mock`) finalizes. **Fires in addition to `quiz_complete`.** | same as `quiz_complete` |
+| `quiz_abandon` | User exits a quiz before finishing — via the back button, the header nav, or any other navigation away from the quiz view. Mutually exclusive with `quiz_complete` for any given quiz session. | `mode`, `concept_id?`, `concept_label?`, `question_count`, `answered_count` |
 | `concept_mastered` | A concept's mastery level transitions to `mastered`. Detected by diffing the mastered-set on every progress mutation. | `concept_id`, `concept_label` |
-| `achievement_unlocked` | First time an achievement unlocks. Idempotent across sessions via localStorage. Currently:<br>• `flawless_victory` — finished any quiz with `correct === total`<br>• `mock_complete` — all required concepts mastered | `achievement_id`, `achievement_name` |
+| `achievement_unlocked` | First time an achievement unlocks. Idempotent across sessions via localStorage (`pspo_flawless_event_fired` and `pspo_mock_complete_unlocked`). Currently:<br>• `flawless_victory` — finished any quiz with `correct === total`<br>• `mock_complete` — all required concepts mastered | `achievement_id`, `achievement_name` |
 
 ### User properties
 
@@ -48,6 +49,22 @@ Set on app boot and re-set whenever they change:
 | `theme` | string (`classic` \| `arcade`) | current theme |
 | `concepts_mastered` | integer (0–10) | count of concepts at mastery level |
 | `total_progress_pct` | integer | `overallProgress(progress).total` |
+
+### Dedupe contract — how each event is guarded against duplicate firing
+
+| Event | Dedupe mechanism |
+|---|---|
+| `page_view` | React `useEffect([view, activeConcept, loaded])`. Fires when the dependency tuple changes — no other code path emits page_view. |
+| `set_user_properties` | Single consolidated `useEffect([theme, progress, loaded])` with a `useRef` snapshot of the last pushed payload. Fires only when at least one of `{theme, concepts_mastered, total_progress_pct}` actually changes. |
+| `theme_switch` | Inline in `switchTheme`. The accompanying user-property update is handled by the set_user_properties effect — `trackThemeSwitch` does **not** call `setUserProperties` to avoid double-pushing. |
+| `concept_view` | Inline in `pickConcept`. One per click. |
+| `quiz_start` | Inline in `startQuizForConcept` / `startQuickQuiz` / `startMockExam` / `startReview`. One per click. |
+| `quiz_complete` (and derived `quiz_pass`, `mock_exam_complete`) | Single fire from each shell:<br>• Arcade: `ArcadeShell.finishQuiz` (called once by `QuizScreen.finalize`)<br>• Classic: `QuizView` `useEffect([finished])` with a `reportedFinishRef` so a re-render with `finished===true` doesn't re-fire. |
+| `concept_mastered` | `useEffect([progress, loaded])` with `prevMasteredRef`. Diffs `mastered now` vs `mastered last run`; fires only for newly-mastered concept ids. The initial `null` ref guarantees no phantom events for returning users with already-mastered concepts. |
+| `achievement_unlocked` | Stateful idempotency:<br>• `flawless_victory` — guarded by `localStorage.pspo_flawless_event_fired` so subsequent flawless quizzes don't re-fire.<br>• `mock_complete` — guarded by `localStorage.pspo_mock_complete_unlocked` AND a same-session ref. |
+| `quiz_abandon` | Called from `maybeTrackQuizAbandon()`, invoked by both `exitQuiz` and the header nav handler `navigateTo`. Only fires when `view === 'quiz' && !qsess.finished`. Mutually exclusive with `quiz_complete` for any quiz session. |
+
+When adding a new event, write down its dedupe story here. If you can't, the code probably duplicates somewhere.
 
 ### Verdicts (the `verdict` parameter)
 
@@ -121,6 +138,7 @@ the column on the right, **Data Layer Version** = 2.
 | `dlv_theme` | `theme` |
 | `dlv_concepts_mastered` | `concepts_mastered` |
 | `dlv_total_progress_pct` | `total_progress_pct` |
+| `dlv_answered_count` | `answered_count` |
 
 ### 2.3 Create Triggers (in GTM)
 
@@ -142,6 +160,7 @@ Events.
 | `CE — mock_exam_complete` | `mock_exam_complete` |
 | `CE — concept_mastered` | `concept_mastered` |
 | `CE — achievement_unlocked` | `achievement_unlocked` |
+| `CE — quiz_abandon` | `quiz_abandon` |
 | `CE — set_user_properties` | `set_user_properties` |
 
 ### 2.4 Create GA4 Event tags (in GTM)
@@ -169,6 +188,7 @@ For each tag:
 | `GA4 — mock_exam_complete` | `mock_exam_complete` | same as `quiz_complete` |
 | `GA4 — concept_mastered` | `concept_mastered` | `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}` |
 | `GA4 — achievement_unlocked` | `achievement_unlocked` | `achievement_id = {{dlv_achievement_id}}`, `achievement_name = {{dlv_achievement_name}}` |
+| `GA4 — quiz_abandon` | `quiz_abandon` | `mode = {{dlv_mode}}`, `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}`, `question_count = {{dlv_question_count}}`, `answered_count = {{dlv_answered_count}}` |
 
 ### 2.5 Map user properties (in GTM)
 

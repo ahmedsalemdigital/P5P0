@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CONCEPTS } from '../../data/concepts.js';
 import { arraysEqualAsSet, defangBrutalQuestion } from '../../lib/progress.js';
 import { verdictFor } from '../../lib/quiz.js';
-import { trackQuizComplete } from '../../lib/analytics.js';
+import { trackQuizComplete, trackQuestionAnswer, trackQuestionBookmark } from '../../lib/analytics.js';
 import { PhaseProgressBar } from './PhaseProgressBar.jsx';
 
 export function QuizView({ questions: questionsProp, phases, progress, onComplete, onBack, mode, conceptId, onToggleBookmark, qsess, setQsess }) {
@@ -70,6 +70,9 @@ export function QuizView({ questions: questionsProp, phases, progress, onComplet
   const effectiveBookmarks = isMock ? mockBookmarks : (progress.bookmarks || {});
 
   function handleToggleBookmark(qid) {
+    const wasBookmarked = !!effectiveBookmarks[qid];
+    const target = questions.find((qq) => qq.id === qid);
+    const targetConcept = target ? CONCEPTS.find((c) => c.id === target.concept) : null;
     if (isMock) {
       setMockBookmarks((prev) => {
         const next = { ...prev };
@@ -79,6 +82,13 @@ export function QuizView({ questions: questionsProp, phases, progress, onComplet
     } else if (onToggleBookmark) {
       onToggleBookmark(qid);
     }
+    trackQuestionBookmark({
+      questionId: qid,
+      conceptId: target?.concept,
+      conceptLabel: targetConcept?.label,
+      bookmarked: !wasBookmarked,
+      mode,
+    });
   }
 
   // Timer tick — decrements shared mockTimeLeft so it survives theme toggles
@@ -103,14 +113,22 @@ export function QuizView({ questions: questionsProp, phases, progress, onComplet
     let wrong = 0;
     for (const qq of questions) {
       const ans = mockAnswers[qq.id];
-      if (ans && arraysEqualAsSet(ans, qq.correct)) {
-        correct++;
-        onComplete(qq.id, true);
-      } else {
-        wrong++;
-        // Only record as wrong if they attempted it; unanswered still counts as wrong on real exam
-        onComplete(qq.id, false);
-      }
+      const wasCorrect = !!(ans && arraysEqualAsSet(ans, qq.correct));
+      if (wasCorrect) correct++;
+      else wrong++;
+      // Unanswered still counts as wrong on real exam.
+      const prevAttempts = progress.questions?.[qq.id]?.attempts || 0;
+      onComplete(qq.id, wasCorrect);
+      trackQuestionAnswer({
+        questionId: qq.id,
+        conceptId: qq.concept,
+        conceptLabel: CONCEPTS.find((c) => c.id === qq.concept)?.label,
+        mode,
+        correct: wasCorrect,
+        questionType: qq.type,
+        difficulty: qq.difficulty,
+        attemptNumber: prevAttempts + 1,
+      });
     }
     setSessionCorrect(correct);
     setSessionWrong(wrong);
@@ -215,7 +233,18 @@ export function QuizView({ questions: questionsProp, phases, progress, onComplet
     setRevealed(true);
     if (!sessionAnswers[q.id]) {
       if (correct) setSessionCorrect((x) => x + 1); else setSessionWrong((x) => x + 1);
+      const prevAttempts = progress.questions?.[q.id]?.attempts || 0;
       onComplete(q.id, correct);
+      trackQuestionAnswer({
+        questionId: q.id,
+        conceptId: q.concept,
+        conceptLabel: CONCEPTS.find((c) => c.id === q.concept)?.label,
+        mode,
+        correct,
+        questionType: q.type,
+        difficulty: q.difficulty,
+        attemptNumber: prevAttempts + 1,
+      });
     }
     setSessionAnswers((prev) => ({ ...prev, [q.id]: { selected, wasCorrect: correct } }));
   }

@@ -39,6 +39,8 @@ All events are fired client-side via `gtag('event', name, params)`.
 | `quiz_abandon` | User exits a quiz before finishing — via the back button, the header nav, or any other navigation away from the quiz view. Mutually exclusive with `quiz_complete` for any given quiz session. | `mode`, `concept_id?`, `concept_label?`, `question_count`, `answered_count` |
 | `concept_mastered` | A concept's mastery level transitions to `mastered`. Detected by diffing the mastered-set on every progress mutation. | `concept_id`, `concept_label` |
 | `achievement_unlocked` | First time an achievement unlocks. Idempotent across sessions via localStorage (`pspo_flawless_event_fired` and `pspo_mock_complete_unlocked`). Currently:<br>• `flawless_victory` — finished any quiz with `correct === total`<br>• `mock_complete` — all required concepts mastered | `achievement_id`, `achievement_name` |
+| `question_answer` | A question was graded. In non-mock modes that's on submit; in classic mock it's at finalize; in arcade mock it's at submit for answered questions and at finalize for skipped ones. One event per (question, session). | `question_id`, `concept_id`, `concept_label`, `mode`, `correct` (bool), `question_type` ∈ {`single`,`multi`,`tf`}, `difficulty?` ∈ {`brutal`,`scenario`}, `attempt_number` (lifetime attempt count, 1-indexed) |
+| `question_bookmark` | User toggled a question's bookmark star inside a quiz. | `question_id`, `concept_id`, `concept_label`, `bookmarked` (new state — `true` = added, `false` = removed), `mode` (quiz mode the toggle happened inside) |
 
 ### User properties
 
@@ -63,6 +65,8 @@ Set on app boot and re-set whenever they change:
 | `concept_mastered` | `useEffect([progress, loaded])` with `prevMasteredRef`. Diffs `mastered now` vs `mastered last run`; fires only for newly-mastered concept ids. The initial `null` ref guarantees no phantom events for returning users with already-mastered concepts. |
 | `achievement_unlocked` | Stateful idempotency:<br>• `flawless_victory` — guarded by `localStorage.pspo_flawless_event_fired` so subsequent flawless quizzes don't re-fire.<br>• `mock_complete` — guarded by `localStorage.pspo_mock_complete_unlocked` AND a same-session ref. |
 | `quiz_abandon` | Called from `maybeTrackQuizAbandon()`, invoked by both `exitQuiz` and the header nav handler `navigateTo`. Only fires when `view === 'quiz' && !qsess.finished`. Mutually exclusive with `quiz_complete` for any quiz session. |
+| `question_answer` | Per-mode call sites, each guarded against double-fire:<br>• Classic non-mock: `QuizView.submit()` inside the `!sessionAnswers[q.id]` branch — first-answer only.<br>• Classic mock: `QuizView.finalizeMockExam()` loop — one per question at scoring time.<br>• Arcade non-mock: `QuizScreen.submit()` inside the `!alreadyAnswered` branch.<br>• Arcade mock: `QuizScreen.submit()` for answered questions + `QuizScreen.finalize()` for skipped ones (`!mockAnswers[qid]`). Mock decks emit ~60 events in a burst — that's intentional, not a duplicate. |
+| `question_bookmark` | One push per user click of the bookmark button — both shells route through their respective `handleToggleBookmark`/onClick wrapper which fires the event after mutating storage. |
 
 When adding a new event, write down its dedupe story here. If you can't, the code probably duplicates somewhere.
 
@@ -139,6 +143,12 @@ the column on the right, **Data Layer Version** = 2.
 | `dlv_concepts_mastered` | `concepts_mastered` |
 | `dlv_total_progress_pct` | `total_progress_pct` |
 | `dlv_answered_count` | `answered_count` |
+| `dlv_question_id` | `question_id` |
+| `dlv_correct` | `correct` |
+| `dlv_question_type` | `question_type` |
+| `dlv_difficulty` | `difficulty` |
+| `dlv_attempt_number` | `attempt_number` |
+| `dlv_bookmarked` | `bookmarked` |
 
 ### 2.3 Create Triggers (in GTM)
 
@@ -161,6 +171,8 @@ Events.
 | `CE — concept_mastered` | `concept_mastered` |
 | `CE — achievement_unlocked` | `achievement_unlocked` |
 | `CE — quiz_abandon` | `quiz_abandon` |
+| `CE — question_answer` | `question_answer` |
+| `CE — question_bookmark` | `question_bookmark` |
 | `CE — set_user_properties` | `set_user_properties` |
 
 ### 2.4 Create GA4 Event tags (in GTM)
@@ -189,6 +201,8 @@ For each tag:
 | `GA4 — concept_mastered` | `concept_mastered` | `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}` |
 | `GA4 — achievement_unlocked` | `achievement_unlocked` | `achievement_id = {{dlv_achievement_id}}`, `achievement_name = {{dlv_achievement_name}}` |
 | `GA4 — quiz_abandon` | `quiz_abandon` | `mode = {{dlv_mode}}`, `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}`, `question_count = {{dlv_question_count}}`, `answered_count = {{dlv_answered_count}}` |
+| `GA4 — question_answer` | `question_answer` | `question_id = {{dlv_question_id}}`, `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}`, `mode = {{dlv_mode}}`, `correct = {{dlv_correct}}`, `question_type = {{dlv_question_type}}`, `difficulty = {{dlv_difficulty}}`, `attempt_number = {{dlv_attempt_number}}` |
+| `GA4 — question_bookmark` | `question_bookmark` | `question_id = {{dlv_question_id}}`, `concept_id = {{dlv_concept_id}}`, `concept_label = {{dlv_concept_label}}`, `bookmarked = {{dlv_bookmarked}}`, `mode = {{dlv_mode}}` |
 
 ### 2.5 Map user properties (in GTM)
 
@@ -224,6 +238,11 @@ GA4 → **Admin → Custom definitions → Create custom dimensions**
 | Concept ID | `concept_id` |
 | Verdict | `verdict` |
 | Achievement | `achievement_name` |
+| Question ID | `question_id` |
+| Question type | `question_type` |
+| Difficulty | `difficulty` |
+| Correct | `correct` |
+| Bookmarked | `bookmarked` |
 
 GA4 → **Admin → Custom definitions → Create custom metrics**
 (scope: **Event**, Unit: **Standard**):
@@ -235,6 +254,7 @@ GA4 → **Admin → Custom definitions → Create custom metrics**
 | Wrong count | `wrong_count` |
 | Time used (sec) | `time_used_sec` |
 | Total questions | `total_questions` |
+| Attempt number | `attempt_number` |
 
 GA4 → **Admin → Custom definitions → Create custom dimensions**
 (scope: **User**):
@@ -523,11 +543,6 @@ Out of scope for this pass, but worth considering:
 - **Scroll depth on long lessons.** Fire `lesson_section_view` for each
   section that scrolls into view. Useful only if average reading time
   shows users dropping off.
-- **Per-question analytics.** Currently we don't fire per-answer events
-  — the data is too noisy and most of it lives in localStorage anyway.
-  If a future need surfaces (e.g., "which questions are universally
-  hardest"), an `question_answered` event with `concept_id`,
-  `difficulty`, `correct` would do it.
 - **Server-side measurement protocol** for offline events (e.g., if we
   ever email reminders).
 - **Google Consent Mode v2 explicit signals.** Today we rely on

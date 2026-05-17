@@ -47,9 +47,9 @@ const variables = dlvKeys.map((p) => ({
   name: `dlv_${p}`,
   type: 'v',
   parameter: [
-    { type: 'integer', key: 'dataLayerVersion', value: '2' },
-    { type: 'boolean', key: 'setDefaultValue', value: 'false' },
-    { type: 'template', key: 'name', value: p },
+    { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+    { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+    { type: 'TEMPLATE', key: 'name', value: p },
   ],
   fingerprint: '0',
 }));
@@ -65,10 +65,10 @@ for (const eventName of allTriggerEvents) {
     type: 'customEvent',
     customEventFilter: [
       {
-        type: 'equals',
+        type: 'EQUALS',
         parameter: [
-          { type: 'template', key: 'arg0', value: '{{_event}}' },
-          { type: 'template', key: 'arg1', value: eventName },
+          { type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' },
+          { type: 'TEMPLATE', key: 'arg1', value: eventName },
         ],
       },
     ],
@@ -87,16 +87,16 @@ tags.push({
   name: 'GA4 — Google tag (base config)',
   type: 'googtag',
   parameter: [
-    { type: 'template', key: 'tagId', value: MEASUREMENT_ID },
+    { type: 'TEMPLATE', key: 'tagId', value: MEASUREMENT_ID },
     {
-      type: 'list',
+      type: 'LIST',
       key: 'configSettingsTable',
       list: [
         {
-          type: 'map',
+          type: 'MAP',
           map: [
-            { type: 'template', key: 'parameter', value: 'send_page_view' },
-            { type: 'template', key: 'parameterValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' },
+            { type: 'TEMPLATE', key: 'parameterValue', value: 'false' },
           ],
         },
       ],
@@ -110,18 +110,18 @@ tags.push({
 // One GA4 Event tag per app event.
 for (const [eventName, params] of Object.entries(EVENT_PARAMS)) {
   const eventParameters = params.map((p) => ({
-    type: 'map',
+    type: 'MAP',
     map: [
-      { type: 'template', key: 'name', value: p },
-      { type: 'template', key: 'value', value: dlvRef(p) },
+      { type: 'TEMPLATE', key: 'name', value: p },
+      { type: 'TEMPLATE', key: 'value', value: dlvRef(p) },
     ],
   }));
   if (EVENTS_WITH_VALUE.has(eventName)) {
     eventParameters.push({
-      type: 'map',
+      type: 'MAP',
       map: [
-        { type: 'template', key: 'name', value: 'value' },
-        { type: 'template', key: 'value', value: dlvRef('score_pct') },
+        { type: 'TEMPLATE', key: 'name', value: 'value' },
+        { type: 'TEMPLATE', key: 'value', value: dlvRef('score_pct') },
       ],
     });
   }
@@ -130,9 +130,9 @@ for (const [eventName, params] of Object.entries(EVENT_PARAMS)) {
     name: `GA4 — ${eventName}`,
     type: 'gaawe',
     parameter: [
-      { type: 'template', key: 'eventName', value: eventName },
-      { type: 'template', key: 'measurementIdOverride', value: MEASUREMENT_ID },
-      { type: 'list', key: 'eventParameters', list: eventParameters },
+      { type: 'TEMPLATE', key: 'eventName', value: eventName },
+      { type: 'TEMPLATE', key: 'measurementIdOverride', value: MEASUREMENT_ID },
+      { type: 'LIST', key: 'eventParameters', list: eventParameters },
     ],
     firingTriggerId: [triggerIdByEvent[eventName]],
     tagFiringOption: 'oncePerEvent',
@@ -146,16 +146,16 @@ tags.push({
   name: 'GA4 — set user properties',
   type: 'gaawe',
   parameter: [
-    { type: 'template', key: 'eventName', value: 'set_user_properties' },
-    { type: 'template', key: 'measurementIdOverride', value: MEASUREMENT_ID },
+    { type: 'TEMPLATE', key: 'eventName', value: 'set_user_properties' },
+    { type: 'TEMPLATE', key: 'measurementIdOverride', value: MEASUREMENT_ID },
     {
-      type: 'list',
+      type: 'LIST',
       key: 'userProperties',
       list: USER_PROPERTIES.map((p) => ({
-        type: 'map',
+        type: 'MAP',
         map: [
-          { type: 'template', key: 'name', value: p },
-          { type: 'template', key: 'value', value: dlvRef(p) },
+          { type: 'TEMPLATE', key: 'name', value: p },
+          { type: 'TEMPLATE', key: 'value', value: dlvRef(p) },
         ],
       })),
     },

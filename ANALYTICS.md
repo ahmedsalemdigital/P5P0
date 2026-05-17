@@ -90,6 +90,13 @@ Do this once. Roughly 30–45 minutes the first time. Open
 `GTM-THK4XJZW`, and a second tab for [analytics.google.com](https://analytics.google.com/)
 on property `G-WB97T5NR8S`.
 
+> **Fast path for GTM:** instead of clicking through §2.2 – §2.4
+> manually, import [`.gtm/container.json`](.gtm/container.json) via
+> **Admin → Import Container** (Merge, Rename conflicting). It defines
+> all 27 variables, 13 triggers, and 14 tags in one go. See
+> [`.gtm/README.md`](.gtm/README.md). GA4 (§2.6 – §2.8) is still
+> manual — no native import exists.
+
 ### 2.1 Configure the base Google tag (in GTM)
 
 This is the single GA4 base tag that everything else reuses.
@@ -552,7 +559,10 @@ Out of scope for this pass, but worth considering:
   remove the `data-cookieyes` block on the GTM script and configure
   Consent Mode v2 in GTM via the **Consent** tag template — CookieYes
   has a native integration for this in its dashboard.
-- **Container as code.** Export the GTM container JSON
-  (Admin → Export Container) into the repo as
-  `.gtm/container.json` so the container config is reviewable in PRs
-  and restorable on accidental deletion.
+- **Sync container.json back from GTM**. Today
+  [`.gtm/container.json`](.gtm/container.json) is generated *from* the
+  tracking plan via `npm run docs:gtm`. If someone makes a change in
+  the GTM UI and forgets to mirror it in the script, the two drift.
+  A CI check that diffs an `Admin → Export Container` snapshot against
+  the script-generated file (or vice-versa) would catch this. For now
+  the convention is: edits go in the script, never in the GTM UI.

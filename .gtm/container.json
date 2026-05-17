@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-17T21:11:01.502Z",
+  "exportTime": "2026-05-17T21:13:52.673Z",
   "containerVersion": {
     "accountId": "0",
     "containerId": "0",
@@ -1415,7 +1415,7 @@
       {
         "triggerId": "127",
         "name": "CE — page_view",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1438,7 +1438,7 @@
       {
         "triggerId": "128",
         "name": "CE — theme_switch",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1461,7 +1461,7 @@
       {
         "triggerId": "129",
         "name": "CE — concept_view",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1484,7 +1484,7 @@
       {
         "triggerId": "130",
         "name": "CE — quiz_start",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1507,7 +1507,7 @@
       {
         "triggerId": "131",
         "name": "CE — quiz_complete",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1530,7 +1530,7 @@
       {
         "triggerId": "132",
         "name": "CE — quiz_pass",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1553,7 +1553,7 @@
       {
         "triggerId": "133",
         "name": "CE — mock_exam_complete",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1576,7 +1576,7 @@
       {
         "triggerId": "134",
         "name": "CE — concept_mastered",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1599,7 +1599,7 @@
       {
         "triggerId": "135",
         "name": "CE — achievement_unlocked",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1622,7 +1622,7 @@
       {
         "triggerId": "136",
         "name": "CE — quiz_abandon",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1645,7 +1645,7 @@
       {
         "triggerId": "137",
         "name": "CE — question_answer",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1668,7 +1668,7 @@
       {
         "triggerId": "138",
         "name": "CE — question_bookmark",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",
@@ -1691,7 +1691,7 @@
       {
         "triggerId": "139",
         "name": "CE — set_user_properties",
-        "type": "customEvent",
+        "type": "CUSTOM_EVENT",
         "customEventFilter": [
           {
             "type": "EQUALS",

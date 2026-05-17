@@ -3,7 +3,29 @@
  * changes, then `npm run docs:gtm` to regenerate `.gtm/container.json`.
  * Import into GTM via Admin → Import Container → Merge → "Rename
  * conflicting tags, triggers, and variables".
- */
+ *
+ * ─── Enum casing rule (the hard-learned part) ─────────────────────────
+ * GTM's import-format deserializer treats certain `type` fields as
+ * protobuf enums and rejects camelCase even though the REST API docs
+ * spell them that way. Protobuf-enum fields need SCREAMING_SNAKE_CASE.
+ * String-identifier fields stay lowercase. Map of fields:
+ *
+ *   ENUM (use SCREAMING_SNAKE_CASE):
+ *     Parameter.type          → TEMPLATE | INTEGER | BOOLEAN | LIST | MAP
+ *                               | TAG_REFERENCE | TRIGGER_REFERENCE
+ *     Condition.type          → EQUALS | CONTAINS | MATCH_REGEX | …
+ *     Trigger.type (EventType)→ CUSTOM_EVENT | PAGEVIEW | INIT | …
+ *     Tag.tagFiringOption     → ONCE_PER_EVENT | UNLIMITED | ONCE_PER_LOAD
+ *     BuiltInVariable.type    → EVENT | PAGE_URL | CLICK_ELEMENT | …
+ *     Container.usageContext  → WEB | IOS | ANDROID | …
+ *
+ *   STRING IDENTIFIER (stays lowercase):
+ *     Tag.type                → gaawe | googtag | html | …
+ *     Variable.type           → v | c | j | gas | …
+ *
+ * If GTM rejects the import with "Error deserializing enum type [X]",
+ * the offending field is in the ENUM column and needs uppercasing.
+ * ──────────────────────────────────────────────────────────────────── */
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -62,7 +84,7 @@ for (const eventName of allTriggerEvents) {
   triggers.push({
     triggerId: id(),
     name: `CE — ${eventName}`,
-    type: 'customEvent',
+    type: 'CUSTOM_EVENT',
     customEventFilter: [
       {
         type: 'EQUALS',

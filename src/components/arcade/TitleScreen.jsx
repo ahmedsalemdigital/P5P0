@@ -44,7 +44,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           }} />
         ))}
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 6, letterSpacing: 1, marginBottom: 10, padding: '0 2px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, letterSpacing: 1, marginBottom: 10, padding: '0 2px' }}>
           <span style={{ color: 'var(--g3)' }}>1P</span>
           <span style={{ color: 'var(--gold)' }}>● ● ●</span>
           <span style={{ color: 'var(--gold)' }}>HI {totalPct}%</span>
@@ -58,7 +58,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           <span aria-hidden="true">P5P0 I</span>
           <span className="sr-only">PSPO·I Trainer</span>
         </h1>
-        <div aria-hidden="true" style={{ fontSize: 8, color: 'var(--gold)', letterSpacing: 8, marginBottom: 12, textShadow: '0 0 6px rgba(255,176,0,0.5)' }}>★ TRAINER ★</div>
+        <div aria-hidden="true" style={{ fontSize: 11, color: 'var(--gold)', letterSpacing: 8, marginBottom: 12, textShadow: '0 0 6px rgba(255,176,0,0.5)' }}>★ TRAINER ★</div>
 
         <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
           <div style={{
@@ -76,7 +76,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           </div>
         </div>
 
-        <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2, marginTop: 14 }}>
+        <div style={{ fontSize: 10, color: 'var(--g3)', letterSpacing: 2, marginTop: 14 }}>
           ▸ SCRUM PRODUCT OWNER ◂
         </div>
       </div>
@@ -126,7 +126,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           <span>CLASSIC</span>
         </button>
       </div>
-      <div className="arc-blink" style={{ fontSize: 7, color: 'var(--gold)', letterSpacing: 2, marginBottom: 14 }}>
+      <div className="arc-blink" style={{ fontSize: 10, color: 'var(--gold)', letterSpacing: 2, marginBottom: 14 }}>
         ▸ INSERT COIN ◂
       </div>
 
@@ -141,7 +141,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           style={{
             position: 'absolute', top: -9, left: 12,
             background: '#000', padding: '0 8px',
-            fontSize: 7, color: 'var(--g4)', letterSpacing: 2,
+            fontSize: 10, color: 'var(--g4)', letterSpacing: 2,
             margin: 0, fontWeight: 400,
           }}
         >● MISSION LOG</h2>
@@ -151,15 +151,15 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           padding: '8px 0', borderBottom: '1px dashed var(--g2)',
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 6, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>STAGES</div>
-            <div style={{ fontSize: 14, color: 'var(--gold)' }}>{totalCleared}<span style={{ color: 'var(--g2)', fontSize: 9 }}>/{requiredStats.length}</span></div>
+            <div style={{ fontSize: 9, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>STAGES</div>
+            <div style={{ fontSize: 16, color: 'var(--gold)' }}>{totalCleared}<span style={{ color: 'var(--g2)', fontSize: 11 }}>/{requiredStats.length}</span></div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 6, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>PROGRESS</div>
-            <div style={{ fontSize: 14, color: 'var(--gold)' }}>{totalPct}<span style={{ color: 'var(--g2)', fontSize: 9 }}>%</span></div>
+            <div style={{ fontSize: 9, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>PROGRESS</div>
+            <div style={{ fontSize: 16, color: 'var(--gold)' }}>{totalPct}<span style={{ color: 'var(--g2)', fontSize: 11 }}>%</span></div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 6, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>TROPHIES</div>
+            <div style={{ fontSize: 9, color: 'var(--g3)', marginBottom: 4, letterSpacing: 1 }}>TROPHIES</div>
             <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 2 }}>
               <AchievementIcon icon="🎓" title="MOCK COMPLETE" hint="Master all 10 concepts." unlocked={allCleared} />
               <AchievementIcon icon="⚡" title="FLAWLESS VICTORY" hint="Complete any quiz without missing a single question." unlocked={flawless} />
@@ -167,7 +167,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           </div>
         </div>
 
-        <div style={{ fontSize: 6, color: 'var(--g3)', letterSpacing: 1, marginBottom: 8 }}>
+        <div style={{ fontSize: 9, color: 'var(--g3)', letterSpacing: 1, marginBottom: 8 }}>
           STAGE PROGRESS · {totalPct}% / {maxTotal}%
         </div>
         {CONCEPTS.map((c) => {
@@ -177,13 +177,13 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           return (
             <div key={c.id} style={{ marginBottom: 8 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 3, gap: 6 }}>
-                <div style={{ fontSize: 7, color: cleared ? 'var(--g4)' : 'var(--g3)', letterSpacing: 0.5, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                <div style={{ fontSize: 10, color: cleared ? 'var(--g4)' : 'var(--g3)', letterSpacing: 0.5, display: 'flex', alignItems: 'baseline', gap: 6 }}>
                   <span>{cleared ? '★ ' : '• '}{c.label.toUpperCase()}</span>
                   {c.optional && (
-                    <span style={{ fontSize: 5, color: 'var(--magenta)', letterSpacing: 1, padding: '1px 4px', border: '1px solid var(--magenta)' }}>+EXTRA</span>
+                    <span style={{ fontSize: 8, color: 'var(--magenta)', letterSpacing: 1, padding: '1px 4px', border: '1px solid var(--magenta)' }}>+EXTRA</span>
                   )}
                 </div>
-                <div style={{ fontSize: 6, color: 'var(--g2)' }}>{pct}%</div>
+                <div style={{ fontSize: 9, color: 'var(--g2)' }}>{pct}%</div>
               </div>
               <div
                 className="pbar-wrap"
@@ -202,8 +202,8 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
       </section>
 
       <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px dashed var(--g2)', textAlign: 'left' }}>
-        <div style={{ fontSize: 8, color: 'var(--g4)', letterSpacing: 2, marginBottom: 10 }}>DISCLAIMER</div>
-        <div style={{ fontSize: 7, color: 'var(--g2)', lineHeight: 1.9 }}>
+        <div style={{ fontSize: 11, color: 'var(--g4)', letterSpacing: 2, marginBottom: 10 }}>DISCLAIMER</div>
+        <div style={{ fontSize: 11, color: 'var(--g2)', lineHeight: 1.8 }}>
           PSPO·I Trainer is an independent study tool not affiliated with,
           endorsed by, or officially associated with Scrum.org or any of its
           subsidiaries. Use of this application does not guarantee success on
@@ -217,7 +217,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
             display: 'flex',
             gap: 14,
             flexWrap: 'wrap',
-            fontSize: 7,
+            fontSize: 10,
             letterSpacing: 2,
           }}
         >
@@ -226,7 +226,7 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           <a href="/cookies.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>COOKIES</a>
           <a href="mailto:ahmedsalemdigital@gmail.com" style={{ color: 'var(--g4)', textDecoration: 'none' }}>CONTACT</a>
         </nav>
-        <div style={{ fontSize: 6, color: 'var(--g2)', letterSpacing: 2, marginTop: 14, textAlign: 'center' }}>
+        <div style={{ fontSize: 9, color: 'var(--g2)', letterSpacing: 2, marginTop: 14, textAlign: 'center' }}>
           © 2026 · 2020 SCRUM GUIDE
         </div>
       </div>

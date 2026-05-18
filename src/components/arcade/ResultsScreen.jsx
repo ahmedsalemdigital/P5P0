@@ -37,7 +37,7 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
 
   return (
     <div className="arc-scan-in" style={{ textAlign: 'center' }} role="region" aria-labelledby="results-heading" aria-live="polite">
-      <h1 id="results-heading" style={{ fontSize: 10, letterSpacing: 3, margin: '0 0 4px', color: 'var(--g3)', fontWeight: 400 }}>{headerLabel}</h1>
+      <h1 id="results-heading" style={{ fontSize: 12, letterSpacing: 3, margin: '0 0 4px', color: 'var(--g3)', fontWeight: 400 }}>{headerLabel}</h1>
       {concept && <div style={{ fontSize: 14, marginBottom: 16, color: 'var(--g5)' }}>{concept.label.toUpperCase()}</div>}
       <div style={{ marginBottom: 12, display: 'inline-block' }}>
         <Mascot size={72} happy={cleared} sad={!cleared} />
@@ -48,7 +48,7 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
           <div style={{ fontSize: 28, color: verdictColor, textShadow: `0 0 12px ${verdictGlow}` }}>
             {pct}%
           </div>
-          <div style={{ fontSize: 8, color: 'var(--g3)', marginTop: 2 }}>{correctCount} / {total} CORRECT</div>
+          <div style={{ fontSize: 11, color: 'var(--g3)', marginTop: 2 }}>{correctCount} / {total} CORRECT</div>
           <div
             style={{ margin: '10px 0', fontSize: 18 }}
             role="img"
@@ -64,7 +64,7 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
         </div>
 
         <hr className="arc-divider" />
-        <div style={{ display: 'flex', justifyContent: 'space-around', fontSize: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around', fontSize: 11 }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ color: 'var(--g3)', marginBottom: 4 }}>SCORE</div>
             <div style={{ color: 'var(--gold)' }}>{score}</div>
@@ -81,7 +81,7 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
         {timeStr && (
           <>
             <hr className="arc-divider" />
-            <div style={{ textAlign: 'center', fontSize: 8 }}>
+            <div style={{ textAlign: 'center', fontSize: 11 }}>
               <span style={{ color: 'var(--g3)' }}>TIME: </span>
               <span style={{ color: 'var(--gold)' }}>{timeStr}</span>
             </div>
@@ -91,7 +91,7 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
 
       {/* Achievements */}
       <div style={{ marginBottom: 12, textAlign: 'left' }}>
-        <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 1, marginBottom: 6 }}>ACHIEVEMENTS</div>
+        <div style={{ fontSize: 10, color: 'var(--g3)', letterSpacing: 1, marginBottom: 6 }}>ACHIEVEMENTS</div>
         <AchievementBadge
           icon="🎓" title="MOCK COMPLETE"
           desc="All 10 concepts mastered. You are ready for the exam."
@@ -108,13 +108,13 @@ export function ResultsScreen({ result, conceptId, progress, onPlayAgain, onBack
       </div>
 
       <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
-        <button className="arc-btn" style={{ width: '100%', padding: 12, fontSize: 9 }} onClick={onPlayAgain} aria-label="Play again">
+        <button className="arc-btn" style={{ width: '100%', padding: 12, fontSize: 12 }} onClick={onPlayAgain} aria-label="Play again">
           <span aria-hidden="true">↺ </span>PLAY AGAIN
         </button>
-        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onBack} aria-label="Back to stage select">
+        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 11 }} onClick={onBack} aria-label="Back to stage select">
           <span aria-hidden="true">◀ </span>STAGE SELECT
         </button>
-        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 8 }} onClick={onHome} aria-label="Return to title screen">
+        <button className="arc-btn arc-btn-ghost" style={{ width: '100%', padding: 10, fontSize: 11 }} onClick={onHome} aria-label="Return to title screen">
           <span aria-hidden="true">⌂ </span>TITLE
         </button>
       </div>

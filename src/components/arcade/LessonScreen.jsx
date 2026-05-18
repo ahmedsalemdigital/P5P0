@@ -33,7 +33,7 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
         <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack} aria-label="Back to concepts">
           <span aria-hidden="true">◀</span>
         </button>
-        <h1 style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2, margin: 0, fontWeight: 400 }}>STAGE BRIEFING</h1>
+        <h1 style={{ fontSize: 11, color: 'var(--g3)', letterSpacing: 2, margin: 0, fontWeight: 400 }}>STAGE BRIEFING</h1>
       </div>
 
       {/* Stage banner */}
@@ -67,9 +67,9 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
           flexShrink: 0,
         }}>{String(conceptIdx + 1).padStart(2, '0')}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 5, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 4 }}>NOW LOADING</div>
-          <div style={{ fontSize: 10, color: 'var(--g5)', letterSpacing: 1, marginBottom: 4, lineHeight: 1.3 }}>{concept.label.toUpperCase()}</div>
-          <div style={{ fontSize: 7, color: 'var(--g3)', lineHeight: 1.6 }}>{concept.subtitle}</div>
+          <div style={{ fontSize: 9, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 4 }}>NOW LOADING</div>
+          <div style={{ fontSize: 13, color: 'var(--g5)', letterSpacing: 1, marginBottom: 4, lineHeight: 1.3 }}>{concept.label.toUpperCase()}</div>
+          <div style={{ fontSize: 11, color: 'var(--g3)', lineHeight: 1.6 }}>{concept.subtitle}</div>
         </div>
         <div className="arc-bounce" style={{ flexShrink: 0 }}><Mascot size={42} talking /></div>
       </div>
@@ -87,7 +87,7 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
               aria-controls={`lesson-panel-${i}`}
               id={`lesson-tab-${i}`}
               style={{
-                font: 'inherit', fontSize: 7, padding: '8px 6px', cursor: 'pointer',
+                font: 'inherit', fontSize: 10, padding: '8px 6px', cursor: 'pointer',
                 border: '2px solid',
                 borderColor: isActive ? t.color : 'var(--g2)',
                 background: isActive ? t.color : 'transparent',
@@ -97,7 +97,7 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
                 transition: 'all 0.1s',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
               }}>
-              <span aria-hidden="true" style={{ fontSize: 9 }}>{t.icon}</span>
+              <span aria-hidden="true" style={{ fontSize: 12 }}>{t.icon}</span>
               <span>{t.label}</span>
             </button>
           );
@@ -124,18 +124,18 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
         <div style={{
           position: 'absolute', top: -9, left: 12,
           background: '#000', padding: '0 8px',
-          fontSize: 7, color: activeColor, letterSpacing: 2,
+          fontSize: 10, color: activeColor, letterSpacing: 2,
         }}>● {tabs[tab].label}</div>
 
         <div ref={scrollRef} className="arc-content-scroll">
           {tab === 0 && (
             <>
-              <div style={{ fontSize: 7, color: 'var(--gold)', letterSpacing: 2, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 10, color: 'var(--gold)', letterSpacing: 2, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span>▸ BRIEF</span>
                 <span style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
               </div>
               {intro.split('\n\n').map((para, i) => (
-                <p key={i} style={{ fontSize: 9, color: 'var(--g5)', lineHeight: 2, marginBottom: 12 }}>{para}</p>
+                <p key={i} style={{ fontSize: 13, color: 'var(--g5)', lineHeight: 1.8, marginBottom: 12 }}>{para}</p>
               ))}
 
               {visual && (
@@ -152,21 +152,21 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
 
               {sections.length > 0 && (
                 <>
-                  <div style={{ fontSize: 7, color: 'var(--cyan)', letterSpacing: 2, margin: '18px 0 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontSize: 10, color: 'var(--cyan)', letterSpacing: 2, margin: '18px 0 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span>▸ DEEP DIVE</span>
                     <span style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
                   </div>
                   {sections.map((s, i) => (
                     <div key={i} style={{ marginBottom: 16 }}>
                       <div style={{
-                        fontSize: 9, color: 'var(--gold)', letterSpacing: 1,
+                        fontSize: 12, color: 'var(--gold)', letterSpacing: 1,
                         marginBottom: 8, lineHeight: 1.4,
                         textShadow: '0 0 6px rgba(255,176,0,0.4)',
                       }}>
                         {String(i + 1).padStart(2, '0')} · {(s.heading || '').toUpperCase()}
                       </div>
                       {(s.body || '').split('\n\n').map((para, j) => (
-                        <p key={j} style={{ fontSize: 9, color: 'var(--g5)', lineHeight: 2, marginBottom: 10 }}>
+                        <p key={j} style={{ fontSize: 13, color: 'var(--g5)', lineHeight: 1.8, marginBottom: 10 }}>
                           {para}
                         </p>
                       ))}
@@ -177,11 +177,11 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
                           borderLeft: '3px solid var(--cyan)',
                           background: 'rgba(0,30,40,0.35)',
                         }}>
-                          <div style={{ fontSize: 7, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 6 }}>
+                          <div style={{ fontSize: 10, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 6 }}>
                             ▸ EXAMPLE · {(s.example.title || '').toUpperCase()}
                           </div>
                           {(s.example.body || '').split('\n\n').map((para, k) => (
-                            <p key={k} style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9, marginBottom: 8 }}>
+                            <p key={k} style={{ fontSize: 12, color: 'var(--g5)', lineHeight: 1.8, marginBottom: 8 }}>
                               {para}
                             </p>
                           ))}
@@ -196,19 +196,19 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
 
           {tab === 1 && (
             <>
-              <div style={{ fontSize: 7, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 10 }}>
+              <div style={{ fontSize: 10, color: 'var(--cyan)', letterSpacing: 2, marginBottom: 10 }}>
                 ▸ ESSENTIALS · {keyPoints.length} POINTS
               </div>
               <ol style={{ listStyle: 'none', padding: 0 }}>
                 {keyPoints.map((kp, i) => (
                   <li key={i} style={{
-                    fontSize: 9, color: 'var(--g5)', marginBottom: 10, lineHeight: 1.8,
+                    fontSize: 13, color: 'var(--g5)', marginBottom: 10, lineHeight: 1.7,
                     display: 'flex', gap: 10,
                     padding: '8px 10px',
                     border: '1px solid var(--g2)',
                     background: 'rgba(0,40,0,0.25)',
                   }}>
-                    <span style={{ color: 'var(--cyan)', flexShrink: 0, fontSize: 8, minWidth: 18, textShadow: '0 0 6px rgba(68,221,255,0.5)' }}>
+                    <span style={{ color: 'var(--cyan)', flexShrink: 0, fontSize: 11, minWidth: 22, textShadow: '0 0 6px rgba(68,221,255,0.5)' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span>{typeof kp === 'string' ? kp : kp.text || kp.point || JSON.stringify(kp)}</span>
@@ -220,19 +220,19 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
 
           {tab === 2 && (
             <>
-              <div style={{ fontSize: 7, color: 'var(--gold)', letterSpacing: 2, marginBottom: 10 }}>
+              <div style={{ fontSize: 10, color: 'var(--gold)', letterSpacing: 2, marginBottom: 10 }}>
                 ★ POWER-UPS · EXAM TACTICS
               </div>
               {tips.map((tip, i) => (
                 <div key={i} style={{
-                  fontSize: 9, color: 'var(--g5)', marginBottom: 8, lineHeight: 1.8,
+                  fontSize: 13, color: 'var(--g5)', marginBottom: 8, lineHeight: 1.7,
                   display: 'flex', gap: 10, alignItems: 'flex-start',
                   padding: '8px 10px',
                   border: '1px solid var(--g2)',
                   borderLeft: '3px solid var(--gold)',
                   background: 'rgba(40,28,0,0.35)',
                 }}>
-                  <span style={{ color: 'var(--gold)', flexShrink: 0, fontSize: 10, textShadow: '0 0 8px rgba(255,176,0,0.6)' }}>!</span>
+                  <span style={{ color: 'var(--gold)', flexShrink: 0, fontSize: 13, textShadow: '0 0 8px rgba(255,176,0,0.6)' }}>!</span>
                   <span>{typeof tip === 'string' ? tip : tip.text || JSON.stringify(tip)}</span>
                 </div>
               ))}
@@ -241,26 +241,26 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
 
           {tab === 3 && (
             <>
-              <div style={{ fontSize: 7, color: 'var(--red)', letterSpacing: 2, marginBottom: 10, textShadow: '0 0 6px rgba(255,58,58,0.5)' }}>
+              <div style={{ fontSize: 10, color: 'var(--red)', letterSpacing: 2, marginBottom: 10, textShadow: '0 0 6px rgba(255,58,58,0.5)' }}>
                 ⚠ DANGER ZONE · COMMON TRAPS
               </div>
               {traps.map((t, i) => (
                 <div key={i} style={{
-                  fontSize: 9, color: '#ffbbbb', marginBottom: 8, lineHeight: 1.8,
+                  fontSize: 13, color: '#ffbbbb', marginBottom: 8, lineHeight: 1.7,
                   display: 'flex', gap: 10, alignItems: 'flex-start',
                   padding: '8px 10px',
                   border: '1px solid rgba(255,58,58,0.3)',
                   borderLeft: '3px solid var(--red)',
                   background: 'rgba(40,0,0,0.35)',
                 }}>
-                  <span style={{ color: 'var(--red)', flexShrink: 0, fontSize: 10, textShadow: '0 0 8px rgba(255,58,58,0.6)' }}>✕</span>
+                  <span style={{ color: 'var(--red)', flexShrink: 0, fontSize: 13, textShadow: '0 0 8px rgba(255,58,58,0.6)' }}>✕</span>
                   <span>{typeof t === 'string' ? t : t.text || JSON.stringify(t)}</span>
                 </div>
               ))}
 
               {mnemonics && mnemonics.length > 0 && (
                 <>
-                  <div style={{ fontSize: 7, color: 'var(--magenta)', letterSpacing: 2, marginTop: 18, marginBottom: 10, textShadow: '0 0 6px rgba(255,68,170,0.5)' }}>
+                  <div style={{ fontSize: 10, color: 'var(--magenta)', letterSpacing: 2, marginTop: 18, marginBottom: 10, textShadow: '0 0 6px rgba(255,68,170,0.5)' }}>
                     ★ MNEMONICS · MEMORY HACKS
                   </div>
                   {mnemonics.map((m, i) => (
@@ -271,10 +271,10 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
                       position: 'relative',
                       boxShadow: 'inset 0 0 10px rgba(255,68,170,0.1)',
                     }}>
-                      <div style={{ fontSize: 10, color: 'var(--magenta)', marginBottom: 6, letterSpacing: 1, textShadow: '0 0 6px rgba(255,68,170,0.4)' }}>
+                      <div style={{ fontSize: 12, color: 'var(--magenta)', marginBottom: 6, letterSpacing: 1, textShadow: '0 0 6px rgba(255,68,170,0.4)' }}>
                         {m.label || m.title || '★'}
                       </div>
-                      <div style={{ fontSize: 8, color: 'var(--g5)', lineHeight: 1.9 }}>
+                      <div style={{ fontSize: 12, color: 'var(--g5)', lineHeight: 1.8 }}>
                         {m.text || m.body || (typeof m === 'string' ? m : '')}
                       </div>
                     </div>
@@ -298,7 +298,7 @@ export function LessonScreen({ conceptId, onStartQuiz, onBack }) {
       </div>
 
       <button className="arc-btn" style={{
-        width: '100%', padding: 16, fontSize: 10, letterSpacing: 3,
+        width: '100%', padding: 16, fontSize: 13, letterSpacing: 3,
         boxShadow: '0 0 16px rgba(0,255,65,0.5), inset 0 0 0 2px #00ff41',
       }} onClick={onStartQuiz}>
         ▶ START QUIZ

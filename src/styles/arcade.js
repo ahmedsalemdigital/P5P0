@@ -341,7 +341,7 @@ html, body, #root { background: #000; }
   letter-spacing: 3px;
 }
 .arcade-root .arc-header-logo-sub {
-  font-size: 7px;
+  font-size: 9px;
   letter-spacing: 3px;
   color: var(--gold);
   text-shadow: 0 0 4px rgba(255,176,0,0.5);
@@ -357,22 +357,39 @@ html, body, #root { background: #000; }
 @media (max-width: 560px) {
   .arcade-root .arc-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 8px;
-    padding: 10px 14px;
+    padding: 10px 12px;
   }
   .arcade-root .arc-header-nav {
     width: 100%;
     justify-content: space-between;
     gap: 4px;
+    flex-wrap: nowrap;
   }
   .arcade-root .arc-nav-btn {
-    padding: 8px 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 4px;
+    letter-spacing: 1.2px;
+    text-align: center;
+  }
+  /* Theme switch becomes icon-only on phones so the nav row stays
+     within the viewport. The pill toggle keeps state visible; the
+     "ARCADE" word is dropped since the same word is already in the
+     "▶ ARCADE" CLASSIC CTA context. */
+  .arcade-root .arcade-theme-switch {
+    flex: 0 0 auto;
+    gap: 0;
+    padding: 6px 6px;
+  }
+  .arcade-root .arcade-theme-switch-label {
+    display: none;
   }
 }
 .arcade-root .arc-nav-btn {
   font-family: 'Press Start 2P', monospace;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 2px;
   padding: 8px 12px;
   background: transparent;

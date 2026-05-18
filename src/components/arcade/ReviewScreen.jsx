@@ -20,7 +20,7 @@ export function ReviewScreen({ queue, onStart, onBack }) {
         <button className="arc-btn arc-btn-ghost arc-btn-sm" onClick={onBack} aria-label="Back to concepts">
           <span aria-hidden="true">◀ </span>BACK
         </button>
-        <h1 style={{ fontSize: 10, letterSpacing: 2, color: 'var(--magenta)', textShadow: '0 0 6px rgba(255,68,170,0.4)', margin: 0, fontWeight: 400 }}>
+        <h1 style={{ fontSize: 13, letterSpacing: 2, color: 'var(--magenta)', textShadow: '0 0 6px rgba(255,68,170,0.4)', margin: 0, fontWeight: 400 }}>
           REVIEW QUEUE
         </h1>
       </div>
@@ -32,11 +32,11 @@ export function ReviewScreen({ queue, onStart, onBack }) {
         background: 'rgba(255,68,170,0.05)',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: 7, color: 'var(--g3)', letterSpacing: 2, marginBottom: 8 }}>QUESTIONS PENDING</div>
+        <div style={{ fontSize: 10, color: 'var(--g3)', letterSpacing: 2, marginBottom: 8 }}>QUESTIONS PENDING</div>
         <div style={{ fontSize: 40, color: 'var(--magenta)', letterSpacing: 4, lineHeight: 1, textShadow: '0 0 12px rgba(255,68,170,0.5)' }}>
           {queue.length}
         </div>
-        <div style={{ fontSize: 8, color: 'var(--g3)', letterSpacing: 1, marginTop: 10, lineHeight: 1.7 }}>
+        <div style={{ fontSize: 11, color: 'var(--g3)', letterSpacing: 1, marginTop: 10, lineHeight: 1.7 }}>
           {empty
             ? 'NO MISSES YET — ANSWER A QUIZ TO FILL THE QUEUE.'
             : 'QUESTIONS YOU’VE MISSED OR NOT YET ANSWERED CORRECTLY TWICE.'}
@@ -45,7 +45,7 @@ export function ReviewScreen({ queue, onStart, onBack }) {
 
       {rows.length > 0 && (
         <>
-          <h2 style={{ fontSize: 10, color: 'var(--g4)', letterSpacing: 3, margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 400 }}>
+          <h2 style={{ fontSize: 12, color: 'var(--g4)', letterSpacing: 3, margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 10, fontWeight: 400 }}>
             <span>BY CONCEPT</span>
             <span aria-hidden="true" style={{ flex: 1, height: 1, background: 'var(--g2)' }} />
           </h2>
@@ -55,10 +55,10 @@ export function ReviewScreen({ queue, onStart, onBack }) {
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 padding: '8px 12px', border: '1px solid var(--g2)', background: 'rgba(0,30,0,0.4)',
               }}>
-                <span style={{ fontSize: 9, color: 'var(--g4)', letterSpacing: 1 }}>
+                <span style={{ fontSize: 11, color: 'var(--g4)', letterSpacing: 1 }}>
                   {r.label.toUpperCase()}
                 </span>
-                <span style={{ fontSize: 9, color: 'var(--magenta)', letterSpacing: 1 }}>
+                <span style={{ fontSize: 11, color: 'var(--magenta)', letterSpacing: 1 }}>
                   × {r.count}
                 </span>
               </div>

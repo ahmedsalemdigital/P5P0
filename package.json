@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "docs:analytics": "node scripts/build-analytics-pdf.mjs",
-    "docs:gtm": "node scripts/gen-gtm-container.mjs"
+    "docs:gtm": "node scripts/gen-gtm-container.mjs",
+    "build:og": "node scripts/build-og-image.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

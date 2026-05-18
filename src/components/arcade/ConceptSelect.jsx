@@ -164,7 +164,7 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
           <a href="/privacy.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>PRIVACY</a>
           <a href="/terms.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>TERMS</a>
           <a href="/cookies.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>COOKIES</a>
-          <a href="mailto:ahmed3abdul3aal@gmail.com" style={{ color: 'var(--g4)', textDecoration: 'none' }}>CONTACT</a>
+          <a href="mailto:ahmedsalemdigital@gmail.com" style={{ color: 'var(--g4)', textDecoration: 'none' }}>CONTACT</a>
         </nav>
       </div>
     </div>

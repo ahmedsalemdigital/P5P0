@@ -132,7 +132,7 @@ export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick,
           <a href="/privacy.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy</a>
           <a href="/terms.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</a>
           <a href="/cookies.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Cookies</a>
-          <a href="mailto:ahmed3abdul3aal@gmail.com" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Contact</a>
+          <a href="mailto:ahmedsalemdigital@gmail.com" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Contact</a>
         </nav>
       </footer>
     </div>

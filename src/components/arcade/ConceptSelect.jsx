@@ -150,6 +150,22 @@ export function ConceptSelect({ progress, onSelect, onBack, onStartQuick, onStar
           the Professional Scrum Product Owner I (PSPO I) assessment, nor does
           it confer any certification or credential.
         </div>
+        <nav
+          aria-label="Legal"
+          style={{
+            marginTop: 12,
+            display: 'flex',
+            gap: 14,
+            flexWrap: 'wrap',
+            fontSize: 7,
+            letterSpacing: 2,
+          }}
+        >
+          <a href="/privacy.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>PRIVACY</a>
+          <a href="/terms.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>TERMS</a>
+          <a href="/cookies.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>COOKIES</a>
+          <a href="mailto:ahmed3abdul3aal@gmail.com" style={{ color: 'var(--g4)', textDecoration: 'none' }}>CONTACT</a>
+        </nav>
       </div>
     </div>
   );

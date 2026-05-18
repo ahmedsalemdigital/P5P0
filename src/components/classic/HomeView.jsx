@@ -128,6 +128,12 @@ export function HomeView({ progress, onPickConcept, onStartReview, onStartQuick,
           PSPO·I Trainer is an independent study tool not affiliated with, endorsed by, or officially associated with Scrum.org or any of its subsidiaries. Use of this application does not guarantee success on the Professional Scrum Product Owner I (PSPO I) assessment, nor does it confer any certification or credential. The PSPO I is an official Scrum.org assessment — candidates are encouraged to study the 2020 Scrum Guide and consult all official learning resources available at{' '}
           <span style={{ color: 'var(--text-dim)' }}>scrum.org</span> before attempting the assessment.
         </p>
+        <nav aria-label="Legal" style={{ marginTop: 14, display: 'flex', gap: 18, flexWrap: 'wrap', fontSize: 12, letterSpacing: '-0.12px' }}>
+          <a href="/privacy.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy</a>
+          <a href="/terms.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</a>
+          <a href="/cookies.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Cookies</a>
+          <a href="mailto:ahmed3abdul3aal@gmail.com" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Contact</a>
+        </nav>
       </footer>
     </div>
   );

@@ -45,18 +45,30 @@
 
       <h3>Browser storage we use directly</h3>
       <p>
-        Beyond what CookieYes lists above, the app keeps two values in your browser's
+        Beyond what CookieYes lists above, the app keeps a handful of values in your browser's
         <code>localStorage</code>. These are first-party only, never transmitted, and exempt from prior
         consent under ePrivacy because they are strictly necessary to deliver the study tool you opened.
       </p>
       <ul>
         <li>
           <code>pspo-progress-v1</code> — your study progress (questions attempted, correct/incorrect counts,
-          bookmarks, theme preference). Use <em>Reset progress</em> in the app or clear site data to delete.
+          bookmarks). Use <em>Reset progress</em> under <em>Stats</em> in the app, or clear site data, to delete.
         </li>
         <li>
-          <code>pspo_mock_complete_unlocked</code> — small flag preventing the "all concepts mastered"
+          <code>pspo-theme</code> — remembers whether you last chose the Classic or Arcade theme so the app
+          opens in the same skin next time.
+        </li>
+        <li>
+          <code>pspo_mock_complete_unlocked</code> — small flag preventing the "all required concepts mastered"
           achievement event from firing more than once.
+        </li>
+        <li>
+          <code>pspo_flawless</code> — remembers that you've earned the "Flawless Victory" trophy so it stays
+          unlocked on the title screen.
+        </li>
+        <li>
+          <code>pspo_flawless_event_fired</code> — companion flag preventing the "Flawless Victory" analytics
+          event from firing more than once per browser.
         </li>
       </ul>
 

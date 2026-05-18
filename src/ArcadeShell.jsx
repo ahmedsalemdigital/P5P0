@@ -9,6 +9,7 @@ import { LessonScreen } from './components/arcade/LessonScreen.jsx';
 import { QuizScreen } from './components/arcade/QuizScreen.jsx';
 import { ResultsScreen } from './components/arcade/ResultsScreen.jsx';
 import { ReviewScreen } from './components/arcade/ReviewScreen.jsx';
+import { StatsScreen } from './components/arcade/StatsScreen.jsx';
 
 export { ARCADE_STYLE } from './styles/arcade.js';
 
@@ -40,6 +41,7 @@ export default function ArcadeShell({
   onSetView,
   onNavigate,
   onExitQuiz,
+  onResetProgress,
 }) {
   // Results screen is the only screen with state purely local to the arcade theme
   // (classic shows results inline inside QuizView). Lost on theme toggle — acceptable.
@@ -90,7 +92,7 @@ export default function ArcadeShell({
           <TitleScreen progress={progress} onStart={() => onSetView('home')} onToggleTheme={onSwitchTheme} />
         )}
 
-        {(view === 'home' || view === 'stats') && (
+        {view === 'home' && (
           <ConceptSelect
             progress={progress}
             onSelect={onPickConcept}
@@ -99,6 +101,14 @@ export default function ArcadeShell({
             onStartMock={onStartMockExam}
             onStartReview={onStartReview}
             reviewQueueSize={reviewQueue.length}
+          />
+        )}
+
+        {view === 'stats' && (
+          <StatsScreen
+            progress={progress}
+            onBack={() => onSetView('home')}
+            onReset={onResetProgress}
           />
         )}
 

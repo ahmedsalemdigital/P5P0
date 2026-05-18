@@ -201,7 +201,35 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
         })}
       </section>
 
-      <div style={{ fontSize: 6, color: 'var(--g2)', letterSpacing: 2 }}>© 2026 · 2020 SCRUM GUIDE</div>
+      <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px dashed var(--g2)', textAlign: 'left' }}>
+        <div style={{ fontSize: 8, color: 'var(--g4)', letterSpacing: 2, marginBottom: 10 }}>DISCLAIMER</div>
+        <div style={{ fontSize: 7, color: 'var(--g2)', lineHeight: 1.9 }}>
+          PSPO·I Trainer is an independent study tool not affiliated with,
+          endorsed by, or officially associated with Scrum.org or any of its
+          subsidiaries. Use of this application does not guarantee success on
+          the Professional Scrum Product Owner I (PSPO I) assessment, nor does
+          it confer any certification or credential.
+        </div>
+        <nav
+          aria-label="Legal"
+          style={{
+            marginTop: 12,
+            display: 'flex',
+            gap: 14,
+            flexWrap: 'wrap',
+            fontSize: 7,
+            letterSpacing: 2,
+          }}
+        >
+          <a href="/privacy.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>PRIVACY</a>
+          <a href="/terms.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>TERMS</a>
+          <a href="/cookies.html" style={{ color: 'var(--g4)', textDecoration: 'none' }}>COOKIES</a>
+          <a href="mailto:ahmedsalemdigital@gmail.com" style={{ color: 'var(--g4)', textDecoration: 'none' }}>CONTACT</a>
+        </nav>
+        <div style={{ fontSize: 6, color: 'var(--g2)', letterSpacing: 2, marginTop: 14, textAlign: 'center' }}>
+          © 2026 · 2020 SCRUM GUIDE
+        </div>
+      </div>
     </div>
   );
 }

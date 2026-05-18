@@ -292,6 +292,22 @@ export function TitleScreen({ progress, onStart, onToggleTheme }) {
           the Professional Scrum Product Owner I (PSPO I) assessment, nor does
           it confer any certification or credential.
         </p>
+        <nav
+          aria-label="Legal"
+          style={{
+            marginTop: 14,
+            display: 'flex',
+            gap: 18,
+            flexWrap: 'wrap',
+            fontSize: 12,
+            letterSpacing: '-0.12px',
+          }}
+        >
+          <a href="/privacy.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy</a>
+          <a href="/terms.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</a>
+          <a href="/cookies.html" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Cookies</a>
+          <a href="mailto:ahmed3abdul3aal@gmail.com" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Contact</a>
+        </nav>
       </footer>
     </div>
   );

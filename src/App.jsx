@@ -78,12 +78,15 @@ export default function App() {
   }, []);
 
   /* Analytics: SPA page_view on every view change.
-     gtag's auto page_view is disabled in index.html so this is the sole source. */
+     gtag's auto page_view is disabled in index.html so this is the sole source.
+     Also keep document.title in sync so browser tabs reflect the current view. */
   useEffect(() => {
     if (!loaded) return;
+    const title = `${VIEW_TITLES[view] || view} — PSPO·I Trainer`;
+    if (typeof document !== 'undefined') document.title = title;
     trackPageView({
       path: `/${view}${activeConcept ? `/${activeConcept}` : ''}`,
-      title: `${VIEW_TITLES[view] || view} — PSPO·I Trainer`,
+      title,
     });
   }, [view, activeConcept, loaded]);
 
@@ -364,6 +367,7 @@ export default function App() {
           onSetView={setView}
           onNavigate={navigateTo}
           onExitQuiz={exitQuiz}
+          onResetProgress={resetProgress}
         />
       </>
     );
